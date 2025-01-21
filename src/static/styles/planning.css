@@ -1,0 +1,11 @@
+body {
+    display: flex;
+}
+
+main>div {
+    display: flex;
+}
+
+main>div>div {
+    padding: 10px;
+}
