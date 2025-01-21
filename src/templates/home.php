@@ -36,22 +36,47 @@ include 'navbar.php';
             <img src="../static/images/miam_cut.png" alt="corne d'abondance" class="search-image">
         </section>
 
-        <section class="Affichage-restaurants">
+        <section class="Affichage-restaurants A-la-une">
             <h2>Restaurants à la une</h2>
             <div class="Affichage-fiches">
                 <?php 
                 for ($i = 1; $i <= 10; $i++) {
                     echo 
-                    '<article class="fiche-resto">
-                        <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                        <div>
-                            <span>
-                                <h3>Beast Burger</h3>
-                                <h3>4.5☆</h3>
-                            </span>
-                            <p>Mr. Beaaaaaaaast!</p>
-                        </div>
-                    </article>';
+                    '<a href="" class="fiche-resto">
+                        <article >
+                            <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
+                            <div>
+                                <span>
+                                    <h3>Beast Burger</h3>
+                                    <h3>4.5☆</h3>
+                                </span>
+                                <p>Mr. Beaaaaaaaast!</p>
+                            </div>
+                        </article>
+                    </a>';
+                }
+                ?>
+            </div>
+        </section>
+
+        <section class="Affichage-restaurants Les-favoris">
+            <h2>Restaurants les plus prisés</h2>
+            <div class="Affichage-fiches">
+                <?php 
+                for ($i = 1; $i <= 10; $i++) {
+                    echo 
+                    '<a href="" class="fiche-resto">
+                        <article >
+                            <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
+                            <div>
+                                <span>
+                                    <h3>Food n`go</h3>
+                                    <h3>2.7☆</h3>
+                                </span>
+                                <p>La nourriture lente du vietnam</p>
+                            </div>
+                        </article>
+                    </a>';
                 }
                 ?>
             </div>

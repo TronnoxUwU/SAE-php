@@ -6,9 +6,8 @@ session_start();
 
 require_once "../static/script/modele.php";
 
+$inscription = 0;
 
-// Chemin vers la base de données SQLite
-$db_path = "../data/data.sqlite";
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -17,26 +16,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prenom = $_POST['prenom'] ?? null;
     $email = $_POST['email'] ?? null;
     $mdp = $_POST['password'] ?? null;
-    (int)$taille = $_POST['taille'] ?? 0;
-    (int)$poids = $_POST['poids'] ?? 0;
+    (int)$cp = $_POST['cp'] ?? 45000;
+    $ville = $_POST['ville'] ?? "orleans";
     $tel = $_POST['telephone'] ?? "+33";
-    (int)$lvl = $_POST['lvl'] ?? "+33";
 
     // Validation de base
     if ($nom && $prenom && $email && $mdp) {
         try {
 
-            if (isUtilisateurExistant($email, $mdp)) {
+            if (utilisateurExistant($email, $mdp)) {
                 echo '<p></p>';
                 echo '<script>showPopup("Cet email est déjà utilisé.", false);</script>';
             } else {
                 // Insérer les données dans la table "users"
                 // function insertAdherent($nom, $prenom, $tel, $mail, $taille, $poids, $dateInscription, $mdp){
 
-                insertAdherent($nom, $prenom, $tel, $email, $taille, $poids, date('Y-m-d H:i:s'), $mdp);
+                insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp);
                 
-            
                 $id = utilisateurExistant($email, hash('sha256', $mdp));
+                $inscription++;
 
                 //sleep(3);
                 //header("Location: inscription.php");
@@ -61,6 +59,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo '<script>showPopup("Veuillez remplir tous les champs obligatoires.", false);</script>';
     }
 }
+
+
+// A CONFIGURER POUR LA PARTIE DES PREFERENCES CULINAIRES
+
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     $selectedCuisines = explode(',', $_POST['selectedCuisines']);
+//     if (!empty($selectedCuisines)) {
+//         echo "Cuisines sélectionnées : " . implode(', ', $selectedCuisines);
+//         // Insérez en base de données ici
+//     } else {
+//         echo "Aucune cuisine sélectionnée.";
+//     }
+// }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/styles/settings.css">
+    <link rel="stylesheet" href="../static/styles/login.css">
     <link rel="stylesheet" href="../static/styles/popup_valid.css">
     <title>Inscription</title>
 </head>
@@ -78,58 +91,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <img src="../static/images/maison noire.png" alt="Retour à l'accueil" style="width: 40px; height: 40px; cursor: pointer;">
     </a>
 
-    <main class="login-container">
-        <form id="registerForm" method="POST">
-            <h1>Inscription</h1>
+    <?php
+    switch ($inscription) {
+        case 1:
+            include "pages/inscription-pref.php";
+            break;
+        default:
+            include "pages/inscription.html";
+            break;
+    }
+    ?>
 
-            <div class="form-group">
-                <label for="name">Nom *</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-
-            <div class="form-group">
-                <label for="prenom">Prénom *</label>
-                <input type="text" id="prenom" name="prenom" required>
-            </div>
-
-            <div class="form-group">
-                <label for="email">eMail *</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Mot de passe *</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="telephone">Téléphone</label>
-                <input type="text" id="telephone" name="telephone">
-            </div>
-
-            <div class="form-group">
-                <label for="taille">Taille (cm)</label>
-                <input type="number" id="taille" name="taille" value=0>
-            </div>
-
-            <div class="form-group">
-                <label for="poids">Poids (kg)</label>
-                <input type="number" id="poids" name="poids" value=0>
-            </div>
-
-            <div class="form-group">
-                <label for="lvl">Niveau</label>
-                <select id="lvl" name="lvl">
-                    <option value="1">debutant</option>
-                    <option value="2">intermediaire</option>
-                    <option value="3">experimenté</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="btnform">
-                <button type="submit">S'inscrire</button>
-            </div>
-        </form>
-    </main>
 </body>
 </html>

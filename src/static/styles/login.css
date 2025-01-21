@@ -46,7 +46,7 @@ label {
     color: #d4d4d4;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
     width: 100%;
     padding: 10px;
     font-size: 16px;
@@ -67,14 +67,14 @@ button {
     font-size: 16px;
     color: rgb(0, 0, 0);
     font-weight: bold;
-    background-color: #ff9300;
+    background-color: #119572;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #d37b00;
+    background-color: #0e785c;
 }
 
 .error-message {

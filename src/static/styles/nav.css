@@ -5,7 +5,7 @@
     align-items: center;
     background-color: black;
     color: white;
-    padding: 10px 20px;
+    padding: 0px 20px;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -106,4 +106,16 @@
     height: 32px;
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.maison {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+.maison p {
+    margin: 0;
+    margin-right: 1em;
+    font-weight: bold;
+    font-size: 200%;
 }

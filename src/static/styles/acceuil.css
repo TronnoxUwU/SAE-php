@@ -78,6 +78,7 @@ img {
 }
 .search-bar .Position {
     margin-left: 2em;
+    margin-right: 1em;
 }
 
 .search-bar input {
@@ -162,6 +163,8 @@ img {
     /* align-items: center; */
     /* text-align: center; */
     overflow: hidden;
+
+    text-decoration: none;
 }
 
 .fiche-resto div {

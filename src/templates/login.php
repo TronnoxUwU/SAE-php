@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     try {
         // Vérification des identifiants via la fonction du modèle
-        $user = isUtilisateurExistant($username, $password);
+        $user = utilisateurExistant($username, $password);
 
         if ($user) {
             // Set session and redirect
@@ -26,21 +26,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user'] = $username;
             $_SESSION['pswrd'] = $password;
 
-            if (isAdmin($username, $password)) {
-                echo "admin";
-                header("Location: admin.php");
-            } else if (isMoniteur($username, $password)) {
-                echo "moniteur";
-                header("Location: admin.php");
-            } else {
-                echo "client";
-                header("Location: infoClient.php");
-            }
+            header("Location: home.php");
+
+            // if (isAdmin($username, $password)) {
+            //     echo "admin";
+            //     header("Location: admin.php");
+            // } else if (isMoniteur($username, $password)) {
+            //     echo "moniteur";
+            //     header("Location: admin.php");
+            // } else {
+            //     echo "client";
+            //     header("Location: infoClient.php");
+            // }
             exit();
         } else {
             $error = "Nom d'utilisateur ou mot de passe incorrect.";
+            echo '<script language="javascript">';
+            echo 'alert("Tu es gay")';
+            echo '</script>';
         }
     } catch (Exception $e) {
+        echo '<script language="javascript">';
+        echo 'alert("Erreur de connexion, veuillez rééssayer plus tard")';
+        echo '</script>';
         die("Erreur : " . $e->getMessage());
     }
 }
