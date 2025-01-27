@@ -4,8 +4,9 @@ create table PERSONNE (
     PrenomPersone VARCHAR(64),
     TelPersone VARCHAR(17),
     MotDePasse VARCHAR(256),
-    Role ENUM('Administrateur', 'Client')
+    Role VARCHAR(64)
 );
+
 
 create table REGION (
     CodeRegion INT PRIMARY KEY,
