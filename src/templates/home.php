@@ -1,6 +1,9 @@
 <?php
 // Fichier : pages/home.php
 include 'navbar.php';
+require_once '../classes/Composant/Restaurant.php';
+
+$resto = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
 ?>
 
 <!DOCTYPE html>
@@ -40,6 +43,8 @@ include 'navbar.php';
             <h2>Restaurants à la une</h2>
             <div class="Affichage-fiches">
                 <?php 
+                $resto->renderFull();
+                $resto->renderSmall();
                 for ($i = 1; $i <= 10; $i++) {
                     echo 
                     '<a href="" class="fiche-resto">
