@@ -228,7 +228,7 @@ class Restaurant{
 
     public function getPremierCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le premier commentaire du restaurant
-        return 'Pas de commentaire pour le moment';
+        return 'Pas de commentaire pour le moment ...................................................................';
     }
 
     public function renderSmall(){
@@ -269,10 +269,25 @@ class Restaurant{
         echo '<h3>'.$this->getNomRestaurant().'</h3>';
         echo '<h3>'.$this->getNbEtoiles().'☆</h3>';
         echo '</span>';
-        echo '<p>'.$this->getDescription().'</p>';
+        if($this->getDescription() != ""){
+            echo '<p>'.$this->getDescription().'</p>';
+        } else {
+            $desc = '<p> Restaurant de ';
+            foreach($this->getCuisines() as $cuisine){
+                $desc .= $cuisine.', ';
+            }
+            $desc = substr($desc, 0, -2);
+            $desc .= '</p>';
+            echo $desc;
+        }
+        echo '<span>';
         echo '<p>'.$this->localiser().'</p>';
-        echo '<p>'.$this->getNbCommentaire().' 🗨️</p>';
+        echo '<text>'.$this->getNbCommentaire().' 🗨️</text>';
+        echo '</span>';
+        echo'<span>';
+        echo '<text>|</text>';
         echo '<text>'.$this->getPremierCommentaire().'</text>';
+        echo '</span>';
         echo '</div>';
         echo '</article>';
         echo '</a>';
