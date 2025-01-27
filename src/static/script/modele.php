@@ -37,8 +37,12 @@ function getUtilisateur($mail, $mdp) {
     return null;
 }
  
-function insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp) {
+function insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap) {
     global $pdo;
     $stmt = $pdo->prepare("INSERT INTO users (name, prenom, telephone, email, codepostal, ville, mdp) Values (?,?,?,?,?,?,?)");
     $stmt->execute([$nom, $prenom, $tel, $email,$cp, $ville, $mdp]);
+}
+
+function ajoutePrefCuisine($email, $cuisine){
+    
 }

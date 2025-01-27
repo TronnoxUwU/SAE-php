@@ -1,3 +1,5 @@
+<script src="../static/script/popup_valid.js"></script>
+
 <?php
 // Start session
 session_start();
