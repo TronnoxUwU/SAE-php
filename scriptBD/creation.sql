@@ -90,6 +90,7 @@ create table NOTER {
     OsmID INT,
     Note INT,
     Commentaire VARCHAR(512),
+    Date DATE,
     PRIMARY KEY (EMailPersonne, OsmID)
 };
 

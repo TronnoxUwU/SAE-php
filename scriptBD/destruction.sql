@@ -1,0 +1,10 @@
+drop table NOTER;
+drop table PREPARER;
+drop table PREFERER;
+drop table FAVORI;
+drop table CUISINE;
+drop table PERSONNE;
+drop table RESTAURANT;
+drop table COMMUNE;
+drop table DEPARTEMENT;
+drop table REGION;
