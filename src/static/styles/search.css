@@ -37,7 +37,7 @@ img {
 
 .Search-section {
     margin: 32px auto;
-    width: 80%;
+    width: 90%;
 }
 
 .Search-section h1 {
@@ -170,4 +170,52 @@ button:hover {
 .date input,
 .time input {
     display: none;
+}
+
+/* Section restaurant et carte */
+
+.Separation-affichage-vertical {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    min-height: 100vh;
+}
+
+.Separation-affichage-vertical iframe {
+    background-color: rgb(184, 236, 209);
+    flex-basis: 35%;
+    flex-grow: 1;
+    margin: 2em;
+}
+.Affichage-restaurants-vertical {
+    /* background-color: white; */
+    flex-basis: 65%;
+    flex-grow: 1;
+    overflow-y: hidden;
+    max-height: 40em;
+    margin-bottom: 80px;
+}
+
+.Affichage-fiches-horizontal {
+    
+    overflow-y: scroll;
+    max-height: 40em;
+    padding-bottom: 12em;
+}
+
+.Affichage-fiches-horizontal article {
+    display: flex;
+    max-height: 10em;
+    background-color: white;
+    margin: 2em;
+    margin-right: 2em;
+    margin-right: 10%;
+
+    border-radius: 10px;
+    box-shadow: 10px 5px 5px black;
+
+}
+
+.Affichage-fiches-horizontal article img {
+    max-width: 10em;
 }
