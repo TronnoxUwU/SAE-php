@@ -107,11 +107,12 @@ include 'navbar.php';
             style="border: 1px;"
             loading="lazy"
             allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBTyD0V18SbGWwRq7sMZ7e4XyGD4DIUxa4
+            referrerpolicy="no-referrer-when-downgrade" 
+            src="https://www.google.com/maps/embed/v1/place?key=
                 &q=<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
                         else echo "Orléans" ?>">
             </iframe>
+            <!-- Penser à remettre et retirer la clé d'API (dispo sur discord)  -->
         </div>
         
     </main>
