@@ -4,9 +4,11 @@ create table PERSONNE (
     PrenomPersone VARCHAR(64),
     TelPersone VARCHAR(17),
     MotDePasse VARCHAR(256),
+    CodeCommune INT,
+    CodeDepartement INT,
+    CodeRegion INT,
     Role VARCHAR(64)
 );
-
 
 create table REGION (
     CodeRegion INT PRIMARY KEY,
@@ -32,6 +34,8 @@ create table COMMUNE (
 
 ALTER TABLE COMMUNE ADD FOREIGN KEY (CodeDepartement,CodeRegion) REFERENCES DEPARTEMENT(CodeDepartement,CodeRegion);
 
+ALTER TABLE PERSONNE ADD FOREIGN KEY (CodeCommune,CodeDepartement,CodeRegion) REFERENCES COMMUNE(CodeCommune,CodeDepartement,CodeRegion);
+
 create table RESTAURANT (
     OsmID INT PRIMARY KEY,
     Longitude FLOAT,
@@ -40,6 +44,7 @@ create table RESTAURANT (
     CodeDepartement INT,
     CodeRegion INT,
     NomRestaurant VARCHAR(128),
+    Description VARCHAR(512),
     SiteWeb VARCHAR(128),
     Facebook VARCHAR(128),
     TelRestaurant VARCHAR(17),
