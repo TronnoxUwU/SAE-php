@@ -32,7 +32,7 @@
             <input type="text" id="ville" name="ville" placeholder=Orléans>
         </div>
 
-        <div class="form-group">
+        <div class="form-group choix-regional">
             <label for="region-select">Département/Région</label>
             <select id="region-select" name="region-departement">
                 <option value="">Sélectionner un lieu</option>

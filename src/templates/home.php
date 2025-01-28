@@ -88,7 +88,5 @@ include 'navbar.php';
         include('footer.php');
     ?>
 
-    <script src="../static/scripts/language.js"></script>
-    <script src="../static/scripts/accessibility.js"></script>
 </body>
 </html>

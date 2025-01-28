@@ -27,5 +27,3 @@
     </ul>
 </div>
 
-<script src="../static/scripts/language.js"></script>
-

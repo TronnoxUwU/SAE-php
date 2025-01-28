@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) 
         <div class="form-actions">
             <input type="hidden" name="selectedCuisines" id="selectedCuisines">
             <button type="submit" >Valider vos préférence</button>
-            <button class="skip-pref" name="partie-pref" type="button" onclick="location.replace('home.php')">Ignorer pour l'instant</button>
+            <button class="skip-pref" name="partie-pref" type="button" onclick="location.href='home.php';">Ignorer pour l'instant</button>
         </div>
 
 

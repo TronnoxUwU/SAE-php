@@ -6,7 +6,7 @@ session_start();
 
 require_once "../static/script/modele.php";
 
-$_SESSION['inscription'] = 0;
+if (!isset($_SESSION['inscription'])){$_SESSION['inscription'] = 0;};
 
 
 // Vérifier si le formulaire a été soumis
@@ -36,12 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
                 insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap);
                 
                 $id = utilisateurExistant($email, hash('sha256', $mdp));
-                $inscription++;
+                $_SESSION['inscription']++;
 
-                //sleep(3);
-                //header("Location: inscription.php");
                 echo '<p></p>';
                 echo '<script>showPopup("Inscription réussie !", true);</script>';
+                sleep(3);
+                header("Location: inscription.php");
                 //header("Location: login.php");
                 //exit();
             }
@@ -65,13 +65,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
 
 // A CONFIGURER POUR LA PARTIE DES PREFERENCES CULINAIRES
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-pref'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) {
     $selectedCuisines = explode(',', $_POST['selectedCuisines']);
     if (!empty($selectedCuisines)) {
         echo "Cuisines sélectionnées : " . implode(', ', $selectedCuisines);
         // Insérez en base de données ici
+
+
+        $_SESSION['inscription']--;
+        echo '<p></p>';
+        echo '<script>showPopup("Inscription cuisines réussies!", true);</script>';
+        sleep(3);
+        header("Location: login.php");
     } else {
         echo "Aucune cuisine sélectionnée.";
+        echo '<p></p>';
+        echo '<script>showPopup("Echec ajout cuisine !", false);</script>';
     }
 }
 

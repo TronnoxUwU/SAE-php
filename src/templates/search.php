@@ -21,7 +21,14 @@ include 'navbar.php';
     <section class="Search home">
         <div class="Search-section">
             <div class="islam">
-                <h1>Les meilleurs restaurants pour <span>“j’ai faim et pas beaucoup d’argent”</span></h1>
+                <h1>Les meilleurs restaurants
+                    <span><?php 
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto'])) {echo "pour “".$_POST['resto']."”";}?>
+                    </span> à
+                    <?php 
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
+                    else echo "Orléans"?>
+                </h1>
                 <div><img src="../static/images/logo-pony.png" alt="search" class="search-pos-image"></div>
             </div>
                     

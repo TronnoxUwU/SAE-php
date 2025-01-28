@@ -11,10 +11,12 @@ const cuisineBlocks = document.querySelectorAll('.cuisine-block');
                 if (block.classList.contains('selected')) {
                     // Désélectionner
                     block.classList.remove('selected');
+                    console.log("à retiré cuisine : "+cuisine);
                     selectedCuisines = selectedCuisines.filter(item => item !== cuisine);
                 } else {
                     // Sélectionner
                     block.classList.add('selected');
+                    console.log("à ajouté cuisine : "+cuisine);
                     selectedCuisines.push(cuisine);
                 }
 

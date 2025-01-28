@@ -9,7 +9,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     padding: 2em;
 }
 
@@ -97,4 +97,13 @@ button:hover {
 .login-container p {
     text-decoration: none;
     color: white;
+}
+
+.choix-regional {
+    display: flex;
+    flex-direction: column;
+}
+#region-select  {
+    font-size: 16px;
+    padding: 10px;
 }
