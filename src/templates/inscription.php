@@ -6,6 +6,8 @@ session_start();
 
 require_once "../static/script/modele.php";
 
+$_SESSION['inscription'] = 0;
+
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
@@ -14,8 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
     $prenom = $_POST['prenom'] ?? null;
     $email = $_POST['email'] ?? null;
     $mdp = $_POST['password'] ?? null;
-    (int)$cp = $_POST['cp'] ?? 45000;
     $ville = $_POST['ville'] ?? "orleans";
+    $departement = $_POST['departement'] ?? "Loiret";
+    $region = $_POST['Region'] ?? "Centre-val-de-Loire";
     $tel = $_POST['telephone'] ?? "+33";
     $handicap = $_POST['handicap'] ?? false;
 
@@ -96,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-pref'])) {
             include "pages/inscription-pref.php";
             break;
         default:
-            include "pages/inscription.html";
+            include "pages/inscription.php";
             break;
     }
     ?>

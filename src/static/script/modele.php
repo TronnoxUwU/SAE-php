@@ -1,4 +1,6 @@
 <?php
+
+
 // $dsn = "mysql:dbname="."sae_mlp".";host="."127.0.0.1";
 // try{
 //     $connexion = new PDO($dsn, "root", "clermont");
@@ -45,4 +47,16 @@ function insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap)
 
 function ajoutePrefCuisine($email, $cuisine){
     
+}
+
+function getRegion($ville) {
+    // Exemple de simulation de données
+    $data = [
+        "Moret" => [[null, "Pensylvanie"], ["Loir-et-Cher", "Centre-Val de Loire"]],
+        "Orleans" => [["Loiret", "Centre-Val de Loire"]],
+        "Nates" => [["Loire-Atlantique", "Pays de la Loire"]],
+        "Lille" => [["Nord", "Hauts-de-France"]]
+    ];
+
+    return $data[$ville] ?? [];
 }

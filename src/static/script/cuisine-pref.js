@@ -18,7 +18,7 @@ const cuisineBlocks = document.querySelectorAll('.cuisine-block');
                     selectedCuisines.push(cuisine);
                 }
 
-                // Mettre à jour l'input caché
+                // Mettre à jour les cuisines selectionnées
                 selectedCuisinesInput.value = selectedCuisines.join(',');
             });
         });

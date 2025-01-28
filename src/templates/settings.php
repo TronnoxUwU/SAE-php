@@ -27,16 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? null;
     $mdp_actuel = $_POST['mdp'] ?? null;
     $mdp_nouveau = $_POST['NewMdp'] ?? null;
-    $taille = $_POST['taille'] ?? null;
-    $poids = $_POST['poids'] ?? null;
+    $ville = $_POST['ville'] ?? null;
+    $region = $_POST['region'] ?? null;
     $telephone = $_POST['telephone'] ?? null;
-    $niveau = $_POST['lvl'] ?? null;
 
     if ($mdp_actuel && $email) {
         if (is_null($mdp_nouveau) || $mdp_nouveau === "") {
             try {
-                updateUtilisateur($email, $mdp_actuel, $nom, $prenom, $telephone, $taille, $poids, null);
-                if (isAdherent($user['mail'], $_SESSION['pswrd'])) {if ($niveau != getLvl($email)){assignerNiveau(utilisateurExistant($email, $mdp_actuel), $niveau, date('Y-m-d H:i:s'));}}
+                //updateUtilisateur($email, $mdp_actuel, $nom, $prenom, $ville, $region, $poids, null);
                 
                 echo '<p></p>';
                 echo '<script>showPopup("Données enregistrées avec succès !", true);</script>';
@@ -50,9 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo '<script>showPopup("Veuillez choisir un mot de passe différent.", false);</script>';
             } else {
                 try {
-                    updateUtilisateur($email, $mdp_actuel, $nom, $prenom, $telephone, $taille, $poids, $mdp_nouveau);
-                    if (isAdherent($user['mail'], $_SESSION['pswrd'])) {if ($niveau != getLvl($email)){assignerNiveau(utilisateurExistant($email, $mdp_actuel), $niveau, date('Y-m-d H:i:s'));}}
+                    
+                    //updateUtilisateur($email, $mdp_actuel, $nom, $prenom, $telephone, $ville, $region, $mdp_nouveau);
                     $_SESSION['pswrd'] = $mdp_nouveau;
+                    
                     echo '<p></p>';
                     echo '<script>showPopup("Données enregistrées avec succès !", true);</script>';
                 } catch (Exception $e) {
@@ -118,25 +117,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group">
-                <label for="taille">Taille</label>
-                <input type="number" id="taille" name="taille" value="<?php echo htmlspecialchars($user['taille']); ?>">
+                <label for="ville">Rille</label>
+                <input type="number" id="ville" name="ville" value="<?php echo htmlspecialchars($user['ville']); ?>">
             </div>
 
             <div class="form-group">
-                <label for="poids">Poids</label>
-                <input type="number" id="poids" name="poids" value="<?php echo htmlspecialchars($user['poids']); ?>">
+                <label for="region">Région</label>
+                <input type="number" id="region" name="region" value="<?php echo htmlspecialchars($user['region']); ?>">
             </div>
-
-            <?php if (isAdherent($user['mail'], $_SESSION['pswrd'])): ?>
-                <div class="form-group">
-                    <label for="lvl">Nouveau niveau atteint ?</label>
-                    <select id="lvl" name="lvl">
-                        <option value="1" <?php echo getLvl($user['idPers']) == 1 ? 'selected' : ''; ?>>Débutant</option>
-                        <option value="2" <?php echo getLvl($user['idPers']) == 2 ? 'selected' : ''; ?>>Intermédiaire</option>
-                        <option value="3" <?php echo getLvl($user['idPers']) == 3 ? 'selected' : ''; ?>>Expérimenté</option>
-                    </select>
-                </div>
-            <?php endif; ?>
 
             <div class="form-group" id="btnform">
                 <button type="submit">Enregistrer</button>

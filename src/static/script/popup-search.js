@@ -1,5 +1,3 @@
-
-// Sélecteurs
 const dateLabel = document.querySelector('.date-label');
 const timeLabel = document.querySelector('.time-label');
 const dateInput = document.querySelector('#date');
@@ -10,20 +8,20 @@ const popupDate = document.querySelector('#popup-date');
 const popupTime = document.querySelector('#popup-time');
 const saveButton = document.querySelector('#saveDateTime');
 
-// Ouvrir le modal
+// Ouvre modal
 dateLabel.addEventListener('click', () => {
-    popupDate.value = dateInput.value; // Pré-remplir avec la date actuelle
-    popupTime.value = timeInput.value; // Pré-remplir avec l'heure actuelle
+    popupDate.value = dateInput.value; // date actuelle
+    popupTime.value = timeInput.value; // heure actuelle
     modal.style.display = 'block';
 });
 
 timeLabel.addEventListener('click', () => {
-    popupDate.value = dateInput.value; // Pré-remplir avec la date actuelle
-    popupTime.value = timeInput.value; // Pré-remplir avec l'heure actuelle
+    popupDate.value = dateInput.value; // date actuelle
+    popupTime.value = timeInput.value; // heure actuelle
     modal.style.display = 'block';
 });
 
-// Fermer le modal
+// ferme modal
 closeModal.addEventListener('click', () => {
     modal.style.display = 'none';
 });
@@ -34,24 +32,23 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// Sauvegarder les nouvelles valeurs
+// save
 saveButton.addEventListener('click', () => {
     const newDate = popupDate.value; // Récupère la date du sélecteur
     const newTime = popupTime.value; // Récupère l'heure du sélecteur
 
     if (newDate) {
-        // Formate la date au format désiré
         const dateObj = new Date(newDate);
-        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }; // Format "Lundi 27 Janvier 2025"
         const formattedDate = dateObj.toLocaleDateString('fr-FR', options);
 
-        // Met à jour le champ caché et le label visible
+        // update label date
         dateInput.value = newDate; 
-        dateLabel.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1); // Majuscule sur le premier caractère
+        dateLabel.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
     }
 
     if (newTime) {
-        // Met à jour le champ caché et le label visible pour l'heure
+        // update label heure
         timeInput.value = newTime;
         timeLabel.textContent = `${newTime} h`;
     }
