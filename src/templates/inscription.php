@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
                 $id = utilisateurExistant($email, hash('sha256', $mdp));
                 $_SESSION['inscription']++;
 
+
                 echo '<p></p>';
                 echo '<script>showPopup("Inscription réussie !", true);</script>';
                 sleep(3);
@@ -80,7 +81,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) 
     } else {
         echo "Aucune cuisine sélectionnée.";
         echo '<p></p>';
-        echo '<script>showPopup("Echec ajout cuisine !", false);</script>';
+        echo '<script>showPopup("Echec ajout cuisines !", false);</script>';
+        sleep(3);
+        header("Location: login.php");
     }
 }
 

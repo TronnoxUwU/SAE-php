@@ -19,8 +19,8 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 function utilisateurExistant($mail, $mdp) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail AND mdp = :mdp");
-    $stmt->execute(array('mail' => $mail, 'mdp' => $mdp));
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail");
+    $stmt->execute(array('mail' => $mail));
     $result = $stmt->fetchAll();
     if ($result != null){
         return true;
@@ -28,10 +28,10 @@ function utilisateurExistant($mail, $mdp) {
     return false;
 }
 
-function getUtilisateur($mail, $mdp) {
+function getUtilisateur($mail) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail AND mdp = :mdp");
-    $stmt->execute(array('mail' => $mail, 'mdp' => $mdp));
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail");
+    $stmt->execute(array('mail' => $mail));
     $result = $stmt->fetchAll();
     if ($result){
         return $result;

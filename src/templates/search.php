@@ -1,6 +1,11 @@
 <?php
 // Fichier : pages/home.php
 include 'navbar.php';
+include_once '../static/script/getKey.php';
+
+$API = get_CSV_Key("MAPS");
+var_dump($API);
+
 ?>
 
 
@@ -108,8 +113,8 @@ include 'navbar.php';
             loading="lazy"
             allowfullscreen
             referrerpolicy="no-referrer-when-downgrade" 
-            src="https://www.google.com/maps/embed/v1/place?key=
-                &q=<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
+            src="https://www.google.com/maps/embed/v1/place?key=<?php echo $API; ?>
+             &q=<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
                         else echo "Orléans" ?>">
             </iframe>
             <!-- Penser à remettre et retirer la clé d'API (dispo sur discord)  -->

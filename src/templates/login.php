@@ -25,8 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user) {
             // Set session and redirect
             $_SESSION['loggedin'] = true;
-            $_SESSION['user'] = $username;
-            $_SESSION['pswrd'] = $password;
+            $_SESSION['mail'] = $username;
+            $_SESSION['nom'] = "REQUESTE A FAIRE DANS LA BD";
+            $_SESSION['prenom'] = "REQUESTE A FAIRE DANS LA BD";
 
             header("Location: home.php");
 

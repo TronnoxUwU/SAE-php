@@ -1,5 +1,7 @@
 <?php
 // Fichier : pages/home.php
+session_start();
+
 include 'navbar.php';
 ?>
 
