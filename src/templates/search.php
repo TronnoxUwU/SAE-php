@@ -4,8 +4,11 @@ include 'navbar.php';
 include_once '../static/script/getKey.php';
 
 $API = get_CSV_Key("MAPS");
-var_dump($API);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_POST['position'])) {
+    $resto = $_POST['resto'];
+    $position = $_POST['position'];
+}
 ?>
 
 
@@ -28,10 +31,10 @@ var_dump($API);
                 <div class="islam">
                     <h1>Les meilleurs restaurants
                         <span><?php 
-                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto'])) {echo "pour “".$_POST['resto']."”";}?>
+                        if (isset($resto)) {echo "pour “".$resto."”";}?>
                         </span> à
                         <?php 
-                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
+                        if (isset($position)) {echo $position;}
                         else echo "Orléans"?>
                     </h1>
                     <div><img src="../static/images/logo-pony.png" alt="search" class="search-pos-image"></div>
@@ -43,11 +46,11 @@ var_dump($API);
                             <!-- <img src="../static/images/search.png" alt="search" class="search-pos-image"> -->
                             <button type="submit">Recherche</button>
                             <div class="petite-barre"></div>
-                            <input type="text" id="resto" name="resto" placeholder="Cherchez un nom de restaurant ou de cuisine" required>
+                            <input type="text" id="resto" name="resto" placeholder="Cherchez un nom de restaurant ou de cuisine" <?php if (isset($resto)) {echo 'value="'.$resto.'"';}?> required>
                         </div>
                         <div class="Position">
                             <img src="../static/images/maps.png" alt="search" class="maps">
-                            <input type="text" id="resto-pos" name="position" value="Orléans" required>
+                            <input type="text" id="resto-pos" name="position" <?php if (isset($position)) {echo 'value="'.$position.'"';}?> required>
                         </div>
                     </div>
                     <div class="search-bar right">

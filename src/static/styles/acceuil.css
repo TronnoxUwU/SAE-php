@@ -148,9 +148,17 @@ button:hover {
 
 /* ------------------------------------------------------ */
 
-.Affichage-restaurants {
+.Affichage-restaurants, .Affichage-commentaires {
     padding: 40px 20px;
     background-color: #ffffff;
+}
+.Affichage-commentaires{
+    overflow-y: hidden;
+}
+.Affichage-fiches-commentaires{
+    max-height: 40em;
+    max-width: 60%;
+    overflow-y: scroll;
 }
 
 .Affichage-fiches {
