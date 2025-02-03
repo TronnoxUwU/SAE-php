@@ -55,3 +55,25 @@ section {
 section:last-of-type {
     padding-bottom: 6em;
 }
+
+.fiche-commentaire {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.5);
+}
+.fiche-commentaire:not(:first-child) article{
+    padding: 1em 0;
+    border-top: solid;
+    border-width: 2px;
+    margin-right: 1em;
+}
+.fiche-commentaire article div:first-child {
+    display: flex;
+}
+.fiche-commentaire article div:first-child h3:last-child{
+    margin-left: 2em;
+}
+
+
+.fiche-commentaire article div:last-child h4{
+    margin-top: 0;
+}

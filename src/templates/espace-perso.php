@@ -2,9 +2,19 @@
 // Fichier : pages/home.php
 session_start();
 
-include_once '';
+include_once "../static/script/modele.php";
 
 include 'navbar.php';
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Récupérer les cuisines sélectionnées
+    $selectedCuisines = explode(',', $_POST['selectedCuisines']);
+    
+    // Appeler la fonction pour ajouter les cuisines préférées de l'utilisateur
+    ajoutePrefCuisine($_SESSION['mail'], $selectedCuisines);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -24,30 +34,41 @@ include 'navbar.php';
     <main class="contenu-principal">
         <h1>Vos informations de compte</h1>
         <section class="info-perso">
-            <?php echo '<h2>'.$_SESSION['nom'].' '.$_SESSION['prenom'].'</h2>'?>
-            <p>Utilisateur enregistré</p> 
-            <!-- A changer par le rôle de l'utilisateur -->
-
-
-            <div class="cuisines-pref">
+            <?php 
+                echo '<h2>' . $_SESSION['nom'] . ' ' . $_SESSION['prenom'] . '</h2>';
+                echo '<p>Utilisateur enregistré</p>';
+                
+                // Récupérer les cuisines préférées de l'utilisateur via la fonction getPrefCuisine
+                $userCuisines = getPrefCuisine($_SESSION['mail']);
+            ?>
+            <form class="cuisines-pref" method="POST">
                 <h2>Vos préférences culinaires !</h2>
                 <div class="cuisine-container">
                     <!-- Les blocs de cuisine -->
                     <?php 
                         $cuisines = [
                             "Italienne", "Chinoise", "Mexicaine", 
-                            "Japonaise", "Française", "Indienne",
-                            "Thaïlandaise", "Marocaine", "Libanaise", 
-                            "Américaine"
+                            "Japonaise", "Francaise", "Indienne",
+                            "Thailandaise", "Marocaine", "Libanaise", 
+                            "Americaine"
                         ];
 
-                        foreach ($cuisines as $index => $cuisine) {
-                            echo '<div class="cuisine-block" data-value="'.$cuisine.'">'.$cuisine.'</div>';
+                        foreach ($cuisines as $cuisine) {
+                            // Vérifier si cette cuisine est sélectionnée par l'utilisateur
+                            $isSelected = in_array($cuisine, $userCuisines) ? 'selected' : '';
+                            echo '<div class="cuisine-block ' . $isSelected . '" data-value="' . $cuisine . '">' . $cuisine . '</div>';
                         }
                     ?>
                 </div>
-            </div>
+                <div class="form-actions">
+                    <input type="hidden" name="selectedCuisines" id="selectedCuisines">
+                    <button type="submit">Enregistrer vos préférences</button>
+                </div>
+
+                <script src="../static/script/cuisine-pref.js"></script>
+            </form>
         </section>
+
 
 
 
@@ -84,8 +105,8 @@ include 'navbar.php';
                     '<a href="" class="fiche-commentaire">
                         <article >
                             <div>
-                                <h3>Scandale !!!</h3>
                                 <h3>1☆</h3>
+                                <h3>Scandale !!!</h3>
                             </div>
                             <div>
                                 <h4>Food n\'go</h4>

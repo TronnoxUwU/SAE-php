@@ -49,6 +49,10 @@ function ajoutePrefCuisine($email, $cuisine){
     
 }
 
+function getPrefCuisine($email){
+    return array("Chinoise","Americaine");
+}
+
 function getRegion($ville) {
     // Exemple de simulation de données
     $data = [
