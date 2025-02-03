@@ -226,6 +226,11 @@ class Restaurant{
         return 0;
     }
 
+    public function getImage(){
+        # A remplacer par un appelle de fonction qui renvoie l'image du restaurant
+        return '<img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">';
+    }
+
     public function getPremierCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le premier commentaire du restaurant
         return 'Pas de commentaire pour le moment, ceci est un long commentaire pour tester la mise en page de la fiche restaurant';
@@ -235,7 +240,7 @@ class Restaurant{
         echo '<a href="" class="fiche-resto">';
         echo '<article>';
         # A remplacer par un appelle de fonction qui renvoie l'image du restaurant
-        echo '<img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">';
+        echo $this->getImage();
         #
         echo '<div>';
         echo '<span>';
@@ -262,7 +267,7 @@ class Restaurant{
         echo '<a href="" class="grande-fiche-resto">';
         echo '<article>';
         # A remplacer par un appelle de fonction qui renvoie l'image du restaurant
-        echo '<img src="../static/images/noequestrians.png" alt="Balade en forêt" class="grande-fiche-resto-image">';
+        echo $this->getImage();
         #
         echo '<div>';
         echo '<span>';
