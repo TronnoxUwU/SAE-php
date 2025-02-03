@@ -4,8 +4,10 @@ session_start();
 
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
+require_once "../static/script/modele.php";
 
-$resto = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+$restoBEST = getBestResto();
+$restoPOP = getPopResto();
 ?>
 
 <!DOCTYPE html>
@@ -48,21 +50,22 @@ $resto = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1
             <h2>Restaurants à la une</h2>
             <div class="Affichage-fiches">
                 <?php 
-                $resto->renderSmall();
-                for ($i = 1; $i <= 10; $i++) {
-                    echo 
-                    '<a href="" class="fiche-resto">
-                        <article >
-                            <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                            <div>
-                                <span>
-                                    <h3>Beast Burger</h3>
-                                    <h3>4.5☆</h3>
-                                </span>
-                                <p>Mr. Beaaaaaaaast!</p>
-                            </div>
-                        </article>
-                    </a>';
+                foreach ($restoBEST as $resto) {
+                    $resto->renderSmall();
+
+                    // echo 
+                    // '<a href="" class="fiche-resto">
+                    //     <article >
+                    //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
+                    //         <div>
+                    //             <span>
+                    //                 <h3>Beast Burger</h3>
+                    //                 <h3>4.5☆</h3>
+                    //             </span>
+                    //             <p>Mr. Beaaaaaaaast!</p>
+                    //         </div>
+                    //     </article>
+                    // </a>';
                 }
                 ?>
             </div>
@@ -72,21 +75,21 @@ $resto = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1
             <h2>Restaurants les plus prisés</h2>
             <div class="Affichage-fiches">
                 <?php 
-                $resto->renderSmall();
-                for ($i = 1; $i <= 10; $i++) {
-                    echo 
-                    '<a href="" class="fiche-resto">
-                        <article >
-                            <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                            <div>
-                                <span>
-                                    <h3>Food n`go</h3>
-                                    <h3>2.7☆</h3>
-                                </span>
-                                <p>La nourriture lente du vietnam</p>
-                            </div>
-                        </article>
-                    </a>';
+                foreach ($restoPOP as $resto) {
+                    $resto->renderSmall();
+                    // echo 
+                    // '<a href="" class="fiche-resto">
+                    //     <article >
+                    //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
+                    //         <div>
+                    //             <span>
+                    //                 <h3>Food n`go</h3>
+                    //                 <h3>2.7☆</h3>
+                    //             </span>
+                    //             <p>La nourriture lente du vietnam</p>
+                    //         </div>
+                    //     </article>
+                    // </a>';
                 }
                 ?>
             </div>

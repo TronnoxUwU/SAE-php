@@ -64,3 +64,24 @@ function getRegion($ville) {
 
     return $data[$ville] ?? [];
 }
+
+function getBestResto(){
+    $resto = new Restaurant(
+        1, "test BEST RESTO", "", "Centre-Val-De-Loire", "Loiret", "Orléans",
+        "1.9052942", "47.902964", "https://test.com", "@testbest",
+        "06 06 06 06 69", 3.4, 42, true, false, true, true, false,
+        "12:00-14:00,19:00-22:00", ["Française", "Italienne"]
+    );
+
+    return array_fill(0, 10, $resto);
+}
+function getPopResto(){
+    $resto = new Restaurant(
+        1, "test POPULAR", "", "Centre-Val-De-Loire", "Loiret", "Orléans",
+        "1.9052942", "47.902964", "https://test.com", "@testPOP",
+        "06 06 06 69 06", 3.4, 42, true, false, true, true, false,
+        "12:00-14:00,19:00-22:00", ["Chinoise"]
+    );
+
+    return array_fill(0, 10, $resto);
+}
