@@ -14,6 +14,8 @@ $resto = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1
     <title>Accueil</title>
     <link rel="stylesheet" href="../static/styles/home.css">
     <link rel="stylesheet" href="../static/styles/acceuil.css">
+    <link rel="stylesheet" href="../static/styles/petite_fiche.css">
+    <link rel="stylesheet" href="../static/styles/grande_fiche.css">
 </head>
 <body>
     <header></header>

@@ -228,7 +228,7 @@ class Restaurant{
 
     public function getPremierCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le premier commentaire du restaurant
-        return 'Pas de commentaire pour le moment ...................................................................';
+        return 'Pas de commentaire pour le moment, ceci est un long commentaire pour tester la mise en page de la fiche restaurant';
     }
 
     public function renderSmall(){
@@ -284,9 +284,8 @@ class Restaurant{
         echo '<p>'.$this->localiser().'</p>';
         echo '<text>'.$this->getNbCommentaire().' 🗨️</text>';
         echo '</span>';
-        echo'<span>';
-        echo '<text>|</text>';
-        echo '<text>'.$this->getPremierCommentaire().'</text>';
+        echo '<span>';
+        echo '<text class="commentaire">'.$this->getPremierCommentaire().'</text>';
         echo '</span>';
         echo '</div>';
         echo '</article>';
