@@ -2,13 +2,21 @@
 // Fichier : pages/home.php
 include 'navbar.php';
 include_once '../static/script/getKey.php';
+require_once '../classes/Composant/Restaurant.php';
 
 $API = get_CSV_Key("MAPS");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_POST['position'])) {
     $resto = $_POST['resto'];
     $position = $_POST['position'];
+
+    if (isset($_POST['date']) && isset($_POST['time']))
+        {$date = $_POST['date']; $time = $_POST['time'];}
+    else
+        {$date = date('Y-m-d'); $time = "18:00";};
 }
+
+$restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
 ?>
 
 
@@ -21,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
     <link rel="stylesheet" href="../static/styles/home.css">
     <link rel="stylesheet" href="../static/styles/search.css">
     <link rel="stylesheet" href="../static/styles/popup-search.css">
+    <link rel="stylesheet" href="../static/styles/grande_fiche.css">
 </head>
 <body>
     <header></header>
@@ -55,19 +64,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
                     </div>
                     <div class="search-bar right">
                         <div class="date">
-                            <label for="date" class="date-label">Dimanche 26 janvier 2025</label>
-                            <input type="date" id="date" name="date" value="2025-01-26">
+                            <label for="date" class="date-label">
+                                <?php 
+                                    setlocale(LC_TIME, 'fr_FR.utf8', 'fra'); // Pour afficher la date en français
+                                    echo utf8_encode(strftime('%A %d %B %Y', strtotime($date))); 
+                                ?>
+                            </label>
+                            <input type="date" id="date" name="date" value="<?php echo $date; ?>">
                         </div>
+
                         <div class="time">
-                            <label for="time" class="time-label">18:00 h</label>
-                            <input type="time" id="time" name="time" value="18:00">
+                            <label for="time" class="time-label"><?php echo $time?> h</label>
+                            <input type="time" id="time" name="time" value=<?php echo $time?>>
                         </div>
                     </div>
                 </form>
             </div>
         </section>
 
-        <!-- Popup Modal -->
+        <!-- Popup date/heure -->
         <div id="dateTimeModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -87,23 +102,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
 
         <div class="Separation-affichage-vertical">
             <section class="Affichage-restaurants-vertical">
-                <h2>Restaurants à la une</h2>
+                <h2>D'après votre recherche :</h2>
                 <div class="Affichage-fiches-horizontal">
                     <?php 
                     for ($i = 1; $i <= 10; $i++) {
-                        echo 
-                        '<a href="" class="fiche-resto">
-                            <article >
-                                <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                                <div>
-                                    <span>
-                                        <h3>Beast Burger</h3>
-                                        <h3>4.5☆</h3>
-                                    </span>
-                                    <p>Mr. Beaaaaaaaast!</p>
-                                </div>
-                            </article>
-                        </a>';
+                        $restocarte->renderFull();
+                        // echo 
+                        // '<a href="" class="fiche-resto">
+                        //     <article >
+                        //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
+                        //         <div>
+                        //             <span>
+                        //                 <h3>Beast Burger</h3>
+                        //                 <h3>4.5☆</h3>
+                        //             </span>
+                        //             <p>Mr. Beaaaaaaaast!</p>
+                        //         </div>
+                        //     </article>
+                        // </a>';
                     }
                     ?>
                 </div>
@@ -111,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
 
             <iframe
             width="400"
-            height="400"
+            height="768"
             style="border: 1px;"
             loading="lazy"
             allowfullscreen
