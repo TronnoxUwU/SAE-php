@@ -45,7 +45,7 @@ class Restaurant{
         $this->cuisines = $cuisines;
     }
 
-    public function getOsMId(){
+    public function getOsmId(){
         return $this->osmId;
     }
 
@@ -125,7 +125,7 @@ class Restaurant{
         return $this->cuisines;
     }
 
-    public function setOsMId($osmId){
+    public function setOsmId($osmId){
         $this->osmId = $osmId;
     }
 
@@ -231,15 +231,21 @@ class Restaurant{
         return 'Pas de commentaire pour le moment, ceci est un long commentaire pour tester la mise en page de la fiche restaurant';
     }
 
-    public function getImage(){
+    public function getImagePrincipal(){
+        # A remplacer par un appelle de fonction qui renvoie l'image principale du restaurant
         return '../static/images/noequestrians.png" alt="Balade en forêt';
     }
 
+    public function getImages(){
+        # A remplacer par un appelle de fonction qui renvoie les images du restaurant
+        return ['../static/images/noequestrians.png" alt="Balade en forêt', '../static/images/noequestrians.png" alt="Balade en forêt'];
+    }
+
     public function renderSmall(){
-        echo '<a href="" class="fiche-resto">';
+        echo '<a href="pageRestaurant.php?id="'.$this->getOsmId().'" class="fiche-resto">';
         echo '<article>';
         # A remplacer par un appelle de fonction qui renvoie l'image du restaurant
-        echo '<img src="'.$this->getImage().'" class="fiche-resto-image">';
+        echo '<img src="'.$this->getImagePrincipal().'" class="fiche-resto-image">';
         #
         echo '<div>';
         echo '<span>';
@@ -263,10 +269,10 @@ class Restaurant{
     }
 
     public function renderFull(){
-        echo '<a href="" class="grande-fiche-resto">';
+        echo '<a href="pageRestaurant.php?id="'.$this->getOsmId().'" class="grande-fiche-resto">';
         echo '<article>';
         # A remplacer par un appelle de fonction qui renvoie l'image du restaurant
-        echo '<img src="'.$this->getImage().'" class="grande-fiche-resto-image">';
+        echo '<img src="'.$this->getImagePrincipal().'" class="grande-fiche-resto-image">';
         #
         echo '<div>';
         echo '<span>';
