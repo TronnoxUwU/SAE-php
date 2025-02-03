@@ -50,8 +50,6 @@
         <div class="footer-logos">
             <img src="logo_universite.png" alt="Université d'Orléans">
             <img src="logo_iuto.png" alt="IUT Informatique">
-            <img src="logo_club.png" alt="Club">
-            <img src="logo_ffe.png" alt="FFE">
         </div>
     </footer>
 </body>

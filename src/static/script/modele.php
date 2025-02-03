@@ -1,4 +1,6 @@
 <?php
+
+
 // $dsn = "mysql:dbname="."sae_mlp".";host="."127.0.0.1";
 // try{
 //     $connexion = new PDO($dsn, "root", "clermont");
@@ -17,8 +19,8 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 function utilisateurExistant($mail, $mdp) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail AND mdp = :mdp");
-    $stmt->execute(array('mail' => $mail, 'mdp' => $mdp));
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail");
+    $stmt->execute(array('mail' => $mail));
     $result = $stmt->fetchAll();
     if ($result != null){
         return true;
@@ -26,10 +28,10 @@ function utilisateurExistant($mail, $mdp) {
     return false;
 }
 
-function getUtilisateur($mail, $mdp) {
+function getUtilisateur($mail) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail AND mdp = :mdp");
-    $stmt->execute(array('mail' => $mail, 'mdp' => $mdp));
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail");
+    $stmt->execute(array('mail' => $mail));
     $result = $stmt->fetchAll();
     if ($result){
         return $result;
@@ -37,8 +39,28 @@ function getUtilisateur($mail, $mdp) {
     return null;
 }
  
-function insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp) {
+function insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap) {
     global $pdo;
     $stmt = $pdo->prepare("INSERT INTO users (name, prenom, telephone, email, codepostal, ville, mdp) Values (?,?,?,?,?,?,?)");
     $stmt->execute([$nom, $prenom, $tel, $email,$cp, $ville, $mdp]);
+}
+
+function ajoutePrefCuisine($email, $cuisine){
+    
+}
+
+function getPrefCuisine($email){
+    return array("Chinoise","Americaine");
+}
+
+function getRegion($ville) {
+    // Exemple de simulation de données
+    $data = [
+        "Moret" => [[null, "Pensylvanie"], ["Loir-et-Cher", "Centre-Val de Loire"]],
+        "Orleans" => [["Loiret", "Centre-Val de Loire"]],
+        "Nates" => [["Loire-Atlantique", "Pays de la Loire"]],
+        "Lille" => [["Nord", "Hauts-de-France"]]
+    ];
+
+    return $data[$ville] ?? [];
 }
