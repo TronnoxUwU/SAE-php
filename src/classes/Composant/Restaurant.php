@@ -302,4 +302,51 @@ class Restaurant{
         echo '</a>';
 
     }
+
+    public function renderMax(){
+        echo '<article>';
+                echo '<img src="'.$this->getImagePrincipal().'" class="resto-image">';
+                echo '<div>';
+                    echo '<span>';
+                        echo '<a href="'.$this->getSiteWeb().'">';
+                        echo '<h3>'.$this->getNomRestaurant().'</h3>';
+                        echo '</a>';
+                        #echo le potit ♡
+                    echo '</span>';
+                    if($this->getDescription() != ""){
+                        echo '<p>'.$this->getDescription().'</p>';
+                    } else {
+                        $desc = '<p> Restaurant de ';
+                        foreach($this->getCuisines() as $cuisine){
+                            $desc .= $cuisine.', ';
+                        }
+                        $desc = substr($desc, 0, -2);
+                        $desc .= '</p>';
+                        echo $desc;
+                    }
+                    echo '<p>'.$this->localiser().'</p>';
+                    echo '<p>Tel : '.$this->getTelRestaurant().'</p>';
+                    echo '<p>'.$this->getHorairesOuverture().'</p>';
+                    echo '<p>Capacité : '.$this->getCapacite().'</p>';
+                    echo '<span>';
+                        echo '<text>'.$this->getNbEtoiles().'☆</text>';
+                        echo '<p> sur '.$this->getNbCommentaire().' avis</p>';
+                    echo '</span>';
+                echo '</div>';
+            echo '</article>';
+            echo '<article>';
+                echo '<div>';
+                    echo '<span class="photos">';
+                        foreach($this->getImages() as $img){
+                            echo '<img src="'.$img.'" >';
+                        }
+                    echo '</span>';
+                    echo '<span>';
+                        echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
+                        echo '<p>'.$this->getPremierCommentaire().'</p>';
+                    echo '</span>';
+                echo '</div>';
+            #truc pour show la map
+        echo '</article>';
+    }
 }
