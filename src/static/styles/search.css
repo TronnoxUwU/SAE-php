@@ -219,3 +219,53 @@ button:hover {
 .Affichage-fiches-horizontal article img {
     max-width: 10em;
 }
+
+
+
+
+
+
+
+.trier {
+    background-color: #ffffff;
+    margin: 2em auto;
+    width: 95%; /* Min et max width identiques, donc simplifié */
+    min-height: 2em;
+    max-height: 10em;
+    
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    flex-wrap: wrap;
+}
+
+.v1, .scrollmenu {
+    width: 100%;
+    display: flex; /* Permet d'appliquer le centrage */
+    justify-content: left; /* Centre horizontalement */
+
+    margin: 10px 0; /* Évite la double marge */
+}
+
+.v1>input ,.scrollmenu>input{
+    width: 25%;
+    border-radius: 60px;
+}
+
+section.scrollmenu {
+  background-color: #333;
+  overflow: auto;
+  white-space: nowrap;
+}
+
+section.scrollmenu  {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+}
+
+section.scrollmenu imput:hover {
+  background-color: #777;
+}

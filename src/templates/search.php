@@ -80,42 +80,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
             </div>
         </div>
         <!--  -->
-        <input class="styled" type="button" value="Promotion %" />
-        <input class="styled" type="button" value="Ouvert aujourd'hui" />
 
-        <select id="rating">
-            <option value="1">⭐</option>
-            <option value="2">⭐⭐</option>
-            <option value="3">⭐⭐⭐</option>
-            <option value="4">⭐⭐⭐⭐</option>
-            <option value="5">⭐⭐⭐⭐⭐</option>
-        </select>
+        <section class ="trier">
+            <section class = "v1">
+                <input class="styled" type="button" value="Promotion %" />
+                <input class="styled" type="button" value="Ouvert aujourd'hui" />
 
-        <input class="styled" type="button" value="Accés PMR" />
+                <select id="rating">
+                    <option value="1">⭐✦✦✦✦</option>
+                    <option value="2">⭐⭐✦✦✦</option>
+                    <option value="3">⭐⭐⭐✦✦</option>
+                    <option value="4">⭐⭐⭐⭐✦</option>
+                    <option value="5">⭐⭐⭐⭐⭐</option>
+                </select>
+                <input class="styled" type="button" value="Accés PMR" />
+            </section>
 
-
-
-
-
-<script>
-    const select = document.getElementById("rating");
-    const stars = document.getElementById("stars");
-
-    select.addEventListener("change", function () {
-        stars.innerText = "⭐".repeat(this.value);
-    });
-</script>
-
-
-
-
-        <div>
+            <section class = "scrollmenu">
+                <?php for($i=0;$i<10;$i++){
+                    echo '<input class="styled" type="button" value="foods_'.$i.'" />';
+                }
+                ?>
+            </section>
+        </section>
             
-        </div>
+            
+
 
         <div class="Separation-affichage-vertical">
             <section class="Affichage-restaurants-vertical">
-                <h2>Restaurants à la une</h2>
+                <h2>Restaurants à la une</h2> <input class="styled" type="button" value="Trier par ↓↑" />
                 <div class="Affichage-fiches-horizontal">
                     <?php 
                     for ($i = 1; $i <= 10; $i++) {
