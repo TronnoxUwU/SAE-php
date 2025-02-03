@@ -73,6 +73,7 @@ $resto = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1
             <h2>Restaurants les plus prisés</h2>
             <div class="Affichage-fiches">
                 <?php 
+                $resto->renderSmall();
                 for ($i = 1; $i <= 10; $i++) {
                     echo 
                     '<a href="" class="fiche-resto">
