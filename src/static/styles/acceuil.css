@@ -130,6 +130,10 @@ button:hover {
     background-color: #0e785c;
 }
 
+.resto button {
+    margin-left: 2em;
+}
+
 
 
 .about {
