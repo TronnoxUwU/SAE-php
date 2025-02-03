@@ -80,6 +80,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
             </div>
         </div>
         <!--  -->
+        <input class="styled" type="button" value="Promotion %" />
+        <input class="styled" type="button" value="Ouvert aujourd'hui" />
+
+        <select id="rating">
+            <option value="1">⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+        </select>
+
+        <input class="styled" type="button" value="Accés PMR" />
+
+
+
+
+
+<script>
+    const select = document.getElementById("rating");
+    const stars = document.getElementById("stars");
+
+    select.addEventListener("change", function () {
+        stars.innerText = "⭐".repeat(this.value);
+    });
+</script>
+
+
+
 
         <div>
             
