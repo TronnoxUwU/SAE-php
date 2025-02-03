@@ -14,18 +14,24 @@
         </a>
     </div>
     <ul class="nav-links">
-        <li><a href="login.php">Se connecter</a></li>
-        <!-- <div class="dropdown">
-            <button class="dropbtn">Image 3 barres</button>
-            <div class="dropdown-content">
-                <a href="#" id="increase-text">Page 1</a>
-                <a href="#" id="decrease-text">Page 2</a>
-                <a href="#" id="high-contrast">Page 3</a>
-                <a href="#" id="reset-settings">Page 4</a>
-            </div>
-        </div> -->
+        <?php 
+        
+        if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']==false) {
+            echo '<li><a href="login.php">Se connecter</a></li>';
+            }
+        else {
+            echo '<li><a href="espace-perso.php">'.$_SESSION['nom'].' '.$_SESSION['prenom'].'</a></li>';
+            echo   '<div class="dropdown">
+                        <button class="dropbtn"><img class="dropimg" src="../static/images/3barres.png" alt="barres"></button>
+                        <div class="dropdown-content">
+                            <a href="settings.php" id="param">Paramètres et préférences</a>
+                            <a href="#" id="critik">Mes critiques</a>
+                            <a href="#" id="favorites">Mes favoris</a>
+                            <a href="../static/script/logout.php" id="disconnect">Se déconnecter</a>
+                        </div>
+                    </div>';
+        }
+        ?>
     </ul>
 </div>
-
-<script src="../static/scripts/language.js"></script>
 

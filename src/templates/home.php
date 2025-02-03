@@ -1,5 +1,7 @@
 <?php
 // Fichier : pages/home.php
+session_start();
+
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
 
@@ -24,16 +26,17 @@ $resto = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1
         <section class="Search home">
             <div class="Search-section">
                         <h1>Découvrez les meilleurs restaurants dans votre région</h1>
-                <form>
+                <form method="POST" action="search.php">
                     <div class="search-bar">
                         <div class="resto">
-                            <img src="../static/images/search.png" alt="search" class="search-pos-image">
+                            <!-- <img src="../static/images/search.png" alt="search" class="search-pos-image"> -->
+                            <button type="submit">Recherche</button>
                             <div class="petite-barre"></div>
                             <input type="text" id="resto" name="resto" placeholder="Cherchez un nom de restaurant ou de cuisine" required>
                         </div>
                         <div class="Position">
                             <img src="../static/images/maps.png" alt="search" class="maps">
-                            <input type="text" id="resto-pos" name="resto" value="Orléans" required>
+                            <input type="text" id="resto-pos" name="position" value="Orléans" required>
                         </div>
                     </div>
                 </form>
@@ -94,7 +97,5 @@ $resto = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1
         include('footer.php');
     ?>
 
-    <script src="../static/scripts/language.js"></script>
-    <script src="../static/scripts/accessibility.js"></script>
 </body>
 </html>

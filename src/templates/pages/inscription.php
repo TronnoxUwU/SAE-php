@@ -28,17 +28,32 @@
         </div>
 
         <div class="form-group">
-            <label for="cp">code postal</label>
-            <input type="number" id="cp" name="cp" placeholder=45000>
-        </div>
-
-        <div class="form-group">
             <label for="ville">ville</label>
             <input type="text" id="ville" name="ville" placeholder=Orléans>
         </div>
 
-        <div class="form-group" id="btnform">
-            <button type="submit">S'inscrire</button>
+        <div class="form-group choix-regional">
+            <label for="region-select">Département/Région</label>
+            <select id="region-select" name="region-departement">
+                <option value="">Sélectionner un lieu</option>
+            </select>
+            <!-- Champs cachés pour stocker le département et la région -->
+            <input type="hidden" id="departement" name="departement">
+            <input type="hidden" id="region" name="region">
         </div>
+
+        <div class="form-group">
+            <label for="handicap">Avez vous un handicap physique ?</label>
+            <input type="checkbox" id="handicap" name="handicap" >
+        </div>
+
+
+        <div class="form-group" id="btnform">
+            <button name="partie-insc" type="submit">S'inscrire</button>
+        </div>
+
+         
+        <script src="../static/script/update-ville-region.js"></script>
+
     </form>
 </main>

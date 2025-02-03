@@ -2,20 +2,25 @@
 
 <?php
 
+use function PHPSTORM_META\type;
+
 session_start();
 
 require_once "../static/script/modele.php";
 
+include 'navbar.php';
 
 try {
-    if (!isset($_SESSION['user']) || !isset($_SESSION['pswrd'])) {
+    if (!isset($_SESSION["loggedin"]) || !$_SESSION["loggedin"]) {
         throw new Exception("Utilisateur non connecté.");
     }
 
-    $user = getUtilisateur($_SESSION['user'], $_SESSION['pswrd']);
+    $user = getUtilisateur($_SESSION["mail"]);
     if (!$user) {
         throw new Exception("Aucun utilisateur trouvé.");
     }
+    else {if (is_array($user[0])) {$user = $user[0];}}
+    // else {var_dump($user);}
 } catch (Exception $e) {
     header("Location: home.php");
 }
@@ -25,18 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nom = $_POST['name'] ?? null;
     $prenom = $_POST['prenom'] ?? null;
     $email = $_POST['email'] ?? null;
-    $mdp_actuel = $_POST['mdp'] ?? null;
-    $mdp_nouveau = $_POST['NewMdp'] ?? null;
-    $taille = $_POST['taille'] ?? null;
-    $poids = $_POST['poids'] ?? null;
-    $telephone = $_POST['telephone'] ?? null;
-    $niveau = $_POST['lvl'] ?? null;
+    $mdp = $_POST['password'] ?? null;
+    $ville = $_POST['ville'] ?? "orleans";
+    $departement = $_POST['departement'] ?? "Loiret";
+    $region = $_POST['Region'] ?? "Centre-val-de-Loire";
+    $tel = $_POST['telephone'] ?? "+33";
+    $handicap = $_POST['handicap'] ?? false;
 
     if ($mdp_actuel && $email) {
         if (is_null($mdp_nouveau) || $mdp_nouveau === "") {
             try {
-                updateUtilisateur($email, $mdp_actuel, $nom, $prenom, $telephone, $taille, $poids, null);
-                if (isAdherent($user['mail'], $_SESSION['pswrd'])) {if ($niveau != getLvl($email)){assignerNiveau(utilisateurExistant($email, $mdp_actuel), $niveau, date('Y-m-d H:i:s'));}}
+                //updateUtilisateur($email, $mdp_actuel, $nom, $prenom, $ville, $region, $poids, null);
                 
                 echo '<p></p>';
                 echo '<script>showPopup("Données enregistrées avec succès !", true);</script>';
@@ -50,9 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo '<script>showPopup("Veuillez choisir un mot de passe différent.", false);</script>';
             } else {
                 try {
-                    updateUtilisateur($email, $mdp_actuel, $nom, $prenom, $telephone, $taille, $poids, $mdp_nouveau);
-                    if (isAdherent($user['mail'], $_SESSION['pswrd'])) {if ($niveau != getLvl($email)){assignerNiveau(utilisateurExistant($email, $mdp_actuel), $niveau, date('Y-m-d H:i:s'));}}
+                    
+                    //updateUtilisateur($email, $mdp_actuel, $nom, $prenom, $telephone, $ville, $region, $mdp_nouveau);
                     $_SESSION['pswrd'] = $mdp_nouveau;
+                    
                     echo '<p></p>';
                     echo '<script>showPopup("Données enregistrées avec succès !", true);</script>';
                 } catch (Exception $e) {
@@ -79,27 +84,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-    <aside class="sidebar">
-        <?php include "./navbar_admin.php"; ?>
-    </aside>
-
     <main class="login-container">
         <form id="loginForm" method="POST">
             <h1>Modifier vos informations</h1>
 
             <div class="form-group">
                 <label for="email">eMail *</label>
-                <input type="email" id="username" name="email" readonly value="<?php echo htmlspecialchars($user['mail']); ?>" required>
+                <input type="email" id="username" name="email" readonly value="<?php echo htmlspecialchars($user["email"]); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="name">Nom</label>
-                <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['nomPers']); ?>" required>
+                <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user["name"]); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="prenom">Prénom</label>
-                <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($user['prenomPers']); ?>" required>
+                <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($user["prenom"]); ?>" required>
             </div>
 
             <div class="form-group">
@@ -114,33 +115,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label for="telephone">Téléphone</label>
-                <input type="text" id="telephone" name="telephone" value="<?php echo htmlspecialchars($user['tel']); ?>">
+                <input type="text" id="telephone" name="telephone" value="<?php echo htmlspecialchars($user["telephone"]); ?>">
             </div>
 
             <div class="form-group">
-                <label for="taille">Taille</label>
-                <input type="number" id="taille" name="taille" value="<?php echo htmlspecialchars($user['taille']); ?>">
+                <label for="ville">Ville</label>
+                <input type="text" id="ville" name="ville" value="<?php echo htmlspecialchars($user["ville"]); ?>">
+            </div>
+
+            <div class="form-group choix-regional">
+                <label for="region-select">Département/Région</label>
+                <select id="region-select" name="region-departement">
+                    <option value="">Sélectionner un lieu</option>
+                </select>
+                <!-- Champs cachés pour stocker le département et la région -->
+                <input type="hidden" id="departement" name="departement">
+                <input type="hidden" id="region" name="region">
             </div>
 
             <div class="form-group">
-                <label for="poids">Poids</label>
-                <input type="number" id="poids" name="poids" value="<?php echo htmlspecialchars($user['poids']); ?>">
+                <label for="handicap">Avez vous un handicap physique ?</label>
+                <input type="checkbox" id="handicap" name="handicap" <?php if ($user['handicap'] == true) echo "checked"?>>
             </div>
-
-            <?php if (isAdherent($user['mail'], $_SESSION['pswrd'])): ?>
-                <div class="form-group">
-                    <label for="lvl">Nouveau niveau atteint ?</label>
-                    <select id="lvl" name="lvl">
-                        <option value="1" <?php echo getLvl($user['idPers']) == 1 ? 'selected' : ''; ?>>Débutant</option>
-                        <option value="2" <?php echo getLvl($user['idPers']) == 2 ? 'selected' : ''; ?>>Intermédiaire</option>
-                        <option value="3" <?php echo getLvl($user['idPers']) == 3 ? 'selected' : ''; ?>>Expérimenté</option>
-                    </select>
-                </div>
-            <?php endif; ?>
 
             <div class="form-group" id="btnform">
                 <button type="submit">Enregistrer</button>
             </div>
+        
+        <script src="../static/script/update-ville-region.js"></script>
+
         </form>
     </main>
 
