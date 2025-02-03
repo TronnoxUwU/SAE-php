@@ -240,7 +240,8 @@ img {
 }
 
 .grande-fiche-resto span:last-of-type text:first-of-type{
-    font-size: larger;}
+    font-size: 100%;
+}
 
 .grande-fiche-resto:hover {
     transform: translateY(-5px);
