@@ -1,15 +1,14 @@
 <script src="../static/script/popup_valid.js"></script>
 
 <?php
-// Start session
 session_start();
-require "../static/script/modele.php"; // Inclure le modèle contenant la fonction `verifierUtilisateur`
+require "../static/script/modele.php";
 
-// Check if user is already logged in
-// if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-//     header("Location: admin.php");
-//     exit();
-// }
+// Utilisateur déjà connecté
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    header("Location: espace-perso.php");
+    exit();
+}
 
 // Handle login errors
 $error = '';
@@ -30,25 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['prenom'] = "REQUESTE A FAIRE DANS LA BD";
 
             header("Location: home.php");
-
-            // if (isAdmin($username, $password)) {
-            //     echo "admin";
-            //     header("Location: admin.php");
-            // } else if (isMoniteur($username, $password)) {
-            //     echo "moniteur";
-            //     header("Location: admin.php");
-            // } else {
-            //     echo "client";
-            //     header("Location: infoClient.php");
-            // }
             exit();
         } else {
             $error = "Nom d'utilisateur ou mot de passe incorrect.";
             echo '<script language="javascript">';
-            echo 'alert("Tu es gay")';
+            echo 'alert("Identifiant ou Mot de passe incorrect")';
             echo '</script>';
         }
     } catch (Exception $e) {
+            // Erreur connexion
         echo '<script language="javascript">';
         echo 'alert("Erreur de connexion, veuillez rééssayer plus tard")';
         echo '</script>';
@@ -57,46 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/styles/login.css">
-    <title>Connexion</title>
-</head>
-<body>
-    <a href="home.php" style="position: absolute; top: 10px; left: 10px;">
-        <img src="../static/images/maison noire.png" alt="Retour à l'accueil" style="width: 40px; height: 40px; cursor: pointer;">
-    </a>
+        <!-- Display error message if any -->
+        <?php if ($error): ?>
+            <p id="error-message" class="error-message"><?php echo htmlspecialchars($error); ?></p>
+        <?php endif; 
+        
+        include "./pages/login.html";
 
-    <main class="login-container">
-        <form id="loginForm" method="POST">
-            <h1>Connexion</h1>
-
-            <!-- Display error message if any -->
-            <?php if ($error): ?>
-                <p id="error-message" class="error-message"><?php echo htmlspecialchars($error); ?></p>
-            <?php endif; ?>
-
-            <div class="form-group">
-                <label for="username">Nom d'utilisateur</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <div class="form-group" id="btnform">
-                <button type="submit">Se connecter</button>
-            </div>
-
-        </form>
-        <div class="barreB"></div>
-
-        <a href="./inscription.php"> <p>Pas de compte ? S'inscrire -></p> </a>
-    </main>
-</body>
-</html>
+        ?>

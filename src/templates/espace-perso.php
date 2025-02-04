@@ -2,6 +2,7 @@
 // Fichier : pages/home.php
 session_start();
 
+require_once '../classes/Composant/Restaurant.php';
 include_once "../static/script/modele.php";
 
 include 'navbar.php';
@@ -13,7 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Appeler la fonction pour ajouter les cuisines préférées de l'utilisateur
     ajoutePrefCuisine($_SESSION['mail'], $selectedCuisines);
+    header("Location : ./espace-perso.php");
 }
+
+
+$restoFAV = getFavResto();
 
 ?>
 
@@ -27,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="../static/styles/acceuil.css">
     <link rel="stylesheet" href="../static/styles/preferences-culinaires.css">
     <link rel="stylesheet" href="../static/styles/espace-perso.css">
+    <link rel="stylesheet" href="../static/styles/petite_fiche.css">
 </head>
 <body>
     <header></header>
@@ -73,30 +79,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
-        <section class="Affichage-restaurants resto-favoris">
+        <section class="Affichage-restaurants resto-favoris" id="favoris">
             <h2>Restaurants favoris</h2>
             <div class="Affichage-fiches">
                 <?php 
-                for ($i = 1; $i <= 10; $i++) {
-                    echo 
-                    '<a href="" class="fiche-resto">
-                        <article >
-                            <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                            <div>
-                                <span>
-                                    <h3>Beast Burger</h3>
-                                    <h3>4.5☆</h3>
-                                </span>
-                                <p>Mr. Beaaaaaaaast!</p>
-                            </div>
-                        </article>
-                    </a>';
+                foreach ($restoFAV as $resto) {
+                    $resto->renderSmall();
                 }
                 ?>
             </div>
         </section>
         
-        <section class="Affichage-commentaires all-comments">
+        <section class="Affichage-commentaires all-comments" id="commentaires">
             <h2>Avis enregistrés</h2>
             <div class="Affichage-fiches-commentaires">
                 <?php 

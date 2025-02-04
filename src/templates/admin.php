@@ -1,6 +1,8 @@
 <?php
+    require_once '../classes/Composant/Restaurant.php';
     require_once "../static/script/modele.php";
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>

@@ -52,20 +52,6 @@ $restoPOP = getPopResto();
                 <?php 
                 foreach ($restoBEST as $resto) {
                     $resto->renderSmall();
-
-                    // echo 
-                    // '<a href="" class="fiche-resto">
-                    //     <article >
-                    //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                    //         <div>
-                    //             <span>
-                    //                 <h3>Beast Burger</h3>
-                    //                 <h3>4.5☆</h3>
-                    //             </span>
-                    //             <p>Mr. Beaaaaaaaast!</p>
-                    //         </div>
-                    //     </article>
-                    // </a>';
                 }
                 ?>
             </div>
@@ -77,19 +63,6 @@ $restoPOP = getPopResto();
                 <?php 
                 foreach ($restoPOP as $resto) {
                     $resto->renderSmall();
-                    // echo 
-                    // '<a href="" class="fiche-resto">
-                    //     <article >
-                    //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                    //         <div>
-                    //             <span>
-                    //                 <h3>Food n`go</h3>
-                    //                 <h3>2.7☆</h3>
-                    //             </span>
-                    //             <p>La nourriture lente du vietnam</p>
-                    //         </div>
-                    //     </article>
-                    // </a>';
                 }
                 ?>
             </div>

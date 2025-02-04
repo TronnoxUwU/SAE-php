@@ -1,5 +1,6 @@
 <?php
 // Fichier : pages/home.php
+session_start();
 include 'navbar.php';
 include_once '../static/script/getKey.php';
 require_once '../classes/Composant/Restaurant.php';

@@ -1,4 +1,6 @@
 <?php
+include_once __DIR__."/../../static/script/mapsPlace.php";
+
 class Restaurant{
     private int $osmId;
     private string $nomRestaurant;
@@ -6,8 +8,8 @@ class Restaurant{
     private string $region;
     private string $departement;
     private string $ville;
-    private int $longitude;
-    private int $latitude;
+    private float $longitude;
+    private float $latitude;
     private string $siteWeb;
     private string $facebook;
     private string $telRestaurant;
@@ -232,7 +234,13 @@ class Restaurant{
     }
 
     public function getImage(){
-        return '../static/images/noequestrians.png" alt="Balade en forêt';
+
+        $image = getRestoImage($this->getLatitude(), $this->getLongitude(), $this->getNomRestaurant())["photos"][0];
+        // var_dump($image);
+        if (!isset($image) || $image===""){
+            $image='../static/images/noequestrians.png';
+        }
+        return $image.'" alt="Balade en forêt';
     }
 
     public function renderSmall(){

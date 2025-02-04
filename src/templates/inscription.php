@@ -31,9 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
                 echo '<script>showPopup("Cet email est déjà utilisé.", false);</script>';
             } else {
                 // Insérer les données dans la table "users"
-                // function insertAdherent($nom, $prenom, $tel, $mail, $taille, $poids, $dateInscription, $mdp){
 
-                insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap);
+                insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap); // revoir l'insert
                 
                 $id = utilisateurExistant($email, hash('sha256', $mdp));
                 $_SESSION['inscription']++;
@@ -47,9 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
                 //exit();
             }
         } catch (Exception $e) {
-            echo 'Erreur : ' . $e->getMessage();
-
-            //header("Location: inscription.php");
+            // echo 'Erreur : ' . $e->getMessage();
             echo '<p></p>';
             echo '<script>showPopup("Cela na pas fonctionné, cest de la faut de tristan", false);</script>';
             //header("Location: login.php"); 

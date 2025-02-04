@@ -17,16 +17,16 @@
         <?php 
         
         if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']==false) {
-            echo '<li><a href="login.php">Se connecter</a></li>';
+            echo '<li><a href="./login.php">Se connecter</a></li>';
             }
         else {
-            echo '<li><a href="espace-perso.php">'.$_SESSION['nom'].' '.$_SESSION['prenom'].'</a></li>';
+            echo '<li><a href="./espace-perso.php">'.$_SESSION['nom'].' '.$_SESSION['prenom'].'</a></li>';
             echo   '<div class="dropdown">
                         <button class="dropbtn"><img class="dropimg" src="../static/images/3barres.png" alt="barres"></button>
                         <div class="dropdown-content">
-                            <a href="settings.php" id="param">Paramètres et préférences</a>
-                            <a href="#" id="critik">Mes critiques</a>
-                            <a href="#" id="favorites">Mes favoris</a>
+                            <a href="./settings.php" id="param">Paramètres et préférences</a>
+                            <a href="./espace-perso.php#commentaires" id="critik">Mes critiques</a>
+                            <a href="./espace-perso.php#favoris" id="favorites">Mes favoris</a>
                             <a href="../static/script/logout.php" id="disconnect">Se déconnecter</a>
                         </div>
                     </div>';
