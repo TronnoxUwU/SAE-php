@@ -238,7 +238,7 @@ class Restaurant{
 
     public function getImages(){
         # A remplacer par un appelle de fonction qui renvoie les images du restaurant
-        return ['../static/images/noequestrians.png" alt="Balade en forêt', '../static/images/noequestrians.png" alt="Balade en forêt'];
+        return ['../static/images/noequestrians.png" alt="Balade en forêt', '../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt'];
     }
 
     public function renderSmall(){
@@ -329,7 +329,7 @@ class Restaurant{
                     echo '<p>'.$this->getHorairesOuverture().'</p>';
                     echo '<p>Capacité : '.$this->getCapacite().'</p>';
                     echo '<span>';
-                        echo '<text>'.$this->getNbEtoiles().'☆</text>';
+                        echo '<text>'.$this->getNbEtoiles().'☆ </text>';
                         echo '<p> sur '.$this->getNbCommentaire().' avis</p>';
                     echo '</span>';
                 echo '</div>';
@@ -341,7 +341,7 @@ class Restaurant{
                             echo '<img src="'.$img.'" >';
                         }
                     echo '</span>';
-                    echo '<span>';
+                    echo '<span class="commentaires">';
                         echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
                         echo '<p>'.$this->getPremierCommentaire().'</p>';
                     echo '</span>';
