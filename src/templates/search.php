@@ -81,6 +81,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
         </div>
         <!--  -->
 
+
+        <div class="Separation-affichage-vertical">
+
         <section class ="trier">
             <section class = "v1">
                 <input class="styled" type="button" value="Promotion %" />
@@ -97,18 +100,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
             </section>
 
             <section class = "scrollmenu">
-                <?php for($i=0;$i<10;$i++){
+                <?php for($i=0;$i<100;$i++){
                     echo '<input class="styled" type="button" value="foods_'.$i.'" />';
                 }
                 ?>
             </section>
         </section>
-            
-            
-
-
-        <div class="Separation-affichage-vertical">
+        
             <section class="Affichage-restaurants-vertical">
+
                 <h2>Restaurants à la une</h2> <input class="styled" type="button" value="Trier par ↓↑" />
                 <div class="Affichage-fiches-horizontal">
                     <?php 

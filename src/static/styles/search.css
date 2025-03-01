@@ -225,7 +225,6 @@ button:hover {
 
 
 
-
 .trier {
     background-color: #ffffff;
     margin: 2em auto;
@@ -248,8 +247,11 @@ button:hover {
 }
 
 .v1>input ,.scrollmenu>input{
-    width: 25%;
-    border-radius: 60px;
+    width: auto;
+  min-width: 100px; /* Pour définir une largeur minimale */
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 60px;
 }
 
 section.scrollmenu {
@@ -261,8 +263,8 @@ section.scrollmenu {
 section.scrollmenu  {
   display: inline-block;
   color: white;
-  text-align: center;
-  padding: 14px;
+  text-align: left;
+  padding: 10px;
   text-decoration: none;
 }
 
