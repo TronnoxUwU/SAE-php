@@ -3,6 +3,7 @@
 include 'navbar.php';
 include_once '../static/script/getKey.php';
 require_once '../classes/Composant/Restaurant.php';
+require_once '../classes/Composant/Note.php';
 
 $API = get_CSV_Key("MAPS");
 
@@ -16,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
         {$date = date('Y-m-d'); $time = "18:00";};
 }
 
-$restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+$restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"],[new Note("test",3,"test","2020-12-12"),new Note("test",3,"test","2020-12-12")]);
 ?>
 
 

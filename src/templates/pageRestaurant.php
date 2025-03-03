@@ -3,6 +3,7 @@
 
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
+require_once '../classes/Composant/Note.php';
 
 try {
     // Vérifier si l'utilisateur est connecté
@@ -13,7 +14,7 @@ try {
     
     $id = $_GET['id'];
     // Récupérer les informations de l'utilisateur via la fonction du modèle
-    $restaurant = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+    $restaurant = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"],[new Note("test",3,"test","2020-12-12"),new Note("test",3,"test","2020-12-12")]);
     if (!$restaurant) {
         throw new Exception("Aucun resto trouvé.");
     }

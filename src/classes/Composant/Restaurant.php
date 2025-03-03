@@ -19,10 +19,10 @@ class Restaurant{
     private bool $livraison;
     private bool $vegetarien;
     private string $horairesOuverture;
-
     private array $cuisines;
+    private array $notes;
 
-    public function __construct($osmId, $nomRestaurant, $description, $region, $departement, $ville, $longitude, $latitude, $siteWeb, $facebook, $telRestaurant, $nbEtoiles, $capacite, $fumeur, $drive, $aEmporter, $livraison, $vegetarien, $horairesOuverture, $cuisines){
+    public function __construct($osmId, $nomRestaurant, $description, $region, $departement, $ville, $longitude, $latitude, $siteWeb, $facebook, $telRestaurant, $nbEtoiles, $capacite, $fumeur, $drive, $aEmporter, $livraison, $vegetarien, $horairesOuverture, $cuisines, $Notes){
         $this->osmId = $osmId;
         $this->nomRestaurant = $nomRestaurant;
         $this->description = $description;
@@ -43,6 +43,7 @@ class Restaurant{
         $this->vegetarien = $vegetarien;
         $this->horairesOuverture = $horairesOuverture;
         $this->cuisines = $cuisines;
+        $this->notes = $Notes;
     }
 
     public function getOsmId(){
@@ -216,6 +217,10 @@ class Restaurant{
         }
     }
 
+    public function addNote($note){
+        $this->notes[] = $note;
+    }
+
     public function localiser(){
         # A remplacer par un appelle de fonction qui renvoie la localisation du restaurant
         return $this->ville.', '.$this->departement.', '.$this->region;
@@ -223,12 +228,25 @@ class Restaurant{
 
     public function getNbCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le nombre de commentaire du restaurant
-        return 0;
+        return sizeof($this->notes);
     }
 
     public function getPremierCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le premier commentaire du restaurant
-        return 'Pas de commentaire pour le moment, ceci est un long commentaire pour tester la mise en page de la fiche restaurant';
+        $comm= $this->notes[0]->getMailAuteur().' a donné une note de '.$this->notes[0]->getNote().'☆ : \n ';
+        $comm .= $this->notes[0]->getCommentaire();
+        return $comm;
+    }
+
+    public function getCommentaires(){
+        # A remplacer par un appelle de fonction qui renvoie les commentaires du restaurant
+        $commentaire = [];
+        foreach($this->notes as $note){
+            $comm = $note->getMailAuteur().' a donné une note de '.$note->getNote().'☆ : \n ';
+            $comm .= $note->getCommentaire();
+            $commentaire[] = $comm;
+        }
+        return $commentaire;
     }
 
     public function getImagePrincipal(){
@@ -343,7 +361,9 @@ class Restaurant{
                     echo '</span>';
                     echo '<span class="commentaires">';
                         echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
-                        echo '<p>'.$this->getPremierCommentaire().'</p>';
+                        echo '<div class="les_commentaires">';
+                            echo '<p>'.$this->getPremierCommentaire().'</p>';
+                        echo '</div>';
                     echo '</span>';
                 echo '</div>';
             #truc pour show la map

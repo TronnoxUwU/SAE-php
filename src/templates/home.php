@@ -4,6 +4,7 @@ session_start();
 
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
+require_once '../classes/Composant/Note.php';
 require_once "../static/script/modele.php";
 
 $restoBEST = getBestResto();
