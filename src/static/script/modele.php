@@ -1,4 +1,5 @@
 <?php
+require_once '../../classes/Composant/Restaurant.php';
 
 $dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
 $connexion = new PDO($dsn, "richard", "richard");
@@ -15,9 +16,55 @@ $connexion = new PDO($dsn, "richard", "richard");
 function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     global $connexion;
 
-    $requete = "select OsmID, avg(Note) as moy from RESTAURANT natural join NOTER where codeRegion = ? and codeDepartement = ? and codeCommune = ? group by OsmID order by moy";
-    // todo
+    $sortie = [];
+
+    $requete = $connexion->prepare("select OsmID,Longitude,Latitude,CodeCommune,NomCommune,CodeDepartement,NomDepartement,CodeRegion,NomRegion,NomRestaurant,SiteWeb,Facebook,TelRestaurant,NbEtoileMichelin,Capacite,Fumeur,AEmporter,Livraison,Vegetarien,Drive,HorrairesOuverture,Description, avg(Note) as moy from RESTAURANT natural left join NOTER natural join COMMUNE natural join DEPARTEMENT natural join REGION where codeRegion = ? and codeDepartement = ? and codeCommune = ? group by OsmID order by moy");
+    $requete->execute([$codeRegion, $codeDepartement, $codeCommune]);
+    $resultat = $requete->fetchAll();
+
+    foreach($resultat as $row){
+        if (count($sortie)<10) {
+
+            var_dump($row);
+
+            $cuisine = [];
+            $requete2 = $connexion->prepare("select * from RESTAURANT natural join PREPARER where OsmID = ?");
+            $requete2->execute([$row["OsmID"]]);
+            $resultat2 = $requete->fetchAll();
+
+            foreach($resultat2 as $row2){
+                array_push($cuisine,$row2["NomCuisine"]);
+            }
+
+            $restaurant = new Restaurant($row["OsmID"],
+                                         $row["NomRestaurant"],
+                                         ($row["Description"]==null) ? "" : $row["Description"],
+                                         $row["NomRegion"] ,
+                                         $row["NomDepartement"],
+                                         $row["NomCommune"],
+                                         $row["Longitude"],
+                                         $row["Latitude"],
+                                         $row["SiteWeb"],
+                                         ($row["Facebook"]==null) ? "" : $row["Facebook"],
+                                         $row["TelRestaurant"],
+                                         1.2,
+                                         $row["Capacite"],
+                                         $row["Fumeur"],
+                                         $row["Drive"],
+                                         $row["AEmporter"],
+                                         $row["Livraison"],
+                                         $row["Vegetarien"],
+                                         $row["HorrairesOuverture"],
+                                         $cuisine);
+
+            array_push($sortie, $restaurant);
+        }
+    }
+    return $sortie;
 }
+
+
+var_dump(getMeilleurRestaurant(24, 45, 45234));
 
 function chargementFichier($chemin){
     global $connexion;
@@ -70,6 +117,8 @@ function chargementFichier($chemin){
             $requete = $connexion->prepare("insert into PREPARER(NomCuisine, OsmID) values(?,?)");
             $requete->execute([$nom,substr($restaurant["osm_id"],5)]);
         }
+    }
+}
       
 // $pdo = new PDO('sqlite:'.$db_path);
 // $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
