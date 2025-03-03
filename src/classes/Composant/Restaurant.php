@@ -1,4 +1,7 @@
 <?php
+
+include_once __DIR__.'/../../static/script/getKey.php';
+
 class Restaurant{
     private int $osmId;
     private string $nomRestaurant;
@@ -6,8 +9,8 @@ class Restaurant{
     private string $region;
     private string $departement;
     private string $ville;
-    private int $longitude;
-    private int $latitude;
+    private float $longitude;
+    private float $latitude;
     private string $siteWeb;
     private string $facebook;
     private string $telRestaurant;
@@ -304,49 +307,61 @@ class Restaurant{
     }
 
     public function renderMax(){
-        echo '<article>';
-                echo '<img src="'.$this->getImagePrincipal().'" class="resto-image">';
-                echo '<div>';
-                    echo '<span>';
-                        echo '<a href="'.$this->getSiteWeb().'">';
-                        echo '<h3>'.$this->getNomRestaurant().'</h3>';
-                        echo '</a>';
-                        #echo le potit ♡
-                    echo '</span>';
-                    if($this->getDescription() != ""){
-                        echo '<p>'.$this->getDescription().'</p>';
-                    } else {
-                        $desc = '<p> Restaurant de ';
-                        foreach($this->getCuisines() as $cuisine){
-                            $desc .= $cuisine.', ';
-                        }
-                        $desc = substr($desc, 0, -2);
-                        $desc .= '</p>';
-                        echo $desc;
+        echo '<article id="restaurant">';
+            echo '<img src="'.$this->getImagePrincipal().'" class="resto-image">';
+            echo '<div class="resto-info">';
+                echo '<span class="resto-header">';
+                    echo '<a href="'.$this->getSiteWeb().'" class="resto-link">';
+                    echo '<h1>'.$this->getNomRestaurant().' 🔗</h1>';
+                    echo '</a>';
+                    echo '<button class="fav-button">Ajouter à vos favoris ♡</button>'; // Bouton favori
+                echo '</span>';
+                
+                if (!empty($this->getDescription())) {
+                    echo '<p class="resto-desc">'.$this->getDescription().'</p>';
+                } else {
+                    echo '<p class="resto-desc">Restaurant de ';
+                    foreach ($this->getCuisines() as $cuisine) {
+                        echo $cuisine.', ';
                     }
-                    echo '<p>'.$this->localiser().'</p>';
-                    echo '<p>Tel : '.$this->getTelRestaurant().'</p>';
-                    echo '<p>'.$this->getHorairesOuverture().'</p>';
-                    echo '<p>Capacité : '.$this->getCapacite().'</p>';
-                    echo '<span>';
-                        echo '<text>'.$this->getNbEtoiles().'☆ </text>';
-                        echo '<p> sur '.$this->getNbCommentaire().' avis</p>';
-                    echo '</span>';
-                echo '</div>';
-            echo '</article>';
-            echo '<article>';
-                echo '<div>';
-                    echo '<span class="photos">';
-                        foreach($this->getImages() as $img){
-                            echo '<img src="'.$img.'" >';
-                        }
-                    echo '</span>';
-                    echo '<span class="commentaires">';
-                        echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
-                        echo '<p>'.$this->getPremierCommentaire().'</p>';
-                    echo '</span>';
-                echo '</div>';
-            #truc pour show la map
+                    echo '</p>';
+                }
+
+                echo '<p>📍 '.$this->localiser().'</p>';
+                echo '<p>📞 Tel : '.$this->getTelRestaurant().'</p>';
+                echo '<p>🕒 '.$this->getHorairesOuverture().'</p>';
+                echo '<p>👥 Capacité : '.$this->getCapacite().' personnes</p>';
+
+                echo '<span class="rating">';
+                    echo '<strong>'.$this->getNbEtoiles().' ☆</strong>';
+                    echo '<p> sur '.$this->getNbCommentaire().' avis</p>';
+                echo '</span>';
+            echo '</div>';
         echo '</article>';
+
+        $API = get_CSV_Key("MAPS");
+
+        echo '<article class="restaurant-details">';
+            echo '<div class="resto-media">';
+                echo '<span class="photos">';
+                foreach ($this->getImages() as $img) {
+                    echo '<img src="'.$img.'" class="resto-thumbnail">';
+                }
+                echo '</span>';
+                
+                echo '<span class="commentaires">';
+                    echo '<h3>Commentaires ('.$this->getNbCommentaire().') 🗨️</h3>';
+                    echo '<p>'.$this->getPremierCommentaire().'</p>';
+                echo '</span>';
+            echo '</div>';
+
+            ?> 
+            <iframe width="400" height="400" style="border: 1px;"
+            loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/embed/v1/place?key=<?php echo $API ?>&q=<?php echo $this->latitude ?>,<?php echo $this->longitude ?>"
+            </iframe>
+        <?php   
+        echo '</article>';
+
     }
 }

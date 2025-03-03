@@ -17,7 +17,7 @@ body{
 
 .contenu-principal {
     background-color: white;
-    margin-top: 60vh;
+    /* margin-top: 60vh; */
     min-width: 100vw;
     min-height: 800px;
     /* border-top-image:; */
