@@ -96,48 +96,69 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
         </div>
         <!--  -->
 
-        <div>
-            
-        </div>
+        <section class= contenu-vertical>
+            <section class ="trier">
+                <section class = "v1">
+                    <input class="styled" type="button" value="Promotion %" />
+                    <input class="styled" type="button" value="Ouvert aujourd'hui" />
 
-        <div class="Separation-affichage-vertical">
-            <section class="Affichage-restaurants-vertical">
-                <h2>D'après votre recherche :</h2>
-                <div class="Affichage-fiches-horizontal">
-                    <?php 
-                    for ($i = 1; $i <= 10; $i++) {
-                        $restocarte->renderFull();
-                        // echo 
-                        // '<a href="" class="fiche-resto">
-                        //     <article >
-                        //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                        //         <div>
-                        //             <span>
-                        //                 <h3>Beast Burger</h3>
-                        //                 <h3>4.5☆</h3>
-                        //             </span>
-                        //             <p>Mr. Beaaaaaaaast!</p>
-                        //         </div>
-                        //     </article>
-                        // </a>';
+                    <select id="rating">
+                        <option value="1">⭐✦✦✦✦</option>
+                        <option value="2">⭐⭐✦✦✦</option>
+                        <option value="3">⭐⭐⭐✦✦</option>
+                        <option value="4">⭐⭐⭐⭐✦</option>
+                        <option value="5">⭐⭐⭐⭐⭐</option>
+                    </select>
+                    <input class="styled" type="button" value="Accés PMR" />
+                </section>
+
+                <section class = "scrollmenu">
+                    <?php for($i=0;$i<100;$i++){
+                        echo '<input class="styled" type="button" value="foods_'.$i.'" />';
                     }
                     ?>
-                </div>
+                </section>
             </section>
 
-            <iframe
-            width="400"
-            height="768"
-            style="border: 1px;"
-            loading="lazy"
-            allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade" 
-            src="https://www.google.com/maps/embed/v1/place?key=<?php echo $API; ?>
-             &q=<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
-                        else echo "Orléans" ?>">
-            </iframe>
-            <!-- Penser à remettre et retirer la clé d'API (dispo sur discord)  -->
-        </div>
+            <div class="Separation-affichage-vertical">
+                <section class="Affichage-restaurants-vertical">
+                    <h2>D'après votre recherche :</h2>
+                    <div class="Affichage-fiches-horizontal">
+                        <?php 
+                        for ($i = 1; $i <= 10; $i++) {
+                            $restocarte->renderFull();
+                            // echo 
+                            // '<a href="" class="fiche-resto">
+                            //     <article >
+                            //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
+                            //         <div>
+                            //             <span>
+                            //                 <h3>Beast Burger</h3>
+                            //                 <h3>4.5☆</h3>
+                            //             </span>
+                            //             <p>Mr. Beaaaaaaaast!</p>
+                            //         </div>
+                            //     </article>
+                            // </a>';
+                        }
+                        ?>
+                    </div>
+                </section>
+
+                <iframe
+                width="400"
+                height="768"
+                style="border: 1px;"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade" 
+                src="https://www.google.com/maps/embed/v1/place?key=<?php echo $API; ?>
+                &q=<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
+                            else echo "Orléans" ?>">
+                </iframe>
+                <!-- Penser à remettre et retirer la clé d'API (dispo sur discord)  -->
+            </div>
+        </section>
         
     </main>
 
