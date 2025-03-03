@@ -45,7 +45,7 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
                                          ($row["SiteWeb"]==null) ? "" : $row["SiteWeb"],
                                          ($row["Facebook"]==null) ? "" : $row["Facebook"],
                                          ($row["TelRestaurant"]==null) ? "" : $row["TelRestaurant"],
-                                         $row2["moy"],
+                                         $row["moy"],
                                          ($row["Capacite"]==null) ? 0 : $row["Capacite"],
                                          ($row["Fumeur"]==null) ? 0 : $row["Fumeur"],
                                          ($row["Drive"]==null) ? 0 : $row["Drive"],
@@ -61,8 +61,14 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     return $sortie;
 }
 
+
+
+
+
 function chargementFichier($chemin){
     global $connexion;
+
+    echo "test";
 
     $content = file_get_contents($chemin);
     $restaurants = json_decode($content, true);
@@ -87,7 +93,6 @@ function chargementFichier($chemin){
             //throw $th;
         }
 
-        //,Longitude,Latitude,CodeCommune,CodeDepartement,CodeRegion,NomRestaurant,SiteWeb,Facebook,TelRestaurant,NbEtoileMichelin,Drive,Capacite,AEmporter,Livraison,Vegetarien,HorrairesOuverture
         $requete = $connexion->prepare("insert into RESTAURANT(OsmID,Longitude,Latitude,CodeCommune,CodeDepartement,CodeRegion,NomRestaurant,SiteWeb,Facebook,TelRestaurant,NbEtoileMichelin,Capacite,Fumeur,AEmporter,Livraison,Vegetarien,Drive,HorrairesOuverture) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         echo "<p>";
         var_dump([substr($restaurant["osm_id"],5),$restaurant["geo_point_2d"]["lon"],$restaurant["geo_point_2d"]["lat"],$restaurant["code_commune"],
@@ -115,20 +120,29 @@ function chargementFichier($chemin){
     }
 }
       
+
+//chargementFichier("./src/data/restaurants_orleans.json");
+
+//var_dump(getMeilleurRestaurant(24, 45, 45234));
+
 // $pdo = new PDO('sqlite:'.$db_path);
 // $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 function utilisateurExistant($mail, $mdp) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail");
-    $stmt->execute(array('mail' => $mail));
-    $result = $stmt->fetchAll();
+    global $connexion;
+    $hash=hash('sha256',$mdp);
+    $requete = $connexion->prepare("SELECT * FROM PERSONNE WHERE EMailPersonne = :mail AND MotDePasse = :mdp");
+    $requete->execute(['mail' => $mail,
+                       'mdp' => $hash]);
+    $result = $requete->fetch();
     if ($result != null){
         return true;
     }
     return false;
 }
+utilisateurExistant("", "");
+
 
 function getUtilisateur($mail) {
     global $pdo;
@@ -144,11 +158,15 @@ function getUtilisateur($mail) {
 // chargementFichier(__DIR__."./../../data/restaurants_orleans.json");
 
  
-function insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap) {
-    global $pdo;
-    $stmt = $pdo->prepare("INSERT INTO users (name, prenom, telephone, email, codepostal, ville, mdp) Values (?,?,?,?,?,?,?)");
-    $stmt->execute([$nom, $prenom, $tel, $email,$cp, $ville, $mdp]);
+function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement, $codeCommune, $mdp, $handicap) {
+    global $connexion;
+    $hash=hash('sha256',$mdp);
+    $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, codeRegion, codeDepartement, codeCommune, Handicap) Values (?,?,?,?,?,?,?,?,?,?)");
+    $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
 }
+
+//insertClient("Test", "Test", "+33 6 04 50 50 50", "aaaa", 24, 45, 45234, "UwU", true);
+//echo utilisateurExistant("aaaa", "UwU") ? "Il existe" : "Il existe pas";
 
 function ajoutePrefCuisine($email, $cuisine){
     
