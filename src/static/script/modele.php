@@ -1,5 +1,5 @@
 <?php
-require_once '../../classes/Composant/Restaurant.php';
+require_once 'src/classes/Composant/Restaurant.php';
 
 $dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
 $connexion = new PDO($dsn, "richard", "richard");
@@ -18,14 +18,12 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
 
     $sortie = [];
 
-    $requete = $connexion->prepare("select OsmID,Longitude,Latitude,CodeCommune,NomCommune,CodeDepartement,NomDepartement,CodeRegion,NomRegion,NomRestaurant,SiteWeb,Facebook,TelRestaurant,NbEtoileMichelin,Capacite,Fumeur,AEmporter,Livraison,Vegetarien,Drive,HorrairesOuverture,Description, avg(Note) as moy from RESTAURANT natural left join NOTER natural join COMMUNE natural join DEPARTEMENT natural join REGION where codeRegion = ? and codeDepartement = ? and codeCommune = ? group by OsmID order by moy");
+    $requete = $connexion->prepare("select OsmID,Longitude,Latitude,CodeCommune,NomCommune,CodeDepartement,NomDepartement,CodeRegion,NomRegion,NomRestaurant,SiteWeb,Facebook,TelRestaurant,NbEtoileMichelin,Capacite,Fumeur,AEmporter,Livraison,Vegetarien,Drive,HorrairesOuverture,Description, avg(ifnull(Note,0)) as moy from RESTAURANT natural left join NOTER natural join COMMUNE natural join DEPARTEMENT natural join REGION where codeRegion = ? and codeDepartement = ? and codeCommune = ? group by OsmID order by moy,OsmID ");
     $requete->execute([$codeRegion, $codeDepartement, $codeCommune]);
     $resultat = $requete->fetchAll();
 
     foreach($resultat as $row){
         if (count($sortie)<10) {
-
-            var_dump($row);
 
             $cuisine = [];
             $requete2 = $connexion->prepare("select * from RESTAURANT natural join PREPARER where OsmID = ?");
@@ -44,17 +42,17 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
                                          $row["NomCommune"],
                                          $row["Longitude"],
                                          $row["Latitude"],
-                                         $row["SiteWeb"],
+                                         ($row["SiteWeb"]==null) ? "" : $row["SiteWeb"],
                                          ($row["Facebook"]==null) ? "" : $row["Facebook"],
-                                         $row["TelRestaurant"],
-                                         1.2,
-                                         $row["Capacite"],
-                                         $row["Fumeur"],
-                                         $row["Drive"],
-                                         $row["AEmporter"],
-                                         $row["Livraison"],
-                                         $row["Vegetarien"],
-                                         $row["HorrairesOuverture"],
+                                         ($row["TelRestaurant"]==null) ? "" : $row["TelRestaurant"],
+                                         $row2["moy"],
+                                         ($row["Capacite"]==null) ? 0 : $row["Capacite"],
+                                         ($row["Fumeur"]==null) ? 0 : $row["Fumeur"],
+                                         ($row["Drive"]==null) ? 0 : $row["Drive"],
+                                         ($row["AEmporter"]==null) ? 0 : $row["AEmporter"],
+                                         ($row["Livraison"]==null) ? 0 : $row["Livraison"],
+                                         ($row["Vegetarien"]==null) ? 0 : $row["Vegetarien"],
+                                         ($row["HorrairesOuverture"]==null) ? "" : $row["HorrairesOuverture"],
                                          $cuisine);
 
             array_push($sortie, $restaurant);
@@ -62,9 +60,6 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     }
     return $sortie;
 }
-
-
-var_dump(getMeilleurRestaurant(24, 45, 45234));
 
 function chargementFichier($chemin){
     global $connexion;
