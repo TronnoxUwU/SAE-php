@@ -1,44 +1,66 @@
 <?php
-// $dsn = "mysql:dbname="."sae_mlp".";host="."127.0.0.1";
-// try{
-//     $connexion = new PDO($dsn, "root", "clermont");
-// }
-// catch(PDOException $e){
-//     printf("Error connecting to database: %s", $e->getMessage());
-//     exit();
-// }
+$dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
+$connexion = new PDO($dsn, "richard", "richard");
 
-// Chemin vers la base de données SQLite
-$db_path = "../data/data.sqlite";
+function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
+    global $connexion;
 
-$pdo = new PDO('sqlite:'.$db_path);
-$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $requete = "select OsmID, avg(Note) as moy from RESTAURANT natural join NOTER where codeRegion = ? and codeDepartement = ? and codeCommune = ? group by OsmID order by moy";
+    // todo
+}
 
-function utilisateurExistant($mail, $mdp) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail AND mdp = :mdp");
-    $stmt->execute(array('mail' => $mail, 'mdp' => $mdp));
-    $result = $stmt->fetchAll();
-    if ($result != null){
-        return true;
+function chargementFichier($chemin){
+    global $connexion;
+
+    $content = file_get_contents($chemin);
+    $restaurants = json_decode($content, true);
+
+    foreach ($restaurants as $restaurant) {
+        try {
+            $requete = $connexion->prepare("insert into REGION(CodeRegion,NomRegion) values(?,?)");
+            $requete->execute([$restaurant["code_region"],$restaurant["region"]]);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        try {
+            $requete = $connexion->prepare("insert into DEPARTEMENT(CodeDepartement,CodeRegion,NomDepartement) values(?,?,?)");
+            $requete->execute([$restaurant["code_departement"],$restaurant["code_region"],$restaurant["departement"]]);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        try {
+            $requete = $connexion->prepare("insert into COMMUNE(CodeCommune,CodeDepartement,CodeRegion,NomCommune) values(?,?,?,?)");
+            $requete->execute([$restaurant["code_commune"],$restaurant["code_departement"],$restaurant["code_region"],$restaurant["commune"]]);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+        //,Longitude,Latitude,CodeCommune,CodeDepartement,CodeRegion,NomRestaurant,SiteWeb,Facebook,TelRestaurant,NbEtoileMichelin,Drive,Capacite,AEmporter,Livraison,Vegetarien,HorrairesOuverture
+        $requete = $connexion->prepare("insert into RESTAURANT(OsmID,Longitude,Latitude,CodeCommune,CodeDepartement,CodeRegion,NomRestaurant,SiteWeb,Facebook,TelRestaurant,NbEtoileMichelin,Capacite,Fumeur,AEmporter,Livraison,Vegetarien,Drive,HorrairesOuverture) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        echo "<p>";
+        var_dump([substr($restaurant["osm_id"],5),$restaurant["geo_point_2d"]["lon"],$restaurant["geo_point_2d"]["lat"],$restaurant["code_commune"],
+        $restaurant["code_departement"],$restaurant["code_region"],$restaurant["name"],$restaurant["smoking"]=="yes",
+        $restaurant["website"],$restaurant["facebook"],$restaurant["phone"],$restaurant["stars"],
+        $restaurant["drive_through"]=="yes",$restaurant["capacity"],$restaurant["takeaway"]=="yes",$restaurant["delivery"]=="yes",
+        $restaurant["vegetarian"]=="yes",$restaurant["opening_hours"]]);
+        echo "</p>";
+        $requete->execute([substr($restaurant["osm_id"],5),$restaurant["geo_point_2d"]["lon"],$restaurant["geo_point_2d"]["lat"],$restaurant["code_commune"],
+                           $restaurant["code_departement"],$restaurant["code_region"],$restaurant["name"],$restaurant["website"],$restaurant["facebook"],$restaurant["phone"],
+                           $restaurant["stars"],$restaurant["capacity"],($restaurant["smoking"]=="yes") ? 1 : 0,($restaurant["takeaway"]=="yes") ? 1 : 0,
+                           ($restaurant["delivery"]=="yes") ? 1 : 0,($restaurant["vegetarian"]=="yes") ? 1 : 0,($restaurant["drive_through"]=="yes") ? 1 : 0,$restaurant["opening_hours"]
+                        ]);
+
+        foreach ($restaurant["cuisine"] as $nom) {
+            try {
+                $requete = $connexion->prepare("insert into CUISINE(NomCuisine) values(?)");
+                $requete->execute([$nom]);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            $requete = $connexion->prepare("insert into PREPARER(NomCuisine, OsmID) values(?,?)");
+            $requete->execute([$nom,substr($restaurant["osm_id"],5)]);
+        }
     }
-    return false;
+    return $restaurants;
 }
-
-function getUtilisateur($mail, $mdp) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail AND mdp = :mdp");
-    $stmt->execute(array('mail' => $mail, 'mdp' => $mdp));
-    $result = $stmt->fetchAll();
-    if ($result){
-        return $result;
-    }
-    return null;
-}
- 
-function insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp) {
-    global $pdo;
-    $stmt = $pdo->prepare("INSERT INTO users (name, prenom, telephone, email, codepostal, ville, mdp) Values (?,?,?,?,?,?,?)");
-    $stmt->execute([$nom, $prenom, $tel, $email,$cp, $ville, $mdp]);
-}
+chargementFichier(__DIR__."./../../data/restaurants_orleans.json");

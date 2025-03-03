@@ -37,7 +37,7 @@ ALTER TABLE COMMUNE ADD FOREIGN KEY (CodeDepartement,CodeRegion) REFERENCES DEPA
 ALTER TABLE PERSONNE ADD FOREIGN KEY (CodeCommune,CodeDepartement,CodeRegion) REFERENCES COMMUNE(CodeCommune,CodeDepartement,CodeRegion);
 
 create table RESTAURANT (
-    OsmID INT PRIMARY KEY,
+    OsmID BIGINT PRIMARY KEY,
     Longitude FLOAT,
     Latitude FLOAT,
     CodeCommune INT,
@@ -62,7 +62,7 @@ ALTER TABLE RESTAURANT ADD FOREIGN KEY (CodeCommune,CodeDepartement,CodeRegion) 
 
 create table FAVORI (
     EMailPersonne VARCHAR(128),
-    OsmID INT,
+    OsmID BIGINT,
     PRIMARY KEY (EMailPersonne, OsmID)
 );
 
@@ -83,7 +83,7 @@ ALTER TABLE PREFERER ADD FOREIGN KEY (EMailPersonne) REFERENCES PERSONNE(EMailPe
 ALTER TABLE PREFERER ADD FOREIGN KEY (NomCuisine) REFERENCES CUISINE(NomCuisine);
 
 create table PREPARER (
-    OsmID INT,
+    OsmID BIGINT,
     NomCuisine VARCHAR(64),
     PRIMARY KEY (OsmID, NomCuisine)
 );
@@ -93,7 +93,7 @@ ALTER TABLE PREPARER ADD FOREIGN KEY (NomCuisine) REFERENCES CUISINE(NomCuisine)
 
 create table NOTER (
     EMailPersonne VARCHAR(128),
-    OsmID INT,
+    OsmID BIGINT,
     Note INT,
     Commentaire VARCHAR(512),
     Date DATE,
