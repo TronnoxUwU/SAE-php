@@ -1,8 +1,13 @@
 <?php
-// Fichier : pages/home.php
+
+
+
+session_start();
 
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
+require_once '../static/script/getImage.php';
+
 
 
 $ville = "Orleans";
@@ -15,7 +20,7 @@ try {
     
     $id = $_GET['id'];
     // Récupérer les informations de l'utilisateur via la fonction du modèle
-    $restaurant = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+    $restaurant = new Restaurant(1,"Cha+","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.90114979996115","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
     $ville = $restaurant->getVille();
     if (!$restaurant) {
         throw new Exception("Aucun resto trouvé.");
@@ -96,9 +101,17 @@ $time="18:00";
         <section class="contenu-principal">
             <div class="resto">
                 <?php
-                $restaurant->renderMax();
+                $restaurant->renderMax($_SESSION['loggedin']);
+
                 ?>
             </div>
         </section>
     </main>
+    
+    <script type="text/javascript">
+        var usermail='<?php echo $_SESSION['mail'];?>';
+        var idResto='<?php if (isset($_GET['id'])) {echo trim($_GET['id']);} ?>';
+    </script>
+    <script type="module" src="../static/script/resto.js"></script>
 </body>
+

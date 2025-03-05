@@ -23,8 +23,6 @@ $restoPOP = getPopResto();
 </head>
 <body>
     <header></header>
-
-    <main class="contenu-principal">
         <section class="Search home">
             <div class="Search-section">
                         <h1>Découvrez les meilleurs restaurants dans votre région</h1>
@@ -45,9 +43,11 @@ $restoPOP = getPopResto();
             </div>
             <img src="../static/images/miam_cut.png" alt="corne d'abondance" class="search-image">
         </section>
+    <main class="contenu-principal">
+        
 
         <section class="Affichage-restaurants A-la-une">
-            <h2>Restaurants à la une</h2>
+            <h2>Restaurants à la une sur Orléans</h2>
             <div class="Affichage-fiches">
                 <?php 
                 foreach ($restoBEST as $resto) {
@@ -72,7 +72,7 @@ $restoPOP = getPopResto();
         </section>
 
         <section class="Affichage-restaurants Les-favoris">
-            <h2>Restaurants les plus prisés</h2>
+            <h2>Restaurants les plus prisés sur Orléans</h2>
             <div class="Affichage-fiches">
                 <?php 
                 foreach ($restoPOP as $resto) {

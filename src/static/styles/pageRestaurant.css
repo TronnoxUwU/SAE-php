@@ -45,7 +45,7 @@ h1 {
     align-items: center;
 }
 
-.fav-button {
+#fav-button {
     max-height: 60px;
 }
 
