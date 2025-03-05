@@ -95,30 +95,31 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
             </div>
         </div>
         <!--  -->
+        <form method="POST" action="search.php">
+            <section class= contenu-vertical>
+                <section class ="trier">
+                    <section class = "v1">
+                        <input class="styled" type="button" value="Promotion %" />
+                        <input class="styled" type="button" value="Ouvert aujourd'hui" />
 
-        <section class= contenu-vertical>
-            <section class ="trier">
-                <section class = "v1">
-                    <input class="styled" type="button" value="Promotion %" />
-                    <input class="styled" type="button" value="Ouvert aujourd'hui" />
+                        <select id="rating">
+                            <option value="1">⭐✦✦✦✦</option>
+                            <option value="2">⭐⭐✦✦✦</option>
+                            <option value="3">⭐⭐⭐✦✦</option>
+                            <option value="4">⭐⭐⭐⭐✦</option>
+                            <option value="5">⭐⭐⭐⭐⭐</option>
+                        </select>
+                        <input class="styled" type="button" value="Accés PMR" />
+                    </section>
 
-                    <select id="rating">
-                        <option value="1">⭐✦✦✦✦</option>
-                        <option value="2">⭐⭐✦✦✦</option>
-                        <option value="3">⭐⭐⭐✦✦</option>
-                        <option value="4">⭐⭐⭐⭐✦</option>
-                        <option value="5">⭐⭐⭐⭐⭐</option>
-                    </select>
-                    <input class="styled" type="button" value="Accés PMR" />
+                    <section class = "scrollmenu">
+                        <?php for($i=0;$i<100;$i++){
+                            echo '<input class="styled" type="button" value="foods_'.$i.'" />';
+                        }
+                        ?>
+                    </section>
                 </section>
-
-                <section class = "scrollmenu">
-                    <?php for($i=0;$i<100;$i++){
-                        echo '<input class="styled" type="button" value="foods_'.$i.'" />';
-                    }
-                    ?>
-                </section>
-            </section>
+        </form>
 
             <div class="Separation-affichage-vertical">
                 <section class="Affichage-restaurants-vertical">
