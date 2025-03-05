@@ -19,4 +19,14 @@ echo"yeah";
 //utilisateurExistant("", "")
 
 //insertClient("Test", "Test", "+33 6 04 50 50 50", "aaaa", 24, 45, 45234, "UwU", true);
-//echo utilisateurExistant("aaaa", "UwU") ? "Il existe" : "Il existe pas";
+echo "<p>";
+echo utilisateurExistant("aaaa", "UwU") ? "Il existe" : "Il existe pas";
+echo "</p>";
+//ajoutePrefCuisine("aaaa", "burger");
+echo "<p>";
+var_dump(getPrefCuisine("aaaa"));
+echo "</p>";
+
+echo "<p>";
+var_dump(getRegion("Orléans"));
+echo "</p>";

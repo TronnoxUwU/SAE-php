@@ -174,11 +174,28 @@ function getPrefCuisine($email){
     $requete = $connexion->prepare("SELECT nomCuisine FROM PREFERER WHERE EMailPersonne = ? ");
     $requete->execute([$email]);
     $result = $requete->fetchAll();
-    return $result
+    return $result;
 }
 
 function getRegion($ville) {
     // Exemple de simulation de données
+    global $connexion;
+    $resultat = [];
+    $requete = $connexion->prepare("SELECT * FROM COMMUNE NATURAL JOIN DEPARTEMENT NATURAL JOIN REGION WHERE NomCommune = ? ");
+    $requete->execute([$ville]);
+    $result = $requete->fetchAll();
+
+    foreach($result as $row){
+        array_push($resultat,[$row["nomdepartement"],$row["nomregion"]]);
+    }
+
+
+
+
+
+
+
+
     $data = [
         "Moret" => [[null, "Pensylvanie"], ["Loir-et-Cher", "Centre-Val de Loire"]],
         "Orleans" => [["Loiret", "Centre-Val de Loire"]],
@@ -186,7 +203,7 @@ function getRegion($ville) {
         "Lille" => [["Nord", "Hauts-de-France"]]
     ];
 
-    return $data[$ville] ?? [];
+    return $resultat;
 }
 
 function getBestResto(){
