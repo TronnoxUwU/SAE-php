@@ -1,8 +1,8 @@
 <?php
-require_once 'src/classes/Composant/Restaurant.php';
+// require_once 'src/classes/Composant/Restaurant.php';
 
-$dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
-$connexion = new PDO($dsn, "richard", "richard");
+// $dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
+// $connexion = new PDO($dsn, "richard", "richard");
 
 // $dsn = "mysql:dbname="."sae_mlp".";host="."127.0.0.1";
 // try{
@@ -107,7 +107,7 @@ function chargementFichier($chemin){
                            ($restaurant["delivery"]=="yes") ? 1 : 0,($restaurant["vegetarian"]=="yes") ? 1 : 0,($restaurant["drive_through"]=="yes") ? 1 : 0,$restaurant["opening_hours"]
                         ]);
 
-        foreach ($restaurant["cuisine"] as $nom) {
+        foreach ($restaurant["cuisine"] ?? [] as $nom) {
             try {
                 $requete = $connexion->prepare("insert into CUISINE(NomCuisine) values(?)");
                 $requete->execute([$nom]);
@@ -141,18 +141,15 @@ function utilisateurExistant($mail, $mdp) {
     }
     return false;
 }
-utilisateurExistant("", "");
+//utilisateurExistant("", "");
 
 
 function getUtilisateur($mail) {
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :mail");
+    global $connexion;
+    $stmt = $connexion->prepare("SELECT * FROM PERSONNE WHERE EMailPersonne = :mail");
     $stmt->execute(array('mail' => $mail));
     $result = $stmt->fetchAll();
-    if ($result){
-        return $result;
-    }
-    return $restaurants;
+    return $result;
 }
 
 // chargementFichier(__DIR__."./../../data/restaurants_orleans.json");
@@ -165,14 +162,15 @@ function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement
     $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
 }
 
-//insertClient("Test", "Test", "+33 6 04 50 50 50", "aaaa", 24, 45, 45234, "UwU", true);
-//echo utilisateurExistant("aaaa", "UwU") ? "Il existe" : "Il existe pas";
 
 function ajoutePrefCuisine($email, $cuisine){
-    
+    global $connexion;
+    $requete = $connexion->prepare("INSERT INTO PREFERER (EMailPersonne, nomCuisine) VALUES (?,?)");
+    $requete->execute([$email, $cuisine]);
 }
 
 function getPrefCuisine($email){
+    global $connexion;
     return array("Chinoise","Americaine");
 }
 
