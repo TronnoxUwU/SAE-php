@@ -171,7 +171,10 @@ function ajoutePrefCuisine($email, $cuisine){
 
 function getPrefCuisine($email){
     global $connexion;
-    return array("Chinoise","Americaine");
+    $requete = $connexion->prepare("SELECT nomCuisine FROM PREFERER WHERE EMailPersonne = ? ");
+    $requete->execute([$email]);
+    $result = $requete->fetchAll();
+    return $result
 }
 
 function getRegion($ville) {
