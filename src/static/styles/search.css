@@ -299,3 +299,13 @@ section.scrollmenu imput:hover {
     margin-left: 3%;
 }
 
+
+
+.optionValider {
+background-color: #59FF9E;
+}
+
+.optionNonValider {
+background-color: white;
+}
+
