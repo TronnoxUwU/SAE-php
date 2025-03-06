@@ -173,11 +173,19 @@ function getNamesUtilisateur($mail) {
 // chargementFichier(__DIR__."./../../data/restaurants_orleans.json");
 
  
-function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement, $codeCommune, $mdp, $handicap) {
+// function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement, $codeCommune, $mdp, $handicap) {
+//     global $connexion;
+//     $hash=hash('sha256',$mdp);
+//     $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, codeRegion, codeDepartement, codeCommune, Handicap) Values (?,?,?,?,?,?,?,?,?,?)");
+//     $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
+// }
+
+ 
+function insertClient($nom, $prenom, $tel, $email, $mdp, $handicap) {
     global $connexion;
     $hash=hash('sha256',$mdp);
-    $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, codeRegion, codeDepartement, codeCommune, Handicap) Values (?,?,?,?,?,?,?,?,?,?)");
-    $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
+    $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, Handicap) Values (?,?,?,?,?,?,?)");
+    $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $handicap]);
 }
 
 
