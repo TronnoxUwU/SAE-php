@@ -28,6 +28,8 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
 
     $sortie = [];
 
+    $localisation = lesNomsRegions($codeRegion, $codeDepartement, $codeCommune);
+
     $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  WHERE c.codeRegion = ? and c.codeDepartement = ? and c.codeCommune = ? GROUP BY r.OsmID ORDER BY moy, r.OsmID;");
     $requete->execute([$codeRegion, $codeDepartement, $codeCommune]);
     $resultat = $requete->fetchAll();
@@ -47,9 +49,9 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
             $restaurant = new Restaurant($row["osmid"],
                                          $row["nomrestaurant"],
                                          ($row["description"]==null) ? "" : $row["description"],
-                                         '$row["nomregion"]' ,
-                                         '$row["nomdepartement"]',
-                                         '$row["nomcommune"]',
+                                         $localisation[0] ,
+                                         $localisation[1],
+                                         $localisation[2],
                                          $row["longitude"],
                                          $row["latitude"],
                                          ($row["siteweb"]==null) ? "" : $row["siteweb"],
@@ -72,7 +74,56 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     return $sortie;
 }
 
+function getRestaurantPopulaire($codeRegion, $codeDepartement, $codeCommune){
+    global $connexion;
 
+    $sortie = [];
+
+    $localisation = lesNomsRegions($codeRegion, $codeDepartement, $codeCommune);
+
+    $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy, COUNT(n.Note) AS place FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  WHERE c.codeRegion = ? and c.codeDepartement = ? and c.codeCommune = ? GROUP BY r.OsmID ORDER BY place,moy, r.OsmID;");
+    $requete->execute([$codeRegion, $codeDepartement, $codeCommune]);
+    $resultat = $requete->fetchAll();
+
+    foreach($resultat as $row){
+        if (count($sortie)<10) {
+
+            $cuisine = [];
+            $requete2 = $connexion->prepare("select * from RESTAURANT natural join PREPARER where OsmID = ?");
+            $requete2->execute([$row["osmid"]]);
+            $resultat2 = $requete->fetchAll();
+
+            foreach($resultat2 as $row2){
+                array_push($cuisine,$row2["nomcuisine"]);
+            }
+
+            $restaurant = new Restaurant($row["osmid"],
+                                         $row["nomrestaurant"],
+                                         ($row["description"]==null) ? "" : $row["description"],
+                                         $localisation[0] ,
+                                         $localisation[1],
+                                         $localisation[2],
+                                         $row["longitude"],
+                                         $row["latitude"],
+                                         ($row["siteweb"]==null) ? "" : $row["siteweb"],
+                                         ($row["facebook"]==null) ? "" : $row["facebook"],
+                                         ($row["telrestaurant"]==null) ? "" : $row["telrestaurant"],
+                                         floatval($row["moy"]),
+                                         ($row["capacite"]==null) ? 0 : $row["capacite"],
+                                         ($row["fumeur"]==null) ? 0 : $row["fumeur"],
+                                         ($row["drive"]==null) ? 0 : $row["drive"],
+                                         ($row["aemporter"]==null) ? 0 : $row["aemporter"],
+                                         ($row["livraison"]==null) ? 0 : $row["livraison"],
+                                         ($row["vegetarien"]==null) ? 0 : $row["vegetarien"],
+                                         ($row["horrairesouverture"]==null) ? "" : $row["horrairesouverture"],
+                                         $cuisine,
+                                         fetchNoteRestaurant($row["osmid"]));
+
+            array_push($sortie, $restaurant);
+        }
+    }
+    return $sortie;
+}
 
 
 
@@ -242,14 +293,14 @@ function getBestResto(){
 }
 
 function getPopResto(){
-    $resto = new Restaurant(
-        1, "test POPULAR", "", "Centre-Val-De-Loire", "Loiret", "Orléans",
-        "1.9052942", "47.902964", "https://test.com", "@testPOP",
-        "06 06 06 69 06", 3.4, 42, true, false, true, true, false,
-        "12:00-14:00,19:00-22:00", ["Chinoise"]
-    );
+    // $resto = new Restaurant(
+    //     1, "test POPULAR", "", "Centre-Val-De-Loire", "Loiret", "Orléans",
+    //     "1.9052942", "47.902964", "https://test.com", "@testPOP",
+    //     "06 06 06 69 06", 3.4, 42, true, false, true, true, false,
+    //     "12:00-14:00,19:00-22:00", ["Chinoise"]
+    // );
 
-    return array_fill(0, 10, $resto);
+    return getRestaurantPopulaire(24, 45, 45234);
 }
 
 function getRestaurantId($osmid){
@@ -299,6 +350,16 @@ function estFavoris($mail, $osmid){
 
     return $result!=null;
 }
+
+function lesNomsRegions($codeRegion, $codeDepartement, $codeCommune){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT * FROM REGION NATURAL JOIN DEPARTEMENT NATURAL JOIN COMMUNE WHERE codeRegion = ? and codeDepartement = ? and codeCommune = ?");
+    $requete->execute([$codeRegion, $codeDepartement, $codeCommune]);
+    $result = $requete->fetch();
+
+    return [$result['nomregion'],$result['nomdepartement'],$result['nomcommune']];
+}
+
 function ajouter_supprimerFavoris($mail, $osmid){
     global $connexion;
     try{

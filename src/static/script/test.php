@@ -42,3 +42,11 @@ echo "</p>";
 echo "<p>";
 var_dump(getRestaurantId(2170973));
 echo "</p>";
+
+echo "<p>";
+var_dump(lesNomsRegions(24, 45, 45234));
+echo "</p>";
+
+echo "<p>";
+var_dump(getRestaurantPopulaire(24, 45, 45234));
+echo "</p>";
