@@ -11,25 +11,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo $rating.PHP_EOL;
         echo $commentaire.PHP_EOL;
         echo $_SESSION['mail'];
-        
         try {
-
             //$resto = getRestoById($id);
-            $comment = $resto->getCommentaireParAuteur($_SESSION['mail']);
+            echo "test".PHP_EOL;
+            //$comment = $resto->getCommentaireParAuteur($_SESSION['mail']);
             if ($comment) {
-                $comment->setCommentaire($commentaire);
-                $comment->setNote($rating);
-                $comment->setDate(date('Y-m-d'));
+                // $comment->setCommentaire($commentaire);
+                // $comment->setNote($rating);
+                // $comment->setDate(date('Y-m-d'));
             } else {
-                $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $id);
-                $resto->addCommentaire($comment);
+                // $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $id);
+                // $resto->addCommentaire($comment);
             }
-
-            
-
+            echo "test2".PHP_EOL;
             // Redirection après enregistrement
-            header('Location: pageRestaurant.php?id="'.$this->getOsmId().'"');
+            header('Location: http://localhost:3000/src/templates/pageRestaurant.php?id=' . $this->getOsmId());
+            echo "test3".PHP_EOL;
             exit();
+
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();
         }
