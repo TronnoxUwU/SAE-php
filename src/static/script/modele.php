@@ -214,14 +214,32 @@ function getUtilisateur($mail) {
     return $result;
 }
 
+function getNamesUtilisateur($mail) {
+    global $connexion;
+    $stmt = $connexion->prepare("SELECT NomPersonne, PrenomPersonne FROM PERSONNE WHERE EMailPersonne = :mail");
+    $stmt->execute(array('mail' => $mail));
+    $result = $stmt->fetchAll();
+    // var_dump($result[0]['nompersonne']);
+    // return $result[0]['nompersonne'];
+    return array($result[0]['nompersonne'],$result[0]['prenompersonne']);
+}
+
 // chargementFichier(__DIR__."./../../data/restaurants_orleans.json");
 
  
-function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement, $codeCommune, $mdp, $handicap) {
+// function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement, $codeCommune, $mdp, $handicap) {
+//     global $connexion;
+//     $hash=hash('sha256',$mdp);
+//     $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, codeRegion, codeDepartement, codeCommune, Handicap) Values (?,?,?,?,?,?,?,?,?,?)");
+//     $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
+// }
+
+ 
+function insertClient($nom, $prenom, $tel, $email, $mdp, $handicap) {
     global $connexion;
     $hash=hash('sha256',$mdp);
-    $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, codeRegion, codeDepartement, codeCommune, Handicap) Values (?,?,?,?,?,?,?,?,?,?)");
-    $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
+    $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, Handicap) Values (?,?,?,?,?,?,?)");
+    $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $handicap]);
 }
 
 

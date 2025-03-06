@@ -49,6 +49,16 @@ h1 {
     max-height: 60px;
 }
 
+.unfav {
+    background-color: rgb(58, 199, 119);
+}
+.faved {
+    background-color: rgb(192, 113, 87);
+}
+.faved:hover {
+    background-color: rgb(147, 84, 63);
+}
+
 .resto span:last-of-type{
     justify-content: left;
     display: flex;

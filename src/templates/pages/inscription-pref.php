@@ -7,6 +7,7 @@ require_once "../static/script/modele.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) {
     // TODO mettre les cuisines prefs dans la bd
 
+
     $cuisines = $_POST['selectedCuisines'] ?? null;
 
     if ($cuisines){
@@ -28,12 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) 
         <div class="cuisine-container">
             <!-- Les blocs de cuisine -->
             <?php 
-                $cuisines = [
-                    "Italienne", "Chinoise", "Mexicaine", 
-                    "Japonaise", "Française", "Indienne",
-                    "Thaïlandaise", "Marocaine", "Libanaise", 
-                    "Américaine"
-                ];
+                $cuisines = fetchCuisines();
 
                 foreach ($cuisines as $index => $cuisine) {
                     echo '<div class="cuisine-block" data-value="'.$cuisine.'">'.$cuisine.'</div>';
