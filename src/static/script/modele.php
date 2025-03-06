@@ -370,3 +370,12 @@ function ajouter_supprimerFavoris($mail, $osmid){
         $requete->execute([$mail, $osmid]);
     }
 }
+
+function fetchCuisine(){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT * FROM CUISINE");
+    $requete->execute();
+    $result = $requete->fetchAll();
+
+    return $result;
+}

@@ -50,3 +50,7 @@ echo "</p>";
 echo "<p>";
 var_dump(getRestaurantPopulaire(24, 45, 45234));
 echo "</p>";
+
+echo "<p>";
+var_dump(fetchCuisine());
+echo "</p>";
