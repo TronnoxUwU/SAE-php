@@ -146,3 +146,12 @@ function getPopResto(){
 
     return array_fill(0, 10, $resto);
 }
+
+
+
+function estFavoris($mail, $resto){
+
+}
+function ajouter_supprimerFavoris($mail, $resto){
+
+}
