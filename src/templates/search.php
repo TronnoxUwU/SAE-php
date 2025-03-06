@@ -14,41 +14,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
     if (isset($_POST['date']) && isset($_POST['time']))
         {$date = $_POST['date']; $time = $_POST['time'];}
     else
-        {$date = date('Y-m-d'); $time = "18:00";};
+        {$date = date('Y-m-d'); $time = "18:00";}
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $request = $_GET['nourriture'] ?? null;
-    $request = $_GET['rating'] ?? 0;
-    $request = $_GET['tendance'] ?? null;
-    $request = $_GET['Ouvert'] ?? null;
-    $request = $_GET['PMR'] ?? null;
-
-
+    $nourriture = $_GET['nourriture'] ?? "";
+    $rating = $_GET['rating'] ?? "0";
+    $tendance = $_GET['tendance'] ?? "false";
+    $Ouvert = $_GET['Ouvert'] ?? "false";
+    $PMR = $_GET['PMR'] ?? "false";
 
 
     if (isset($_POST['nourriture'])) {
-        echo("hahaha isra");
+
+        if (strpos($nourriture, $_POST['nourriture']) !== false) {
+            echo "Mot trouvé !";
+            if(strpos($nourriture, ",".$_POST['nourriture']) !== false){
+                $nourriture =  trim($nourriture, ",".$_POST['nourriture']);
+            }else{
+                $nourriture =  trim($nourriture, $_POST['nourriture']);
+            }
+        } else if ($nourriture ==""){
+            $nourriture = $_POST['nourriture'];
+        } else {
+            $nourriture += ",".$_POST['nourriture'];
+        }
+        
     }
     
     if (isset($_POST['rating'])) {
-        echo("hahaha");
+        $rating = $_POST['rating'];
     }
 
     getPOSTNomCuisine();
 
     if (isset($_POST['tendance'])) {
-        echo("hahaha non");
+        $traitement = strtolower($_POST['tendance']);
+        if($tendance == "false"){
+            $tendance == "true";
+        } else if($tendance == $traitement){
+            $tendance = "false";
+        }
+
     }
 
 
     if (isset($_POST['Ouvert'])) {
-        echo("hahaha comme ta ");
+        $traitement = strtolower($_POST['Ouvert']);
+        if($Ouvert == "false"){
+            $Ouvert == "true";
+        } else if($Ouvert == $traitement){
+            $Ouvert = "false";
+        }
+
+        echo("hahaha open");
     }
 
 
     if (isset($_POST['PMR'])) {
+        $traitement = strtolower($_POST['Ouvert']);
+        if($PMR == "false"){
+            $PMR == "true";
+        } else if($PMR == $traitement){
+            $PMR = "false";
+        }
         echo("hahaha cest mal");
     }
 
