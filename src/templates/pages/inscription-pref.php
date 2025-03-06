@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) 
         <div class="cuisine-container">
             <!-- Les blocs de cuisine -->
             <?php 
-                $cuisines = fetCuisines();
+                $cuisines = fetchCuisines();
 
                 foreach ($cuisines as $index => $cuisine) {
                     echo '<div class="cuisine-block" data-value="'.$cuisine.'">'.$cuisine.'</div>';
