@@ -21,6 +21,13 @@ var_dump(getPrefCuisine("aaaa"));
 echo "</p>";
 
 echo "<p>";
+ajouter_supprimerFavoris("aaaa", 2170973);
+echo estFavoris("aaaa", 2170973) ? "Il existe" : "Il existe pas";
+ajouter_supprimerFavoris("aaaa", 2170973);
+echo estFavoris("aaaa", 2170973) ? "Il existe" : "Il existe pas";
+echo "</p>";
+
+echo "<p>";
 var_dump(getRegion("Orléans"));
 echo "</p>";
 

@@ -292,8 +292,20 @@ function getRestaurantId($osmid){
 }
 
 function estFavoris($mail, $osmid){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT * FROM FAVORI WHERE EmailPersonne = ? and OsmID = ?");
+    $requete->execute([$mail, $osmid]);
+    $result = $requete->fetch();
 
+    return $result!=null;
 }
 function ajouter_supprimerFavoris($mail, $osmid){
-
+    global $connexion;
+    try{
+        $requete = $connexion->prepare("INSERT INTO FAVORI (EmailPersonne, OsmID) Values (?,?)");
+        $requete->execute([$mail, $osmid]);
+    } catch (\Throwable $th) {
+        $requete = $connexion->prepare("DELETE FROM FAVORI WHERE EmailPersonne = ? and OsmID = ?");
+        $requete->execute([$mail, $osmid]);
+    }
 }
