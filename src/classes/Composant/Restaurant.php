@@ -372,7 +372,7 @@ class Restaurant{
                     echo '<span class="commentaires">';
                         echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
                         # Ici ya le form pour les commentaires et la note
-                        echo '<form method="POST" action="validationNoteCommentaire.php?id='.$this->getOsmId().'">';
+                        echo '<form method="POST" action="pageRestaurant.php?id='.$this->getOsmId().'">';
                             echo '<select name="rating">';
                                 echo '<option value="1">⭐✦✦✦✦</option>';
                                 echo '<option value="2">⭐⭐✦✦✦</option>';
