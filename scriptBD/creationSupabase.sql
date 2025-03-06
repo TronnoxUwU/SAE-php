@@ -1,13 +1,14 @@
 create table PERSONNE (
     EMailPersonne VARCHAR(128) PRIMARY KEY,
-    NomPersone VARCHAR(64),
-    PrenomPersone VARCHAR(64),
-    TelPersone VARCHAR(17),
+    NomPersonne VARCHAR(64),
+    PrenomPersonne VARCHAR(64),
+    TelPersonne VARCHAR(30),
     MotDePasse VARCHAR(256),
     CodeCommune INT,
     CodeDepartement INT,
     CodeRegion INT,
-    Role VARCHAR(64)
+    Role VARCHAR(64),
+    Handicap BOOLEAN
 );
 
 create table REGION (
@@ -47,7 +48,7 @@ create table RESTAURANT (
     Description VARCHAR(512),
     SiteWeb VARCHAR(128),
     Facebook VARCHAR(128),
-    TelRestaurant VARCHAR(17),
+    TelRestaurant VARCHAR(30),
     NbEtoileMichelin INT,
     Capacite INT,
     Fumeur BOOLEAN,
