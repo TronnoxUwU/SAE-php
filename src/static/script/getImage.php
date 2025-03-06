@@ -5,7 +5,7 @@ set_time_limit(0);
 include_once '../static/script/getKey.php';
 
 
-function getPlaceId(float $lat, float $lng, string $name, int $rad = 20){ 
+function getPlaceId_old(float $lat, float $lng, string $name, int $rad = 50){ 
     $API = get_CSV_Key("MAPS");
     $placeId = "";
     $url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=$API&location=$lat,$lng&radius=$rad";
@@ -53,6 +53,79 @@ function getPlaceId(float $lat, float $lng, string $name, int $rad = 20){
     // echo (" place ->"); var_dump($placeId);
     return $placeId;
 }
+
+function getPlaceId(float $lat, float $lng, string $name, int $rad = 20) { 
+    $API = get_CSV_Key("MAPS");
+    $placeId = "";
+    $url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=$API&location=$lat,$lng&radius=$rad";
+    
+    $bestMatch = null;
+    $bestScore = PHP_INT_MAX;
+
+    do {
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+
+        foreach ($data["results"] as $resto) {
+            $distance = abs($lat - $resto["geometry"]["location"]["lat"]) + abs($lng - $resto["geometry"]["location"]["lng"]);
+            $nameSimilarity = levenshtein(strtolower($resto["name"]), strtolower($name));
+            
+
+            $score = ($distance * 1000) + $nameSimilarity; 
+
+            if ($score < $bestScore) {
+                $bestScore = $score;
+                $bestMatch = $resto["place_id"];
+            }
+        }
+
+        if (isset($data["next_page_token"])) {
+            $url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=$API&location=$lat,$lng&radius=$rad&pagetoken=" . $data["next_page_token"];
+            sleep(1.5);
+        } else {
+            break;
+        }
+    } while ($bestMatch === null);
+
+    return $bestMatch;
+}
+
+function getGooglePlaceData(float $lat, float $lng, string $name, int $rad = 20) { 
+    $API = get_CSV_Key("MAPS");
+    $url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=$API&location=$lat,$lng&radius=$rad";
+    
+    $bestMatch = null;
+    $bestScore = PHP_INT_MAX;
+
+    do {
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+
+        foreach ($data["results"] as $resto) {
+            $distance = abs($lat - $resto["geometry"]["location"]["lat"]) + abs($lng - $resto["geometry"]["location"]["lng"]);
+            $nameSimilarity = levenshtein(strtolower($resto["name"]), strtolower($name));
+            
+
+            $score = ($distance * 1000) + $nameSimilarity; 
+
+            if ($score < $bestScore) {
+                $bestScore = $score;
+                $bestMatch = $resto;
+            }
+        }
+
+        if (isset($data["next_page_token"]) && $bestMatch === null) {
+            $url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=$API&location=$lat,$lng&radius=$rad&pagetoken=" . $data["next_page_token"];
+            sleep(1.5);
+        } else {
+            break;
+        }
+    } while ($bestMatch === null);
+
+    return $bestMatch;
+}
+
+
 
 
 

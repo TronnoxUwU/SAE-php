@@ -160,6 +160,16 @@ function getUtilisateur($mail) {
     return $result;
 }
 
+function getNamesUtilisateur($mail) {
+    global $connexion;
+    $stmt = $connexion->prepare("SELECT NomPersonne, PrenomPersonne FROM PERSONNE WHERE EMailPersonne = :mail");
+    $stmt->execute(array('mail' => $mail));
+    $result = $stmt->fetchAll();
+    // var_dump($result[0]['nompersonne']);
+    // return $result[0]['nompersonne'];
+    return array($result[0]['nompersonne'],$result[0]['prenompersonne']);
+}
+
 // chargementFichier(__DIR__."./../../data/restaurants_orleans.json");
 
  
@@ -235,4 +245,8 @@ function estFavoris($mail, $resto){
 }
 function ajouter_supprimerFavoris($mail, $resto){
 
+}
+
+function getRestoById($id){
+    return new Restaurant(1,"Cha+","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.90114979996115","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
 }

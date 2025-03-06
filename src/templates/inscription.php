@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
                 // Insérer les données dans la table "users"
                 // function insertAdherent($nom, $prenom, $tel, $mail, $taille, $poids, $dateInscription, $mdp){
 
-                insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap);
+                insertClient($nom, $prenom, $tel, $email, 45100, $cp, $ville, $mdp, $handicap);
                 
                 $id = utilisateurExistant($email, hash('sha256', $mdp));
                 $_SESSION['inscription']++;
