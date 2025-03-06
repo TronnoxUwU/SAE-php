@@ -89,6 +89,7 @@ img {
 .search-bar .resto {
     flex-grow: 1;
     flex-basis: 80%;
+    flex-direction: inherit;
 }
 .search-bar .Position {
     margin-left: 2em;

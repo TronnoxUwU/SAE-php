@@ -11,11 +11,11 @@
         <!-- Section Informations -->
         <div class="footer-section">
             <h3>Information</h3>
-            <p><strong>Contact</strong><br>+33 6 12 45 52</p>
-            <p><strong>Adresse postal</strong><br>
-                Club Grand galop<br>
+            <p><strong>Contact</strong><br>+33 6 02 14 94 57</p>
+            <p><strong>Adresse postale</strong><br>
+                IUTable'O<br>
                 18 rue truc<br>
-                41230 Sologne - France
+                41000 Orleans - France
             </p>
         </div>
 
@@ -24,25 +24,24 @@
             <h3>Créée par</h3>
             <p>Baptiste RICHARD<br>
                Shanka CLERMONT<br>
+               Clément RENAUDIN<br>
                Tristan CHALOINE</p>
         </div>
 
         <!-- Section Plan du site -->
         <div class="footer-section">
             <h3>Plan du site</h3>
-            <p><strong>Pages visiteurs</strong><br>
+            <p><strong>Pages</strong><br>
                 Page d'accueil<br>
+                Page de recherche avancée<br>
+                Page restaurant<br>
                 Page de connexion<br>
                 Page d'inscription
             </p>
-            <p><strong>Pages Clients</strong><br>
-                Page planning
-            </p>
-            <p><strong>Pages Employés</strong><br>
-                Page planning
-            </p>
-            <p><strong>Pages Admins</strong><br>
-                Page de gestion
+            <p><strong>Compte</strong><br>
+                Informations<br>
+                Restaurants favoris<br>
+                Avis enregistrés
             </p>
         </div>
 
