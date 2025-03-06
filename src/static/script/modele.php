@@ -1,5 +1,7 @@
 <?php
 
+
+
 $host = 'aws-0-eu-west-3.pooler.supabase.com';
 $dbname = 'postgres';
 $user = 'postgres.vicnhizlpnnchlerpqtr';
@@ -61,7 +63,8 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
                                          ($row["livraison"]==null) ? 0 : $row["livraison"],
                                          ($row["vegetarien"]==null) ? 0 : $row["vegetarien"],
                                          ($row["horrairesouverture"]==null) ? "" : $row["horrairesouverture"],
-                                         $cuisine);
+                                         $cuisine,
+                                         fetchNoteRestaurant($row["osmid"]));
 
             array_push($sortie, $restaurant);
         }
@@ -183,6 +186,27 @@ function ajouteNote($email, $osmid, $note, $commentaire){
     $requete->execute([$email, $osmid,$note,$commentaire,date('Y-m-d H:i:s')]);
 }
 
+function fetchNoteRestaurant($osmid){
+    global $connexion;
+    $resultat = [];
+    $requete = $connexion->prepare("SELECT * FROM NOTER NATURAL JOIN PERSONNE WHERE OsmID = ? ");
+    $requete->execute([$osmid]);
+    $result = $requete->fetchAll();
+
+    foreach($result as $row){
+        array_push($resultat,new Note($row['emailpersonne'],
+                                                      $row['note'],
+                                                      $row['commentaire'],
+                                                      $row['date'],
+                                                      $row['nompersonne'],
+                                                      $row['prenompersonne']
+                                                    ));
+    }
+
+    return $resultat;
+}
+
+
 function getPrefCuisine($email){
     global $connexion;
     $requete = $connexion->prepare("SELECT nomCuisine FROM PREFERER WHERE EMailPersonne = ? ");
@@ -228,11 +252,48 @@ function getPopResto(){
     return array_fill(0, 10, $resto);
 }
 
+function getRestaurantId($osmid){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  WHERE r.OsmID = ? GROUP BY r.OsmID;");
+    $requete->execute([$osmid]);
+    $result = $requete->fetch();
 
+    $cuisine = [];
+    $requete2 = $connexion->prepare("select * from RESTAURANT natural join PREPARER where OsmID = ?");
+    $requete2->execute([$result["osmid"]]);
+    $resultat2 = $requete->fetchAll();
 
-function estFavoris($mail, $resto){
+    foreach($resultat2 as $row2){
+        array_push($cuisine,$row2["nomcuisine"]);
+    }
+
+    return new Restaurant($result["osmid"],
+                          $result["nomrestaurant"],
+                          ($result["description"]==null) ? "" : $result["description"],
+                          '$row["nomregion"]' ,
+                          '$row["nomdepartement"]',
+                          '$row["nomcommune"]',
+                          $result["longitude"],
+                          $result["latitude"],
+                          ($result["siteweb"]==null) ? "" : $result["siteweb"],
+                          ($result["facebook"]==null) ? "" : $result["facebook"],
+                          ($result["telrestaurant"]==null) ? "" : $result["telrestaurant"],
+                          floatval($result["moy"]),
+                          ($result["capacite"]==null) ? 0 : $result["capacite"],
+                          ($result["fumeur"]==null) ? 0 : $result["fumeur"],
+                          ($result["drive"]==null) ? 0 : $result["drive"],
+                          ($result["aemporter"]==null) ? 0 : $result["aemporter"],
+                          ($result["livraison"]==null) ? 0 : $result["livraison"],
+                          ($result["vegetarien"]==null) ? 0 : $result["vegetarien"],
+                          ($result["horrairesouverture"]==null) ? "" : $result["horrairesouverture"],
+                          $cuisine,
+                          fetchNoteRestaurant($result["osmid"]));
 
 }
-function ajouter_supprimerFavoris($mail, $resto){
+
+function estFavoris($mail, $osmid){
+
+}
+function ajouter_supprimerFavoris($mail, $osmid){
 
 }

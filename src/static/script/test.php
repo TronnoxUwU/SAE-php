@@ -1,6 +1,7 @@
 <?php
 require_once './src/static/script/modele.php';
-
+require_once 'src/classes/Composant/Restaurant.php';
+require_once 'src/classes/Composant/Note.php';
 
 echo"yeah";
 //set_time_limit(5000);
@@ -24,5 +25,13 @@ var_dump(getRegion("Orléans"));
 echo "</p>";
 
 echo "<p>";
+var_dump(fetchNoteRestaurant(2170973));
+echo "</p>";
+
+echo "<p>";
 var_dump(getBestResto());
+echo "</p>";
+
+echo "<p>";
+var_dump(getRestaurantId(2170973));
 echo "</p>";

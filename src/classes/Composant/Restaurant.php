@@ -25,8 +25,9 @@ class Restaurant{
     private string $horairesOuverture;
 
     private array $cuisines;
+    private array $notes;
 
-    public function __construct($osmId, $nomRestaurant, $description, $region, $departement, $ville, $longitude, $latitude, $siteWeb, $facebook, $telRestaurant, $nbEtoiles, $capacite, $fumeur, $drive, $aEmporter, $livraison, $vegetarien, $horairesOuverture, $cuisines){
+    public function __construct($osmId, $nomRestaurant, $description, $region, $departement, $ville, $longitude, $latitude, $siteWeb, $facebook, $telRestaurant, $nbEtoiles, $capacite, $fumeur, $drive, $aEmporter, $livraison, $vegetarien, $horairesOuverture, $cuisines, $notes=[]){
         $this->osmId = $osmId;
         $this->nomRestaurant = $nomRestaurant;
         $this->description = $description;
@@ -47,6 +48,7 @@ class Restaurant{
         $this->vegetarien = $vegetarien;
         $this->horairesOuverture = $horairesOuverture;
         $this->cuisines = $cuisines;
+        $this->notes = $notes;
     }
 
     public function getOsmId(){
@@ -55,6 +57,10 @@ class Restaurant{
 
     public function getNomRestaurant(){
         return $this->nomRestaurant;
+    }
+
+    public function getNotes(){
+        return $this->notes;
     }
 
     public function getDescription(){
