@@ -250,6 +250,15 @@ class Restaurant{
         }
     }
 
+    public function getCommentaireParAuteur($mail){
+        foreach($this->notes as $note){
+            if($note->getMailAuteur() == $mail){
+                return $note;
+            }
+        }
+        return null;
+    }
+
     public function getImagePrincipal(){
         # A remplacer par un appelle de fonction qui renvoie l'image principale du restaurant
         return '../static/images/noequestrians.png" alt="Balade en forêt';
@@ -362,11 +371,15 @@ class Restaurant{
                     echo '</span>';
                     echo '<span class="commentaires">';
                         echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
-                        # Ici ya le form pur les commentaires
-                        echo '<form method="POST" action="pageRestaurant.php">';
-                            for ($i = 5; $i >= 1; $i--) {
-                                echo "<span class='star' data-value='$i'>★</span>";
-                            }
+                        # Ici ya le form pour les commentaires et la note
+                        echo '<form method="POST" action="validationNoteCommentaire.php?id='.$this->getOsmId().'">';
+                            echo '<select name="rating">';
+                                echo '<option value="1">⭐✦✦✦✦</option>';
+                                echo '<option value="2">⭐⭐✦✦✦</option>';
+                                echo '<option value="3">⭐⭐⭐✦✦</option>';
+                                echo '<option value="4">⭐⭐⭐⭐✦</option>';
+                                echo '<option value="5">⭐⭐⭐⭐⭐</option>';
+                            echo '</select>';
                             echo '<input type="text" name="commentaire" placeholder="Commentaire">';
                             echo '<button type="submit">Envoyer</button>';
                         echo '</form>';

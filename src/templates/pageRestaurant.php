@@ -39,8 +39,6 @@ $time="18:00";
     <link rel="stylesheet" href="../static/styles/search.css">
     <link rel="stylesheet" href="../static/styles/popup-search.css">
     <link rel="stylesheet" href="../static/styles/pageRestaurant.css">
-    <link rel="stylesheet" href="../static/styles/noteEtoile.css">
-    <script src="../static/script/noteEtoile.js" async></script>
 </head>
 <body>
     <main>
