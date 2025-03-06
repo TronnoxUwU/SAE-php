@@ -3,6 +3,7 @@
 include 'navbar.php';
 include_once '../static/script/getKey.php';
 require_once '../classes/Composant/Restaurant.php';
+require_once '../static/script/modele.php';
 
 $API = get_CSV_Key("MAPS");
 
@@ -99,8 +100,8 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
             <section class= contenu-vertical>
                 <section class ="trier">
                     <section class = "v1">
-                        <input class="styled" type="button" value="Promotion %" />
-                        <input class="styled" type="button" value="Ouvert aujourd'hui" />
+                        <input class="styled" type="button"  name="Promotion" value="Promotion %" />
+                        <input class="styled" type="button"  name="Ouvert" value="Ouvert aujourd'hui" />
 
                         <select id="rating">
                             <option value="1">⭐✦✦✦✦</option>
@@ -109,14 +110,11 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                             <option value="4">⭐⭐⭐⭐✦</option>
                             <option value="5">⭐⭐⭐⭐⭐</option>
                         </select>
-                        <input class="styled" type="button" value="Accés PMR" />
+                        <input class="styled" type="button" name="PMR" value="Accés PMR" />
                     </section>
 
                     <section class = "scrollmenu">
-                        <?php for($i=0;$i<100;$i++){
-                            echo '<input class="styled" type="button" value="foods_'.$i.'" />';
-                        }
-                        ?>
+                        <?php getimputeNomCuisine() ?>
                     </section>
                 </section>
         </form>

@@ -1,17 +1,17 @@
 <?php
-// require_once 'src/classes/Composant/Restaurant.php';
+ //require_once 'src/classes/Composant/Restaurant.php';
+ //$dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
+ //$connexion = new PDO($dsn, "richard", "richard");
+ //$dsn = "mysql:dbname="."sae_mlp".";host="."127.0.0.1";
 
-// $dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
-// $connexion = new PDO($dsn, "richard", "richard");
 
-// $dsn = "mysql:dbname="."sae_mlp".";host="."127.0.0.1";
-// try{
-//     $connexion = new PDO($dsn, "root", "clermont");
-// }
-// catch(PDOException $e){
-//     printf("Error connecting to database: %s", $e->getMessage());
-//     exit();
-// }
+ // try{
+ //     $connexion = new PDO($dsn, "root", "clermont");
+ // }
+ // catch(PDOException $e){
+ //     printf("Error connecting to database: %s", $e->getMessage());
+ //     exit();
+ // }
 
 function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     global $connexion;
@@ -60,7 +60,6 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     }
     return $sortie;
 }
-
 
 
 
@@ -206,3 +205,69 @@ function getPopResto(){
 
     return array_fill(0, 10, $resto);
 }
+
+
+
+
+
+
+
+
+
+
+function getNomCuisine(){
+    global $connexion;
+    $ListeNomCuisine = [];
+    $requete = $connexion->prepare("select nomcuisine from CUISINE ");
+    $requete->execute();
+    $resultat = $requete->fetchAll();
+
+    foreach($resultat as $row){
+        array_push($ListeNomCuisine, $row );
+    }
+    return $ListeNomCuisine;
+}
+
+
+function getimputeNomCuisine(){
+    try {
+    global $connexion;
+
+        $requete = $connexion->prepare("select nomcuisine from CUISINE ");
+        $requete->execute();
+        $resultat = $requete->fetchAll();
+
+        foreach($resultat as $row){
+            echo '<input class="styled" type="button" id='.$row.' name='.$row.' value="'.$row.'"'.$row.' />';
+        }
+    } catch (PDOException $e) {
+        echo 'Exception reçue : ',  $e->getMessage(), "\n";
+        for($i=0;$i<5;$i++){
+            echo '<input class="styled" type="button" id="X" name="X" value="food" X />';
+        }
+    }
+
+}
+
+function getPOSTNomCuisine(){
+    try {
+        global $connexion;
+        $ListeNomCuisineActif = [];
+        $requete = $connexion->prepare("select nomcuisine from CUISINE ");
+        $requete->execute();
+        $resultat = $requete->fetchAll();
+
+        foreach($_POST as $key => $value){
+            if (in_array($value,$resultat)) {
+                array_push($ListeNomCuisineActif, $value );
+            }
+        }
+        return $ListeNomCuisineActif;
+    } catch (PDOException $e) {
+        echo 'Exception reçue : ',  $e->getMessage(), "\n";
+         return $ListeNomCuisineActif;
+    }
+}
+
+
+
