@@ -334,8 +334,14 @@ class Restaurant{
         $images = getImageByPlaceIdLight($Pid);
 
         $res = array();
-        $res = array_merge($res, $images['horizontal']);
-        $res = array_merge($res, $images['vertical']);
+        if (array_key_exists('horizontal', $images) && array_key_exists('vertical', $images)){
+            $res = array_merge($res, $images['horizontal']);
+            $res = array_merge($res, $images['vertical']);
+        }
+        else{
+            return array();
+        }
+        
         // var_dump($res);
         return $res;
     }
