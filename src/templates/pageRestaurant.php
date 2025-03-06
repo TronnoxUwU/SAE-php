@@ -1,9 +1,16 @@
 <?php
-// Fichier : pages/home.php
+
+
+
+session_start();
 
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
+require_once '../static/script/getImage.php';
 
+
+
+$ville = "Orleans";
 try {
     // Vérifier si l'utilisateur est connecté
     
@@ -13,7 +20,8 @@ try {
     
     $id = $_GET['id'];
     // Récupérer les informations de l'utilisateur via la fonction du modèle
-    $restaurant = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+    $restaurant = new Restaurant(1,"Cha+","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.90114979996115","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+    $ville = $restaurant->getVille();
     if (!$restaurant) {
         throw new Exception("Aucun resto trouvé.");
     }
@@ -24,6 +32,7 @@ try {
 
 $date=date('Y-m-d');
 $time="18:00";
+
 
 
 ?>
@@ -41,9 +50,9 @@ $time="18:00";
 </head>
 <body>
     <main>
-        <section class="Search home">
-            <div class="Search-section">
-            <form method="POST" action="search.php">
+    <section class="Search home" style="min-height:1em">
+            <div class="Search-section">     
+                <form method="POST" action="search.php">
                     <div class="search-bar left">
                         <div class="resto">
                             <!-- <img src="../static/images/search.png" alt="search" class="search-pos-image"> -->
@@ -53,7 +62,7 @@ $time="18:00";
                         </div>
                         <div class="Position">
                             <img src="../static/images/maps.png" alt="search" class="maps">
-                            <input type="text" id="resto-pos" name="position" <?php if (isset($position)) {echo 'value="'.$position.'"';}?> required>
+                            <input type="text" id="resto-pos" name="position" <?php if (isset($ville)) {echo 'value="'.$ville.'"';}?> required>
                         </div>
                     </div>
                     <div class="search-bar right">
@@ -61,7 +70,7 @@ $time="18:00";
                             <label for="date" class="date-label">
                                 <?php 
                                     setlocale(LC_TIME, 'fr_FR.utf8', 'fra'); // Pour afficher la date en français
-                                    //echo utf8_encode(strftime('%A %d %B %Y', strtotime($date))); 
+                                    echo utf8_encode(strftime('%A %d %B %Y', strtotime($date))); 
                                 ?>
                             </label>
                             <input type="date" id="date" name="date" value="<?php echo $date; ?>">
@@ -92,9 +101,17 @@ $time="18:00";
         <section class="contenu-principal">
             <div class="resto">
                 <?php
-                $restaurant->renderMax();
+                $restaurant->renderMax($_SESSION['loggedin']);
+
                 ?>
             </div>
         </section>
     </main>
+    
+    <script type="text/javascript">
+        var usermail='<?php echo $_SESSION['mail'];?>';
+        var idResto='<?php if (isset($_GET['id'])) {echo trim($_GET['id']);} ?>';
+    </script>
+    <script type="module" src="../static/script/resto.js"></script>
 </body>
+
