@@ -8,6 +8,7 @@ function recuperer_nom_resto(){
     $Promotion = $_POST['Promotion'];
     $Ouvert = $_POST['Ouvert'];
     $PMR = $_POST['PMR'];
+    //note personnel faire juste une fonction qui chope les getPOSTNomCuisine() et regarde si les autres post sont valide
     
 }
 
