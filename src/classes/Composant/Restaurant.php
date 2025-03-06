@@ -6,8 +6,8 @@ class Restaurant{
     private string $region;
     private string $departement;
     private string $ville;
-    private int $longitude;
-    private int $latitude;
+    private float $longitude;
+    private float $latitude;
     private string $siteWeb;
     private string $facebook;
     private string $telRestaurant;
