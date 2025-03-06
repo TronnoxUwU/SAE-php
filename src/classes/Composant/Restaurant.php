@@ -233,20 +233,21 @@ class Restaurant{
 
     public function getPremierCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le premier commentaire du restaurant
-        $comm= $this->notes[0]->getMailAuteur().' a donné une note de '.$this->notes[0]->getNote().'☆ : \n ';
-        $comm .= $this->notes[0]->getCommentaire();
-        return $comm;
+        echo "<p>".$this->notes[0]->getMailAuteur().' a donné une note de '.$this->notes[0]->getNote().'☆ : '.'</p>';
+        echo  "<p>".$this->notes[0]->getCommentaire()."</p>";
     }
 
     public function getCommentaires(){
         # A remplacer par un appelle de fonction qui renvoie les commentaires du restaurant
-        $commentaire = [];
         foreach($this->notes as $note){
-            $comm = $note->getMailAuteur().' a donné une note de '.$note->getNote().'☆ : \n ';
-            $comm .= $note->getCommentaire();
-            $commentaire[] = $comm;
+            echo "<div class='commentaire'>";
+                echo "<div class=auteur>";
+                    echo "<h4>".$note->getPrenomAuteur().' '.$note->getNomAuteur().'</h4>';
+                    echo "<p>(Il y a ".$note->getDateDiff().')</p>';
+                echo "</div>";
+                echo "<p>".$note->getCommentaire()."</p>";
+            echo "</div>";
         }
-        return $commentaire;
     }
 
     public function getImagePrincipal(){
@@ -361,8 +362,17 @@ class Restaurant{
                     echo '</span>';
                     echo '<span class="commentaires">';
                         echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
+                        # Ici ya le form pur les commentaires
+                        echo '<form method="POST" action="pageRestaurant.php">';
+                            for ($i = 5; $i >= 1; $i--) {
+                                echo "<span class='star' data-value='$i'>★</span>";
+                            }
+                            echo '<input type="text" name="commentaire" placeholder="Commentaire">';
+                            echo '<button type="submit">Envoyer</button>';
+                        echo '</form>';
+                        #
                         echo '<div class="les_commentaires">';
-                            echo '<p>'.$this->getPremierCommentaire().'</p>';
+                            $this->getCommentaires();
                         echo '</div>';
                     echo '</span>';
                 echo '</div>';

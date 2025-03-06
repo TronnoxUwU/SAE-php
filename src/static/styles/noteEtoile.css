@@ -1,0 +1,16 @@
+.stars {
+    display: flex;
+    direction: row-reverse;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.star {
+    color: gray;
+    transition: color 0.3s;
+}
+.star:hover,
+.star:hover ~ .star,
+.star.selected,
+.star.selected ~ .star {
+    color: gold;
+}
