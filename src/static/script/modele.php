@@ -1,5 +1,7 @@
 <?php
 
+
+
 $host = 'aws-0-eu-west-3.pooler.supabase.com';
 $dbname = 'postgres';
 $user = 'postgres.vicnhizlpnnchlerpqtr';
@@ -26,6 +28,8 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
 
     $sortie = [];
 
+    $localisation = lesNomsRegions($codeRegion, $codeDepartement, $codeCommune);
+
     $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  WHERE c.codeRegion = ? and c.codeDepartement = ? and c.codeCommune = ? GROUP BY r.OsmID ORDER BY moy, r.OsmID;");
     $requete->execute([$codeRegion, $codeDepartement, $codeCommune]);
     $resultat = $requete->fetchAll();
@@ -45,9 +49,9 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
             $restaurant = new Restaurant($row["osmid"],
                                          $row["nomrestaurant"],
                                          ($row["description"]==null) ? "" : $row["description"],
-                                         '$row["nomregion"]' ,
-                                         '$row["nomdepartement"]',
-                                         '$row["nomcommune"]',
+                                         $localisation[0] ,
+                                         $localisation[1],
+                                         $localisation[2],
                                          $row["longitude"],
                                          $row["latitude"],
                                          ($row["siteweb"]==null) ? "" : $row["siteweb"],
@@ -61,7 +65,8 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
                                          ($row["livraison"]==null) ? 0 : $row["livraison"],
                                          ($row["vegetarien"]==null) ? 0 : $row["vegetarien"],
                                          ($row["horrairesouverture"]==null) ? "" : $row["horrairesouverture"],
-                                         $cuisine);
+                                         $cuisine,
+                                         fetchNoteRestaurant($row["osmid"]));
 
             array_push($sortie, $restaurant);
         }
@@ -69,7 +74,56 @@ function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     return $sortie;
 }
 
+function getRestaurantPopulaire($codeRegion, $codeDepartement, $codeCommune){
+    global $connexion;
 
+    $sortie = [];
+
+    $localisation = lesNomsRegions($codeRegion, $codeDepartement, $codeCommune);
+
+    $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy, COUNT(n.Note) AS place FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  WHERE c.codeRegion = ? and c.codeDepartement = ? and c.codeCommune = ? GROUP BY r.OsmID ORDER BY place,moy, r.OsmID;");
+    $requete->execute([$codeRegion, $codeDepartement, $codeCommune]);
+    $resultat = $requete->fetchAll();
+
+    foreach($resultat as $row){
+        if (count($sortie)<10) {
+
+            $cuisine = [];
+            $requete2 = $connexion->prepare("select * from RESTAURANT natural join PREPARER where OsmID = ?");
+            $requete2->execute([$row["osmid"]]);
+            $resultat2 = $requete->fetchAll();
+
+            foreach($resultat2 as $row2){
+                array_push($cuisine,$row2["nomcuisine"]);
+            }
+
+            $restaurant = new Restaurant($row["osmid"],
+                                         $row["nomrestaurant"],
+                                         ($row["description"]==null) ? "" : $row["description"],
+                                         $localisation[0] ,
+                                         $localisation[1],
+                                         $localisation[2],
+                                         $row["longitude"],
+                                         $row["latitude"],
+                                         ($row["siteweb"]==null) ? "" : $row["siteweb"],
+                                         ($row["facebook"]==null) ? "" : $row["facebook"],
+                                         ($row["telrestaurant"]==null) ? "" : $row["telrestaurant"],
+                                         floatval($row["moy"]),
+                                         ($row["capacite"]==null) ? 0 : $row["capacite"],
+                                         ($row["fumeur"]==null) ? 0 : $row["fumeur"],
+                                         ($row["drive"]==null) ? 0 : $row["drive"],
+                                         ($row["aemporter"]==null) ? 0 : $row["aemporter"],
+                                         ($row["livraison"]==null) ? 0 : $row["livraison"],
+                                         ($row["vegetarien"]==null) ? 0 : $row["vegetarien"],
+                                         ($row["horrairesouverture"]==null) ? "" : $row["horrairesouverture"],
+                                         $cuisine,
+                                         fetchNoteRestaurant($row["osmid"]));
+
+            array_push($sortie, $restaurant);
+        }
+    }
+    return $sortie;
+}
 
 
 
@@ -201,6 +255,27 @@ function ajouteNote($email, $osmid, $note, $commentaire){
     $requete->execute([$email, $osmid,$note,$commentaire,date('Y-m-d H:i:s')]);
 }
 
+function fetchNoteRestaurant($osmid){
+    global $connexion;
+    $resultat = [];
+    $requete = $connexion->prepare("SELECT * FROM NOTER NATURAL JOIN PERSONNE WHERE OsmID = ? ");
+    $requete->execute([$osmid]);
+    $result = $requete->fetchAll();
+
+    foreach($result as $row){
+        array_push($resultat,new Note($row['emailpersonne'],
+                                                      $row['note'],
+                                                      $row['commentaire'],
+                                                      $row['date'],
+                                                      $row['nompersonne'],
+                                                      $row['prenompersonne']
+                                                    ));
+    }
+
+    return $resultat;
+}
+
+
 function getPrefCuisine($email){
     global $connexion;
     $requete = $connexion->prepare("SELECT nomCuisine FROM PREFERER WHERE EMailPersonne = ? ");
@@ -236,25 +311,89 @@ function getBestResto(){
 }
 
 function getPopResto(){
-    $resto = new Restaurant(
-        1, "test POPULAR", "", "Centre-Val-De-Loire", "Loiret", "Orléans",
-        "1.9052942", "47.902964", "https://test.com", "@testPOP",
-        "06 06 06 69 06", 3.4, 42, true, false, true, true, false,
-        "12:00-14:00,19:00-22:00", ["Chinoise"]
-    );
+    // $resto = new Restaurant(
+    //     1, "test POPULAR", "", "Centre-Val-De-Loire", "Loiret", "Orléans",
+    //     "1.9052942", "47.902964", "https://test.com", "@testPOP",
+    //     "06 06 06 69 06", 3.4, 42, true, false, true, true, false,
+    //     "12:00-14:00,19:00-22:00", ["Chinoise"]
+    // );
 
-    return array_fill(0, 10, $resto);
+    return getRestaurantPopulaire(24, 45, 45234);
 }
 
+function getRestaurantId($osmid){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  WHERE r.OsmID = ? GROUP BY r.OsmID;");
+    $requete->execute([$osmid]);
+    $result = $requete->fetch();
 
+    $cuisine = [];
+    $requete2 = $connexion->prepare("select * from RESTAURANT natural join PREPARER where OsmID = ?");
+    $requete2->execute([$result["osmid"]]);
+    $resultat2 = $requete->fetchAll();
 
-function estFavoris($mail, $resto){
+    foreach($resultat2 as $row2){
+        array_push($cuisine,$row2["nomcuisine"]);
+    }
+
+    return new Restaurant($result["osmid"],
+                          $result["nomrestaurant"],
+                          ($result["description"]==null) ? "" : $result["description"],
+                          '$row["nomregion"]' ,
+                          '$row["nomdepartement"]',
+                          '$row["nomcommune"]',
+                          $result["longitude"],
+                          $result["latitude"],
+                          ($result["siteweb"]==null) ? "" : $result["siteweb"],
+                          ($result["facebook"]==null) ? "" : $result["facebook"],
+                          ($result["telrestaurant"]==null) ? "" : $result["telrestaurant"],
+                          floatval($result["moy"]),
+                          ($result["capacite"]==null) ? 0 : $result["capacite"],
+                          ($result["fumeur"]==null) ? 0 : $result["fumeur"],
+                          ($result["drive"]==null) ? 0 : $result["drive"],
+                          ($result["aemporter"]==null) ? 0 : $result["aemporter"],
+                          ($result["livraison"]==null) ? 0 : $result["livraison"],
+                          ($result["vegetarien"]==null) ? 0 : $result["vegetarien"],
+                          ($result["horrairesouverture"]==null) ? "" : $result["horrairesouverture"],
+                          $cuisine,
+                          fetchNoteRestaurant($result["osmid"]));
 
 }
-function ajouter_supprimerFavoris($mail, $resto){
 
+function estFavoris($mail, $osmid){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT * FROM FAVORI WHERE EmailPersonne = ? and OsmID = ?");
+    $requete->execute([$mail, $osmid]);
+    $result = $requete->fetch();
+
+    return $result!=null;
 }
 
-function getRestoById($id){
-    return new Restaurant(1,"Cha+","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.90114979996115","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+function lesNomsRegions($codeRegion, $codeDepartement, $codeCommune){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT * FROM REGION NATURAL JOIN DEPARTEMENT NATURAL JOIN COMMUNE WHERE codeRegion = ? and codeDepartement = ? and codeCommune = ?");
+    $requete->execute([$codeRegion, $codeDepartement, $codeCommune]);
+    $result = $requete->fetch();
+
+    return [$result['nomregion'],$result['nomdepartement'],$result['nomcommune']];
+}
+
+function ajouter_supprimerFavoris($mail, $osmid){
+    global $connexion;
+    try{
+        $requete = $connexion->prepare("INSERT INTO FAVORI (EmailPersonne, OsmID) Values (?,?)");
+        $requete->execute([$mail, $osmid]);
+    } catch (\Throwable $th) {
+        $requete = $connexion->prepare("DELETE FROM FAVORI WHERE EmailPersonne = ? and OsmID = ?");
+        $requete->execute([$mail, $osmid]);
+    }
+}
+
+function fetchCuisine(){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT * FROM CUISINE");
+    $requete->execute();
+    $result = $requete->fetchAll();
+
+    return $result;
 }
