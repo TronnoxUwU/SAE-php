@@ -9,17 +9,7 @@ $port = '5432'; // Par défaut, 5432
 // Création de la connexion avec PDO
 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password";
 $connexion = new PDO($dsn);
-// $dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
-// $connexion = new PDO($dsn, "richard", "richard");
 
-
- // try{
- //     $connexion = new PDO($dsn, "root", "clermont");
- // }
- // catch(PDOException $e){
- //     printf("Error connecting to database: %s", $e->getMessage());
- //     exit();
- // }
 
 function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     global $connexion;
@@ -230,6 +220,35 @@ function getPopResto(){
 
 
 
+function estFavoris($mail, $resto){
+
+}
+function ajouter_supprimerFavoris($mail, $resto){
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function getNomCuisine(){
     global $connexion;
@@ -254,7 +273,7 @@ function getimputeNomCuisine(){
         $resultat = $requete->fetchAll();
 
         foreach($resultat as $row){
-            echo '<input class="styled" type="button" id='.$row.' name='.$row.' value="'.$row.'"'.$row.' />';
+            echo '<input class="styled" type="submit" id='.$row['nomcuisine'].' name="nourriture" value="'.$row['nomcuisine'].'"'.$row['nomcuisine'].' />';
         }
     } catch (PDOException $e) {
         echo 'Exception reçue : ',  $e->getMessage(), "\n";
@@ -273,10 +292,16 @@ function getPOSTNomCuisine(){
         $requete->execute();
         $resultat = $requete->fetchAll();
 
+        print_r($_POST);
         foreach($_POST as $key => $value){
+            
             if (in_array($value,$resultat)) {
                 array_push($ListeNomCuisineActif, $value );
+                echo($value);
             }
+            
+
+            
         }
         return $ListeNomCuisineActif;
     } catch (PDOException $e) {
@@ -286,19 +311,3 @@ function getPOSTNomCuisine(){
 }
 
 
-
-function estFavoris($mail, $resto){
-
-}
-function ajouter_supprimerFavoris($mail, $resto){
-
-}
-
-
-
-function estFavoris($mail, $resto){
-
-}
-function ajouter_supprimerFavoris($mail, $resto){
-
-}

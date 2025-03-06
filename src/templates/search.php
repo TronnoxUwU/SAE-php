@@ -17,6 +17,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
         {$date = date('Y-m-d'); $time = "18:00";};
 }
 
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $request = $_GET['nourriture'] ?? null;
+    $request = $_GET['rating'] ?? 0;
+    $request = $_GET['tendance'] ?? null;
+    $request = $_GET['Ouvert'] ?? null;
+    $request = $_GET['PMR'] ?? null;
+
+
+
+
+    if (isset($_POST['nourriture'])) {
+        echo("hahaha isra");
+    }
+    
+    if (isset($_POST['rating'])) {
+        echo("hahaha");
+    }
+
+    getPOSTNomCuisine();
+
+    if (isset($_POST['tendance'])) {
+        echo("hahaha non");
+    }
+
+
+    if (isset($_POST['Ouvert'])) {
+        echo("hahaha comme ta ");
+    }
+
+
+    if (isset($_POST['PMR'])) {
+        echo("hahaha cest mal");
+    }
+
+
+}
+
 $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
 ?>
 
@@ -77,7 +115,10 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                             <input type="time" id="time" name="time" value=<?php echo $time?>>
                         </div>
                     </div>
+                    <input type="submit">
                 </form>
+
+
             </div>
         </section>
 
@@ -100,23 +141,27 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
             <section class= contenu-vertical>
                 <section class ="trier">
                     <section class = "v1">
-                        <input class="styled" type="button"  name="Promotion" value="Promotion %" />
-                        <input class="styled" type="button"  name="Ouvert" value="Ouvert aujourd'hui" />
+                        <input class="styled"  type="submit"  name="tendance" value="tendance" />
+                        <input class="styled"  type="submit"  name="Ouvert" value="Ouvert aujourd'hui" />
 
-                        <select id="rating">
+                        <select id="rating" name="rating" >
+
+                            <option value="0">Notation ⭐ </option>
                             <option value="1">⭐✦✦✦✦</option>
                             <option value="2">⭐⭐✦✦✦</option>
                             <option value="3">⭐⭐⭐✦✦</option>
                             <option value="4">⭐⭐⭐⭐✦</option>
                             <option value="5">⭐⭐⭐⭐⭐</option>
                         </select>
-                        <input class="styled" type="button" name="PMR" value="Accés PMR" />
+                        <input class="styled"  type="submit" name="PMR" value="Accés PMR" />
                     </section>
 
                     <section class = "scrollmenu">
                         <?php getimputeNomCuisine() ?>
                     </section>
                 </section>
+
+                
         </form>
 
             <div class="Separation-affichage-vertical">
