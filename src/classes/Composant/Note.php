@@ -4,16 +4,28 @@ class Note{
     private int $note;
     private string $commentaire;
     private string $date;
+    private string $nomAuteur;
+    private string $prenomAuteur;
 
-    public function __construct($mailAuteur, $note, $commentaire, $date){
+    public function __construct($mailAuteur, $note, $commentaire, $date,$nomAuteur,$prenomAuteur){
         $this->mailAuteur = $mailAuteur;
         $this->note = $note;
         $this->commentaire = $commentaire;
         $this->date = $date;
+        $this->nomAuteur = $nomAuteur;
+        $this->prenomAuteur = $prenomAuteur;
     }
 
     public function getMailAuteur(){
         return $this->mailAuteur;
+    }
+
+    public function getNomAuteur(){
+        return $this->nomAuteur;
+    }
+
+    public function getPrenomAuteur(){
+        return $this->prenomAuteur;
     }
 
     public function getNote(){
