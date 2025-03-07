@@ -1,0 +1,10 @@
+drop table if exists NOTER;
+drop table if exists PREPARER;
+drop table if exists PREFERER;
+drop table if exists FAVORI;
+drop table if exists CUISINE;
+drop table if exists PERSONNE;
+drop table if exists RESTAURANT;
+drop table if exists COMMUNE;
+drop table if exists DEPARTEMENT;
+drop table if exists REGION;
