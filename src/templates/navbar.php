@@ -15,6 +15,8 @@
     </div>
     <ul class="nav-links">
         <?php 
+        // session_start();
+        // var_dump($_SESSION['nom']);
         
         if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']==false) {
             echo '<li><a href="login.php">Se connecter</a></li>';

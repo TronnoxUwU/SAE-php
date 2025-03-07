@@ -9,13 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (ville) {
             try {
-                console.log("1");
+                // console.log("1");
                 const response = await fetch(`../api/get_region.php?ville=${encodeURIComponent(ville)}`);
                 const data = await response.json();
-                console.log("2");
+                // console.log("2");
                 console.log(data);
 
-                // Réinitialisation du select
+
                 selectRegion.innerHTML = '<option value="">Sélectionner un lieu</option>';
 
                 if (data.length > 0) {
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         let optionText = entry[0] ? `${entry[0]}, ${entry[1]}` : `${entry[1]}`;
                         console.log(optionText);
                         console.log(entry[0], entry[1]);
-                        let optionValue = JSON.stringify(entry); // Stocker en JSON pour le récupérer après
+                        let optionValue = JSON.stringify(entry);
 
                         let option = document.createElement("option");
                         option.value = optionValue;
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Lorsqu'on sélectionne un lieu, on met à jour les champs cachés
+
     selectRegion.addEventListener("change", function () {
         const selectedValue = selectRegion.value;
 

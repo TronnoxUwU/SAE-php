@@ -34,8 +34,6 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
 </head>
 <body>
     <header></header>
-
-    <main class="contenu-principal">
         <section class="Search home">
             <div class="Search-section">
                 <div class="islam">
@@ -95,6 +93,8 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                 </div>
             </div>
         </div>
+    <main class="contenu-principal">
+        
         <!--  -->
 
         <div>
