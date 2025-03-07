@@ -30,8 +30,9 @@ h1 {
 .resto article{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    /* align-items: center; */
     padding: 10px;
+    margin-top: 40px;
 }
 
 .resto div {

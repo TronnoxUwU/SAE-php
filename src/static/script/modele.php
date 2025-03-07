@@ -303,7 +303,7 @@ function getPopResto(){
     return getRestaurantPopulaire(24, 45, 45234);
 }
 
-function getRestaurantId($osmid){
+function getRestoById($osmid){
     global $connexion;
     $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  WHERE r.OsmID = ? GROUP BY r.OsmID;");
     $requete->execute([$osmid]);

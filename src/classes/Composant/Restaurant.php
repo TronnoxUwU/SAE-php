@@ -328,6 +328,18 @@ class Restaurant{
         return $savePath;
     }
 
+    public function getCachedAddress(){
+        $cacheDir = '../data/cache/';
+        $cacheFile = $cacheDir . md5($this->getNomRestaurant()) . ".json";
+        if (file_exists($cacheFile)) {
+            $cacheData = json_decode(file_get_contents($cacheFile), true);
+            if (!empty($cacheData['google_data']['address'])) {
+                return $cacheData['google_data']['address'];
+            }
+        }
+        return $this->getVille();
+    }
+
     public function multiDownloadAndSaveImages($imageUrls, $restaurantName) {
         # Tentative raté de télécharger les images en multiple pour gagner du temps
         
@@ -442,7 +454,7 @@ class Restaurant{
             echo $desc;
         }
         echo '<span>';
-        echo '<p>'.$this->localiser().'</p>';
+        echo '<p>'.$this->getCachedAddress().'</p>';
         echo '<text>'.$this->getNbCommentaire().' 🗨️</text>';
         echo '</span>';
         echo '<span>';
@@ -485,7 +497,7 @@ class Restaurant{
                     echo '</p>';
                 }
 
-                echo '<p>📍 '.$this->localiser().'</p>';
+                echo '<p>📍 '.$this->getCachedAddress().'</p>';
                 echo '<p>📞 Tel : '.$this->getTelRestaurant().'</p>';
                 echo '<p>🕒 '.$this->getHorairesOuverture().'</p>';
                 echo '<p>👥 Capacité : '.$this->getCapacite().' personnes</p>';
