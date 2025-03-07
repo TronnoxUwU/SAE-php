@@ -69,14 +69,4 @@ class Note{
         }
     }
 
-    public function getNomAuteur(){
-        #TODO
-        return "Auteur";
-    }
-
-    public function getPrenomAuteur(){
-        #TODO
-        return "Prenom";
-    }
-
 }
