@@ -23,11 +23,11 @@ class Restaurant{
     private bool $livraison;
     private bool $vegetarien;
     private string $horairesOuverture;
-
     private array $cuisines;
     private array $notes;
 
-    public function __construct($osmId, $nomRestaurant, $description, $region, $departement, $ville, $longitude, $latitude, $siteWeb, $facebook, $telRestaurant, $nbEtoiles, $capacite, $fumeur, $drive, $aEmporter, $livraison, $vegetarien, $horairesOuverture, $cuisines, $notes=[]){
+
+    public function __construct($osmId, $nomRestaurant, $description, $region, $departement, $ville, $longitude, $latitude, $siteWeb, $facebook, $telRestaurant, $nbEtoiles, $capacite, $fumeur, $drive, $aEmporter, $livraison, $vegetarien, $horairesOuverture, $cuisines, $Notes){
         $this->osmId = $osmId;
         $this->nomRestaurant = $nomRestaurant;
         $this->description = $description;
@@ -48,7 +48,7 @@ class Restaurant{
         $this->vegetarien = $vegetarien;
         $this->horairesOuverture = $horairesOuverture;
         $this->cuisines = $cuisines;
-        $this->notes = $notes;
+        $this->notes = $Notes;
     }
 
     public function getOsmId(){
@@ -226,6 +226,10 @@ class Restaurant{
         }
     }
 
+    public function addNote($note){
+        $this->notes[] = $note;
+    }
+
     public function localiser(){
         # A remplacer par un appelle de fonction qui renvoie la localisation du restaurant
         return $this->ville.', '.$this->departement.', '.$this->region;
@@ -233,12 +237,39 @@ class Restaurant{
 
     public function getNbCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le nombre de commentaire du restaurant
-        return 0;
+        return sizeof($this->notes);
     }
 
     public function getPremierCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le premier commentaire du restaurant
-        return 'Pas de commentaire pour le moment, ceci est un long commentaire pour tester la mise en page de la fiche restaurant';
+        echo "<p>".$this->notes[0]->getMailAuteur().' a donné une note de '.$this->notes[0]->getNote().'☆ : '.'</p>';
+        echo  "<p>".$this->notes[0]->getCommentaire()."</p>";
+    }
+
+    public function getCommentaires(){
+        # A remplacer par un appelle de fonction qui renvoie les commentaires du restaurant
+        foreach($this->notes as $note){
+            echo "<div class='commentaire'>";
+                echo "<div class=auteur>";
+                    echo "<h4>".$note->getPrenomAuteur().' '.$note->getNomAuteur().'</h4>';
+                    echo "<p>(Il y a ".$note->getDateDiff().')</p>';
+                echo "</div>";
+                echo "<p>".$note->getCommentaire()."</p>";
+            echo "</div>";
+        }
+    }
+
+    public function getCommentaireParAuteur($mail){
+        foreach($this->notes as $note){
+            if($note->getMailAuteur() == $mail){
+                return $note;
+            }
+        }
+        return null;
+    }
+
+    public function addCommentaire($note){
+        $this->notes[] = $note;
     }
 
     
@@ -464,6 +495,7 @@ class Restaurant{
                     echo '<p> sur '.$this->getNbCommentaire().' avis</p>';
                 echo '</span>';
             echo '</div>';
+
         echo '</article>';
 
         // $API = get_CSV_Key("MAPS");
@@ -477,9 +509,24 @@ class Restaurant{
                 echo '</span>';
                 
                 echo '<span class="commentaires">';
-                    echo '<h3>Commentaires ('.$this->getNbCommentaire().') 🗨️</h3>';
-                    echo '<p>'.$this->getPremierCommentaire().'</p>';
-                echo '</span>';
+                        echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
+                        # Ici ya le form pour les commentaires et la note
+                        echo '<form method="POST" action="pageRestaurant.php?id='.$this->getOsmId().'">';
+                            echo '<select name="rating">';
+                                echo '<option value="1">⭐✦✦✦✦</option>';
+                                echo '<option value="2">⭐⭐✦✦✦</option>';
+                                echo '<option value="3">⭐⭐⭐✦✦</option>';
+                                echo '<option value="4">⭐⭐⭐⭐✦</option>';
+                                echo '<option value="5">⭐⭐⭐⭐⭐</option>';
+                            echo '</select>';
+                            echo '<input type="text" name="commentaire" placeholder="Commentaire">';
+                            echo '<button type="submit">Envoyer</button>';
+                        echo '</form>';
+                        #
+                        echo '<div class="les_commentaires">';
+                            $this->getCommentaires();
+                        echo '</div>';
+                    echo '</span>';
             echo '</div>';
 
             ?> 

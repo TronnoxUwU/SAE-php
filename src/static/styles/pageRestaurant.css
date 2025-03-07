@@ -129,3 +129,8 @@ h1 {
     flex-wrap: wrap;
     margin-top: 40px;
 }
+
+.les_commentaires{
+    height: 300px;
+    overflow: auto;
+}

@@ -56,5 +56,27 @@ class Note{
         $this->date = $date;
     }
 
+    public function getDateDiff(){
+        $date = date_create($this->date);
+        $now = new DateTime();
+        $interval = date_diff($date, $now);
+        if (intval($interval->format('%y')) > 0){
+            return $interval->format('%y ans');
+        } else if (intval($interval->format('%m')) > 0){
+            return $interval->format('%m mois');
+        } else {
+            return $interval->format('%d jours');
+        }
+    }
+
+    public function getNomAuteur(){
+        #TODO
+        return "Auteur";
+    }
+
+    public function getPrenomAuteur(){
+        #TODO
+        return "Prenom";
+    }
 
 }
