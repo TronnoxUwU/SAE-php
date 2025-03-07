@@ -259,6 +259,10 @@ class Restaurant{
         return null;
     }
 
+    public function addCommentaire($note){
+        $this->notes[] = $note;
+    }
+
     public function getImagePrincipal(){
         # A remplacer par un appelle de fonction qui renvoie l'image principale du restaurant
         return '../static/images/noequestrians.png" alt="Balade en forêt';
