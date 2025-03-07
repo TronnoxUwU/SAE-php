@@ -53,6 +53,7 @@ $restoPOP = getPopResto();
                 foreach ($restoBEST as $resto) {
                     $resto->renderSmall();
                 }
+                
                 ?>
             </div>
         </section>
