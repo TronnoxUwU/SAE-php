@@ -274,6 +274,7 @@ section.scrollmenu {
   white-space: nowrap;
   gap: 1em;
     
+  max-width: 100vw;
 }
 
 section.scrollmenu  {

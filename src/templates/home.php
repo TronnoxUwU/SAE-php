@@ -5,7 +5,9 @@ session_start();
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
 require_once "../static/script/modele.php";
+require_once "../static/script/fonction_trier.php";
 
+init_trier();
 $restoBEST = getBestResto();
 $restoPOP = getPopResto();
 ?>

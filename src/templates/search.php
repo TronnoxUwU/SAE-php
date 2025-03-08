@@ -1,4 +1,7 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 // Fichier : pages/home.php
 include 'navbar.php';
 include_once '../static/script/getKey.php';
@@ -6,6 +9,9 @@ require_once '../classes/Composant/Restaurant.php';
 require_once '../static/script/modele.php';
 
 $API = get_CSV_Key("MAPS");
+
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_POST['position'])) {
     $resto = $_POST['resto'];
@@ -17,71 +23,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
         {$date = date('Y-m-d'); $time = "18:00";}
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    $nourriture = $_GET['nourriture'] ?? "";
-    $rating = $_GET['rating'] ?? "0";
-    $tendance = $_GET['tendance'] ?? "false";
-    $Ouvert = $_GET['Ouvert'] ?? "false";
-    $PMR = $_GET['PMR'] ?? "false";
 
 
-    if (isset($_POST['nourriture'])) {
+if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
-        if (strpos($nourriture, $_POST['nourriture']) !== false) {
-            echo "Mot trouvé !";
-            if(strpos($nourriture, ",".$_POST['nourriture']) !== false){
-                $nourriture =  trim($nourriture, ",".$_POST['nourriture']);
-            }else{
-                $nourriture =  trim($nourriture, $_POST['nourriture']);
-            }
-        } else if ($nourriture ==""){
-            $nourriture = $_POST['nourriture'];
+    $nourriture = $_SESSION['nourriture'] ?? "";
+    $tendance = $_SESSION['tendance'] ?? "false";
+    $Ouvert = $_SESSION['Ouvert'] ?? "false";
+    $PMR = $_SESSION['PMR'] ?? "false";
+
+
+    if (!empty($_POST['nourriture'])) {
+
+        $nouvelleNourriture = trim($_POST['nourriture']);
+        $nourritures = explode(",", $nourriture);
+        if (($key = array_search($nouvelleNourriture, $nourritures)) !== false) {
+            unset($nourritures[$key]);
         } else {
-            $nourriture += ",".$_POST['nourriture'];
+            $nourritures[] = $nouvelleNourriture;
         }
-        
-    }
-    
-    if (isset($_POST['rating'])) {
-        $rating = $_POST['rating'];
+        $nourriture = implode(",", $nourritures);
+        $_SESSION["nourriture"] = $nourriture;
     }
 
-    getPOSTNomCuisine();
+
+    if (!empty($_POST['rating'])) {
+        $_SESSION["rating"] = $_POST['rating'];
+    }
 
     if (isset($_POST['tendance'])) {
-        $traitement = strtolower($_POST['tendance']);
-        if($tendance == "false"){
-            $tendance == "true";
-        } else if($tendance == $traitement){
-            $tendance = "false";
-        }
-
+        $tendance = ($tendance === "false") ? "true" : "false";
+        $_SESSION["tendance"] = $tendance;
     }
-
 
     if (isset($_POST['Ouvert'])) {
-        $traitement = strtolower($_POST['Ouvert']);
-        if($Ouvert == "false"){
-            $Ouvert == "true";
-        } else if($Ouvert == $traitement){
-            $Ouvert = "false";
-        }
-
-        echo("hahaha open");
+        $Ouvert = ($Ouvert === "false") ? "true" : "false";
+        $_SESSION["Ouvert"] = $Ouvert;
     }
-
 
     if (isset($_POST['PMR'])) {
-        $traitement = strtolower($_POST['Ouvert']);
-        if($PMR == "false"){
-            $PMR == "true";
-        } else if($PMR == $traitement){
-            $PMR = "false";
-        }
-        echo("hahaha cest mal");
+        $PMR = ($PMR === "false") ? "true" : "false";
+        $_SESSION["PMR"] = $PMR;
     }
 
+    
+    
 
 }
 
@@ -146,7 +132,7 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                         </div>
                     </div>
                     <input type="submit">
-                </form>
+                
 
 
             </div>
@@ -167,12 +153,12 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
     <main class="contenu-principal">
         
         <!--  -->
-        <form method="POST" action="search.php">
+        
             <section class= contenu-vertical>
                 <section class ="trier">
                     <section class = "v1">
                         <input class="styled"  type="submit"  name="tendance" value="tendance" />
-                        <input class="styled"  type="submit"  name="Ouvert" value="Ouvert aujourd'hui" />
+                        <input class="styled"  type="submit"  name="Ouvert" value="Ouvert" />
 
                         <select id="rating" name="rating" >
 
@@ -183,7 +169,8 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                             <option value="4">⭐⭐⭐⭐✦</option>
                             <option value="5">⭐⭐⭐⭐⭐</option>
                         </select>
-                        <input class="styled"  type="submit" name="PMR" value="Accés PMR" />
+                        <input class="styled"  type="submit" name="PMR" value="PMR" />
+                        
                     </section>
 
                     <section class = "scrollmenu">
@@ -191,7 +178,12 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                     </section>
                 </section>
 
-                
+                <section>
+                    <p>Nourriture: <?= $_SESSION["nourriture"] ?? "NOP" ?></p>
+                    <p>Tendance : <?= $_SESSION["tendance"] ?? "false" ?></p>
+                    <p>Ouvert : <?= $_SESSION["Ouvert"] ?? "false" ?></p>
+                    <p>PMR : <?= $_SESSION["PMR"] ?? "false" ?></p>
+                </section>
         </form>
 
             <div class="Separation-affichage-vertical">
@@ -199,6 +191,8 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                     <h2>D'après votre recherche :</h2>
                     <div class="Affichage-fiches-horizontal">
                         <?php 
+                        var_dump($_SESSION);
+                        
                         for ($i = 1; $i <= 10; $i++) {
                             $restocarte->renderFull();
                             // echo 
@@ -243,3 +237,4 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
     <script src="../static/script/popup-search.js"></script>
 </body>
 </html>
+
