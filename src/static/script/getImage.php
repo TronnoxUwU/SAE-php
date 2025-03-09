@@ -103,8 +103,9 @@ function getGooglePlaceData(float $lat, float $lng, string $name, int $rad = 20)
         if (isset($bestMatch["photos"]) && is_array($bestMatch["photos"])) {
             foreach ($bestMatch["photos"] as $photo) {
                 if (isset($photo["name"])) {
-                    $parts = explode("/photos/", $photo["name"]);
-                    $ref = (count($parts) > 1) ? $parts[1] : $photo["name"];
+                    // $parts = explode("/photos/", $photo["name"]);
+                    // $ref = (count($parts) > 1) ? $parts[1] : $photo["name"];
+                    $ref = $photo["name"];
                     $photoRefs[] = $ref;
                 }
             }
@@ -133,7 +134,8 @@ function downloadFirstImage(string $name, array $photoRefs, string $API) {
         return false; // Aucune photo disponible
     }
 
-    $photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={$photoRefs[0]}&key={$API}";
+    // $photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={$photoRefs[0]}&key={$API}";
+    $photoUrl = "https://places.googleapis.com/v1/$photoRefs[0]/media?maxWidthPx=800&key=$API";
     
     $filePath = __DIR__ . "/../../data/cache/img/" . md5($name) . "_0.jpg";
 
@@ -149,7 +151,8 @@ function downloadOtherImages(string $name, array $photoRefs, string $API) {
 
 
     for ($i = 1; $i < count($photoRefs); $i++) {
-        $photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={$photoRefs[$i]}&key={$API}";
+        // $photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference={$photoRefs[$i]}&key={$API}";
+        $photoUrl = "https://places.googleapis.com/v1/$photoRefs[$i]/media?maxWidthPx=800&key=$API";
         $filePath = __DIR__ . "/../../data/cache/img/" . md5($name) . "_{$i}.jpg";
         
         if (!saveImageFromUrl($photoUrl, $filePath)) {
