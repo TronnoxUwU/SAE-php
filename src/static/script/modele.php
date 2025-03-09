@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__."/../../classes/Composant/Restaurant.php";
+require_once __DIR__."/../../classes/Composant/Note.php";
 
 
 $host = 'aws-0-eu-west-3.pooler.supabase.com';
