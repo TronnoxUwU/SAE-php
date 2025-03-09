@@ -1,4 +1,7 @@
 <?php
+
+use Dom\Comment;
+
 class Note{
     private string $mailAuteur;
     private int $note;
@@ -68,5 +71,30 @@ class Note{
             return $interval->format('%d jours');
         }
     }
+}
 
+function afficheAllComment($mail){
+    $comments = getCommentaire($mail);
+    foreach ($comments as $comment){
+        $osmid = $comment['osmid'];
+        $resto = getRestoById($osmid);
+        $nomResto = $resto->getNomRestaurant();
+        $commentaire = $comment['commentaire'];
+        $note = $comment['note'];
+
+        // $nomResto = $resto->;
+        echo 
+        '<a href="pageRestaurant.php?id='.$osmid.'" class="fiche-commentaire">
+            <article >
+                <div>
+                    <h3>'.$note.'☆</h3>
+                </div>
+                <div>
+                    <h4>'.$nomResto.'</h4>
+                    <p>'.$commentaire.'</p>
+                </div>
+            </article>
+        </a>';
+        
+    }
 }

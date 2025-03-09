@@ -268,140 +268,125 @@ class Restaurant{
         return null;
     }
 
+    public function getNoteParAuteur($mail){
+        foreach($this->notes as $note){
+            if($note->getMailAuteur() == $mail){
+                return $note->getNote();
+            }
+        }
+        return 0;
+    }
+
     public function addCommentaire($note){
-        $this->notes[] = $note;
+        $note_send = $note->getNote();
+        $commentaire_send = $note->getCommentaire();
+        $email_send = $note->getMailAuteur();
+        $osmId_send = $this->osmId;
+        ajouteNote($email_send, $osmId_send, $note_send, $commentaire_send);
     }
 
     
     public function getImagePrincipal() {
-        # Donne l'image de représentation
+        # Donne l'image principale du restaurant
         $cacheFile = '../data/cache/' . md5($this->getNomRestaurant()) . '.json';
+        $imagePath = "../data/cache/img/" . md5($this->getNomRestaurant()) . "_0.jpg";
     
-
+        if (file_exists($imagePath)) {
+            return $imagePath;
+        }
+    
+        // Vérification du cache pour récupérer les références des images
         if (file_exists($cacheFile)) {
             $cacheData = json_decode(file_get_contents($cacheFile), true);
-            if (!empty($cacheData['images'])) {
-                return $cacheData['images'][0];
+            // error_log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+            // var_dump($cacheData["google_data"]);
+            $cacheData = $cacheData["google_data"];
+            // error_log($cacheData['photos'][0]);
+            if (!empty($cacheData['photos'])) {
+                $photoRefs = $cacheData['photos'];
+                // error_log($photoRefs);
+                $API = get_CSV_Key("MAPS");
+    
+                downloadFirstImage($this->getNomRestaurant(), $photoRefs, $API);
+    
+                return file_exists($imagePath) ? $imagePath : '../static/images/noequestrians.png';
+            }
+        }
+        else {
+            getGooglePlaceData($this->getLatitude(), $this->getLongitude(), $this->getNomRestaurant());
+            if(file_exists($cacheFile)){
+                $cacheData = json_decode(file_get_contents($cacheFile), true);
+                if (!empty($cacheData['photos'])) {
+                    $photoRefs = $cacheData['photos'];
+                    $API = get_CSV_Key("MAPS");
+        
+                    downloadFirstImage($this->getNomRestaurant(), $photoRefs, $API);
+                    var_dump($imagePath);
+                    return file_exists($imagePath) ? $imagePath : '../static/images/noequestrians.png';
+                }
             }
         }
     
-
-        $imgList = $this->getImagesGoogle();
-        
-        return !empty($imgList) ? $imgList[0] : '../static/images/noequestrians.png';
+        return '../static/images/noequestrians.png';
     }
     
     public function getImages() {
-        # Donne les autres images
+        # Donne les autres images du restaurant
+        $imagePaths = [];
+        $cacheDir = "../data/cache/img/";
+        $baseName = md5($this->getNomRestaurant());
         $cacheFile = '../data/cache/' . md5($this->getNomRestaurant()) . '.json';
     
-
+        // Vérification des images déjà téléchargées
+        for ($i = 1; $i < 9; $i++) {
+            $imagePath = "{$cacheDir}{$baseName}_{$i}.jpg";
+            if (file_exists($imagePath)) {
+                $imagePaths[] = $imagePath;
+            }
+        }
+    
+        if (!empty($imagePaths)) {
+            return $imagePaths;
+        }
+    
+        // Vérification du cache pour récupérer les références des images
         if (file_exists($cacheFile)) {
             $cacheData = json_decode(file_get_contents($cacheFile), true);
-            if (!empty($cacheData['images'])) {
-                return array_slice($cacheData['images'], 1);
-            }
-        }
+            $cacheData = $cacheData['google_data'];
+            if (!empty($cacheData['photos'])) {
+                $photoRefs = $cacheData['photos'];
+                $API = get_CSV_Key("MAPS");
     
-        $imgList = $this->getImagesGoogle();
+                downloadOtherImages($this->getNomRestaurant(), $photoRefs, $API);
     
-        return !empty($imgList) ? array_slice($imgList, 1) : array_fill(0, 8, '../static/images/noequestrians.png');
-    }
-    
-    
-    
-    
-    public function downloadAndSaveImage($imageUrl, $restaurantName, $index) {
-        $saveDir = '../data/cache/img/';
-        $savePath = $saveDir . md5($restaurantName) . "_$index.jpg";
-    
-        if (!file_exists($savePath)) {
-            $imageData = @file_get_contents($imageUrl);
-            if ($imageData) {
-                if (!is_dir($saveDir)) {
-                    mkdir($saveDir, 0777, true);
+                // Vérification après téléchargement
+                for ($i = 1; $i < min(9, count($photoRefs)); $i++) {
+                    $imagePath = "{$cacheDir}{$baseName}_{$i}.jpg";
+                    if (file_exists($imagePath)) {
+                        $imagePaths[] = $imagePath;
+                    }
                 }
-                file_put_contents($savePath, $imageData);
             }
         }
     
-        return $savePath;
+        return !empty($imagePaths) ? $imagePaths : array_fill(0, 8, '../static/images/noequestrians.png');
     }
-
-    public function getCachedAddress(){
-        $cacheDir = '../data/cache/';
-        $cacheFile = $cacheDir . md5($this->getNomRestaurant()) . ".json";
+    
+    public function getCachedAddress() {
+        # Récupère l'adresse depuis le cache ou utilise getVille()
+        $cacheFile = '../data/cache/' . md5($this->getNomRestaurant()) . ".json";
+    
         if (file_exists($cacheFile)) {
             $cacheData = json_decode(file_get_contents($cacheFile), true);
             if (!empty($cacheData['google_data']['address'])) {
                 return $cacheData['google_data']['address'];
             }
         }
+    
         return $this->getVille();
     }
-
-    public function multiDownloadAndSaveImages($imageUrls, $restaurantName) {
-        # Tentative raté de télécharger les images en multiple pour gagner du temps
-        
-    }
     
 
-    public function getImagesGoogle() {
-        $cacheFile = '../data/cache/' . md5($this->getNomRestaurant()) . '.json';
-    
-        // Vérifier si les données sont déjà en cache
-        if (file_exists($cacheFile)) {
-            $cacheData = json_decode(file_get_contents($cacheFile), true);
-            if (!empty($cacheData['images'])) {
-                return $cacheData['images'];
-            }
-        }
-    
-        // Récupération des données du restaurant via l'API Google
-        $lat = $this->getLatitude();
-        $long = $this->getLongitude();
-        $name = $this->getNomRestaurant();
-        
-        $PlaceJSON = getGooglePlaceData($lat, $long, $name);
-        
-        if (!$PlaceJSON || empty($PlaceJSON['place_id'])) {
-            return []; // Aucune donnée récupérée, on arrête ici
-        }
-    
-        $Pid = $PlaceJSON['place_id'];
-        $images = getImageByPlaceIdLight($Pid);
-    
-        $res = [];
-        if (!empty($images['horizontal']) || !empty($images['vertical'])) {
-            $res = array_merge($images['horizontal'] ?? [], $images['vertical'] ?? []);
-        } else {
-            return [];
-        }
-    
-        // telecharger en cache les images (car les liens font l'erreur 429 au chargement, mais ceci ralentit ENORMEMENT le premier chargement de la page)
-        $localImages = [];
-        
-        // $localImages = $this->multiDownloadAndSaveImages($res, $this->getNomRestaurant());
-        foreach ($res as $index => $imgUrl) {
-            $localImages[] = $this->downloadAndSaveImage($imgUrl, $this->getNomRestaurant(), $index);
-        }
-    
-        $cacheData = [
-            'google_data' => [
-                'place_id' => $Pid,
-                'name' => $PlaceJSON['name'],
-                'rating' => $PlaceJSON['rating'] ?? null,
-                'address' => $PlaceJSON['vicinity'] ?? '',
-                'latitude' => $PlaceJSON['geometry']['location']['lat'],
-                'longitude' => $PlaceJSON['geometry']['location']['lng']
-            ],
-            'images' => $localImages // On stocke les chemins des images locales
-        ];
-    
-        file_put_contents($cacheFile, json_encode($cacheData, JSON_PRETTY_PRINT | LOCK_EX));
-    
-        return $localImages;
-    }
     
 
     public function renderSmall(){
@@ -525,11 +510,40 @@ class Restaurant{
                         # Ici ya le form pour les commentaires et la note
                         echo '<form method="POST" action="pageRestaurant.php?id='.$this->getOsmId().'">';
                             echo '<select name="rating">';
-                                echo '<option value="1">⭐✦✦✦✦</option>';
-                                echo '<option value="2">⭐⭐✦✦✦</option>';
-                                echo '<option value="3">⭐⭐⭐✦✦</option>';
-                                echo '<option value="4">⭐⭐⭐⭐✦</option>';
-                                echo '<option value="5">⭐⭐⭐⭐⭐</option>';
+                            $rater = match ($this->getNoteParAuteur($_SESSION["mail"])) {
+                                1 => '<option value="1" selected>⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                2 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2" selected>⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                3 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3" selected>⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                4 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4" selected>⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                5 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5" selected>⭐⭐⭐⭐⭐</option>',
+                                default => 
+                                    '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                            };
+                            echo $rater;
                             echo '</select>';
                             echo '<input type="text" name="commentaire" placeholder="Commentaire">';
                             echo '<button type="submit">Envoyer</button>';

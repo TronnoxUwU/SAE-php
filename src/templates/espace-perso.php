@@ -3,6 +3,7 @@
 session_start();
 
 include_once "../static/script/modele.php";
+include_once "../classes/Composant/Note.php";
 
 include 'navbar.php';
 
@@ -100,21 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h2>Avis enregistrés</h2>
             <div class="Affichage-fiches-commentaires">
                 <?php 
-                for ($i = 1; $i <= 10; $i++) {
-                    echo 
-                    '<a href="" class="fiche-commentaire">
-                        <article >
-                            <div>
-                                <h3>1☆</h3>
-                                <h3>Scandale !!!</h3>
-                            </div>
-                            <div>
-                                <h4>Food n\'go</h4>
-                                <p>C\'est le piiiiire restaurant que j\'ai vu de ma vie, des cafards jusque dans ma soupe :(</p>
-                            </div>
-                        </article>
-                    </a>';
-                }
+                afficheAllComment($_SESSION['mail']);
                 ?>
             </div>
         </section>

@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__."/../../classes/Composant/Restaurant.php";
+require_once __DIR__."/../../classes/Composant/Note.php";
 
 
 $host = 'aws-0-eu-west-3.pooler.supabase.com';
@@ -223,6 +225,13 @@ function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement
     $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, codeRegion, codeDepartement, codeCommune, Handicap) Values (?,?,?,?,?,?,?,?,?,?)");
     $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
 }
+ 
+function insertClient_light($nom, $prenom, $tel, $email, $mdp, $handicap) {
+    global $connexion;
+    $hash=hash('sha256',$mdp);
+    $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, Handicap) Values (?,?,?,?,?,?,?)");
+    $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $handicap]);
+}
 
 
 function ajoutePrefCuisine($email, $cuisine){
@@ -235,6 +244,20 @@ function ajouteNote($email, $osmid, $note, $commentaire){
     global $connexion;
     $requete = $connexion->prepare("INSERT INTO NOTER (EMailPersonne, OsmID, Note, Commentaire, Date) VALUES (?,?,?,?,?)");
     $requete->execute([$email, $osmid,$note,$commentaire,date('Y-m-d H:i:s')]);
+}
+
+function modifNote($email, $osmid, $note, $commentaire){
+    global $connexion;
+    $requete = $connexion->prepare("UPDATE NOTER SET Note=?, Commentaire=? WHERE EMailPersonne=? and OsmID=?");
+    $requete->execute([$note,$commentaire,$email, $osmid]);
+}
+
+function getCommentaire($mail) {
+    global $connexion;
+    $stmt = $connexion->prepare("SELECT * FROM NOTER WHERE EMailPersonne = :mail");
+    $stmt->execute(array('mail' => $mail));
+    $result = $stmt->fetchAll();
+    return $result;
 }
 
 function fetchNoteRestaurant($osmid){
