@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['loggedin'] = true;
             $_SESSION['mail'] = $username;
 
-            $utilisateur = getNamesUtilisateur($username);
+            $utilisateur = getUtilisateur($username);
             // var_dump($utilisateur);
             // var_dump($utilisateur[0]);
 

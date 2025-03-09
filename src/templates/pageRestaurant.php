@@ -46,7 +46,7 @@ try {
                     $comment->setNote($rating);
                     $comment->setDate(date('Y-m-d'));
                 } else {
-                    $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $_SESSION['nom'], $_SESSION['prenom']);
+                    $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $_SESSION['nom']['nompersonne'], $_SESSION['nom']['prenompersonne']);
                     $restaurant->addCommentaire($comment);
                 }
                 
