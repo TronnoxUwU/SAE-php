@@ -1,7 +1,7 @@
 <script src="../static/script/popup_valid.js"></script>
 
 <?php
-// Fichier : register.php
+
 session_start();
 
 require_once "../static/script/modele.php";
@@ -9,9 +9,9 @@ require_once "../static/script/modele.php";
 if (!isset($_SESSION['inscription'])){$_SESSION['inscription'] = 0;};
 
 
-// Vérifier si le formulaire a été soumis
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
-    // Récupérer les données du formulaire
+
     $nom = $_POST['name'] ?? null;
     $prenom = $_POST['prenom'] ?? null;
     $email = $_POST['email'] ?? null;
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
     $tel = $_POST['telephone'] ?? "+33";
     $handicap = $_POST['handicap'] ?? false;
 
-    // Validation de base
+
     if ($nom && $prenom && $email && $mdp) {
         try {
 
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
 
                 // function insertAdherent($nom, $prenom, $tel, $mail, $taille, $poids, $dateInscription, $mdp){
                 if (!$handicap){$handicap=0;}
-                insertClient($nom, $prenom, $tel, $email, $mdp, $handicap);
+                insertClient_light($nom, $prenom, $tel, $email, $mdp, $handicap);
                 
                 $id = utilisateurExistant($email, hash('sha256', $mdp));
                 $_SESSION['inscription']++;
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) 
 
     if (!empty($selectedCuisines)) {
         // echo "Cuisines sélectionnées : " . implode(', ', $selectedCuisines);
-        // Insérez en base de données ici
+
         foreach($selectedCuisines as $cuis){
             ajoutePrefCuisine($_SESSION['inscription-mail'], $cuis);
         }
