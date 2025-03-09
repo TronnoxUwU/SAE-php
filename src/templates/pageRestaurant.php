@@ -41,10 +41,7 @@ try {
             try {
                 $comment = $restaurant->getCommentaireParAuteur($_SESSION['mail']);
                 if ($comment) {
-                    echo $_SESSION['mail'];
-                    $comment->setCommentaire($commentaire);
-                    $comment->setNote($rating);
-                    $comment->setDate(date('Y-m-d'));
+                    // modifNote($$_SESSION['mail'], $restaurant->getOsmId(), $rating, $commentaire);
                 } else {
                     $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $_SESSION['nom']['nompersonne'], $_SESSION['nom']['prenompersonne']);
                     $restaurant->addCommentaire($comment);
