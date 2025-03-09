@@ -87,6 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) 
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET'){
+    $_SESSION['inscription'] = 0;
+}
+
 
 ?>
 

@@ -13,10 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) 
     if ($cuisines){
         foreach ($cuisines as $miam){
             ajoutePrefCuisine($_SESSION['mail'], $miam);
+            
         }
+        error_log(" ajout cuisine");
     }
 
-    header("Location: home.php");
+    header("Location: login.php");
 }
 
 ?>
