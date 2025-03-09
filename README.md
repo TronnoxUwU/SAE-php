@@ -2,8 +2,12 @@
 
 réalisé par Clermont Shanka, Richard Baptiste, Chaloine Tristan et Renaudin Clément
 
-Cette SAE est un site de restaurants, il implemente l'utilisation de l'API google (changée récemment sur la nouvelle API places) afin de récupérer les images et d'améliorer la qualité générale du site
+Cette SAE est un site de restaurants, il implemente l'utilisation de la nouvelle API google places (changée très récemment) afin de récupérer les images et d'améliorer la qualité générale du site
 
+## VIDEO PRESENTATION
+
+[Regarder la vidéo](https://youtu.be/-umx_Hcdf18)
+"https://youtu.be/-umx_Hcdf18"
 
 ## INSTALLATION
 
@@ -28,4 +32,4 @@ Ensuite vous pouvez lancer un serveur php local avec la commande suivante (index
 - Visionage d'un restaurant en détail ainsi que les avis déposés
 - Possibilité de déposer un avis et de mettre un restaurant en favoris
 - Page d'information personnelle pour y gérer les cuisines et restaurants favoris ainsi que de gérer ses avis déposés
-- Fonctionnalité de recherche avancée ????
+- Fonctionnalité de recherche basique par nom (recherche avancée non implémentée)
