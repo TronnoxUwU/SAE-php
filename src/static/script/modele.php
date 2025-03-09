@@ -225,6 +225,13 @@ function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement
     $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, codeRegion, codeDepartement, codeCommune, Handicap) Values (?,?,?,?,?,?,?,?,?,?)");
     $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
 }
+ 
+function insertClient_light($nom, $prenom, $tel, $email, $mdp, $handicap) {
+    global $connexion;
+    $hash=hash('sha256',$mdp);
+    $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, Handicap) Values (?,?,?,?,?,?,?)");
+    $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $handicap]);
+}
 
 
 function ajoutePrefCuisine($email, $cuisine){
