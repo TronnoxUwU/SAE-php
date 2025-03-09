@@ -60,7 +60,7 @@ function extractNomCuisine(array $data): array {
                 $userCuisines = extractNomCuisine($userCuisines);
                 // var_dump($userCuisines);
             ?>
-            <form class="cuisines-pref" method="POST">
+            <form id="cuisinela" class="cuisines-pref" method="POST">
                 <h2>Vos préférences culinaires !</h2>
                 <div class="cuisine-container">
                     <!-- Les blocs de cuisine -->
@@ -88,7 +88,7 @@ function extractNomCuisine(array $data): array {
 
 
 
-        <section class="Affichage-restaurants resto-favoris">
+        <section id="favoritas" class="Affichage-restaurants resto-favoris">
             <h2>Restaurants favoris</h2>
             <div class="Affichage-fiches">
                 <?php 
@@ -101,7 +101,7 @@ function extractNomCuisine(array $data): array {
             </div>
         </section>
         
-        <section class="Affichage-commentaires all-comments">
+        <section id="comentairas" class="Affichage-commentaires all-comments">
             <h2>Avis enregistrés</h2>
             <div class="Affichage-fiches-commentaires">
                 <?php 

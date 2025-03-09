@@ -26,9 +26,9 @@
             echo   '<div class="dropdown">
                         <button class="dropbtn"><img class="dropimg" src="../static/images/3barres.png" alt="barres"></button>
                         <div class="dropdown-content">
-                            <a href="settings.php" id="param">Paramètres et préférences</a>
-                            <a href="#" id="critik">Mes critiques</a>
-                            <a href="#" id="favorites">Mes favoris</a>
+                            <a href="settings.php" id="param">Modifier mes informations</a>
+                            <a href="espace-perso.php#favoritas" id="critik">Mes critiques</a>
+                            <a href="espace-perso.php#comentairas" id="favorites">Mes favoris</a>
                             <a href="../static/script/logout.php" id="disconnect">Se déconnecter</a>
                         </div>
                     </div>';
