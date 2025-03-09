@@ -7,32 +7,50 @@ function init_trier(){
     $_SESSION['tendance'] = "false";
     $_SESSION['livraison'] = "false";
     $_SESSION['aemporter'] = "false";
+    $_SESSION['rating'] = "0";
 }
 
 function list_trier($nouriture,$tendance,$livraison,$rating,$aemporter,$recherche="",$ville=""){
     $listeRestaurant=[];
 
-
     if($nouriture =="" && $tendance=="false"&& $livraison=="false" && $aemporter=="false" && $recherche == "" && $ville =="" && $rating=="0"){
         return getrestauAll(); //ok
     }
+
+    if($tendance == "true"){
+        return getRestauTendance();
+    }
+
+    if($nouriture =="" && $tendance=="false"&& $livraison=="false" && $aemporter=="false" && $recherche != "" && $ville !="" && $rating=="0"){
+        if (rechercheEstNouriture($recherche)){
+            return getRestauParNouriturev2($recherche);
+        }
+    }
+
+    if($nouriture !="" && $tendance=="false"&& $livraison=="false" && $aemporter=="false" && $recherche == "" && $ville =="" && $rating=="0"){
+        if (substr_count($nouriture, ",") == 1){
+            $nouriture = str_replace(",", $nouriture);
+            return getRestauParNouriturev2($nouriture);
+
+        } else{
+            $LISTEN = explode(",", $nouriture);
+            foreach ($LISTEN as $element){
+                $listeRestaurant = array_merge($listeRestaurant,getRestauParNouriturev2($element));
+            }
+            return  $listeRestaurant;
+        }
+    }
+
+
+
 
     if($nouriture == "" && $tendance == "false"&& $livraison == "false" && $aemporter == "false" && $recherche != "" && $ville!="" && $rating=="0"){
         return getrestByName($recherche,$ville); //ok
     }
 
-    if($tendance == "true"){
-        echo("restau tendance orleans");
-        return getRestauTendance();
-    }
 
-    if( $nouriture =="" && $tendance=="true"){
-        
-    }else if($tendance=="true"){
-        $listeRestaurant = array_merge($listeRestaurant,getRestauAEmporter());
-    }
 
-    return $listeRestaurant;
+
 }
 
 
@@ -51,9 +69,6 @@ function getRestauAEmporter($name="",$ville="",$rating){
 
 
 
-function getRestauTendance(){
-    return getRestaurantPopulaire(24, 45, 45234);
-}
 
 
 function getRestaulivrer($name="",$ville=""){
@@ -81,12 +96,51 @@ function getRestauParEtoile($name="",$ville=""){
 function getRestauParNouriture($name="",$ville="",$nourriture){
     global $connexion;
     if($name=="" && $ville==""){
-    $requete = $connexion->prepare('SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion where nomcuisine='.$nourriture.'  GROUP BY r.OsmID;');
+        $requete = $connexion->prepare('SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion where nomcuisine='.$nourriture.'  GROUP BY r.OsmID;');
     }else{
         $requete = $connexion->prepare('SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion where nomrestaurant LIKE '.$name.'% and nomcommune = '.$ville.' and '.$nourriture.' GROUP BY r.OsmID;');
     }
     return traitement($requete);
 }
+
+
+
+
+
+
+//taper nourriture ok
+// trier par nouriture uniquement ok
+// $tendance == "true" ok
+
+
+
+
+
+
+function getRestauParNouriturev2($ville=""){
+    global $connexion;
+    if ($ville ==""){
+        return [];
+    } 
+    $requete = $connexion->prepare('SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion where nomcuisine='.$ville.'  GROUP BY r.OsmID;');
+    return traitement($requete);
+}
+
+
+function rechercheEstNouriture($recherche){
+    $listeNouriture = getNomCuisine();
+    if (in_array($recherche, $listeNouriture)){
+        return true;
+    }
+    return false;
+}
+
+function getRestauTendance(){
+    return getRestaurantPopulaire(24, 45, 45234);
+}
+
+
+
 
 function traitement($requete){
     global $connexion;

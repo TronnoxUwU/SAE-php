@@ -13,6 +13,9 @@ require_once '../static/script/modele.php';
 $API = get_CSV_Key("MAPS");
 
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset'])) {
+    init_trier();
+}
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_POST['position'])) {
@@ -27,9 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
 
 
 
-if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
-    
+
+if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
     $nourriture = $_SESSION['nourriture'] ?? "";
     $tendance = $_SESSION['tendance'] ?? "false";
@@ -83,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
 
 
-$restocarte = list_trier($_SESSION["tendance"],$_SESSION["livraison"],$_SESSION["rating"],$_SESSION["aemporter"],$_POST['resto'],$_POST['position']);
+//$restocarte = list_trier($_SESSION["tendance"],$_SESSION["livraison"],$_SESSION["rating"],$_SESSION["aemporter"],$_POST['resto'],$_POST['position']);
 ?>
 
 
@@ -120,7 +123,7 @@ $restocarte = list_trier($_SESSION["tendance"],$_SESSION["livraison"],$_SESSION[
                             <!-- <img src="../static/images/search.png" alt="search" class="search-pos-image"> -->
                             <button type="submit">Recherche</button>
                             <div class="petite-barre"></div>
-                            <input type="text" id="resto" name="resto" placeholder="Cherchez un nom de restaurant ou de cuisine" <?php if (isset($resto)) {echo 'value="'.$resto.'"';}?> required>
+                            <input type="text" id="resto" name="resto" placeholder="Cherchez un nom de restaurant ou de cuisine" <?php if (isset($resto)) {echo 'value="'.$resto.'"';}?> >
                         </div>
                         <div class="Position">
                             <img src="../static/images/maps.png" alt="search" class="maps">
@@ -143,7 +146,6 @@ $restocarte = list_trier($_SESSION["tendance"],$_SESSION["livraison"],$_SESSION[
                             <input type="time" id="time" name="time" value=<?php echo $time?>>
                         </div>
                     </div>
-                    <input type="submit">
                 
 
 
@@ -201,6 +203,10 @@ $restocarte = list_trier($_SESSION["tendance"],$_SESSION["livraison"],$_SESSION[
 
             <div class="Separation-affichage-vertical">
                 <section class="Affichage-restaurants-vertical">
+                <form method="post">
+                    <button type="submit" name="reset">reset</button>
+                </form>
+
                     <h2>D'après votre recherche :</h2>
                     <div class="Affichage-fiches-horizontal">
                         <?php 
