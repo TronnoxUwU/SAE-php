@@ -8,7 +8,7 @@ console.log(usermail);
 console.log(idResto);
 
 favbutton.addEventListener(('click'), async function () {
-    const response = await fetch(`../api/set_fav.php?mail=${usermail}idResto=${idResto}`);
+    const response = await fetch(`../api/set_fav.php?mail=${usermail}&idResto=${idResto}`);
     const data = await response.json();
     console.log(data);
     if (data.length > 0) {

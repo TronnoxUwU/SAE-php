@@ -43,6 +43,7 @@ function extractNomCuisine(array $data): array {
     <link rel="stylesheet" href="../static/styles/acceuil.css">
     <link rel="stylesheet" href="../static/styles/preferences-culinaires.css">
     <link rel="stylesheet" href="../static/styles/espace-perso.css">
+    <link rel="stylesheet" href="../static/styles/petite_fiche.css">
 </head>
 <body>
     <header></header>
@@ -93,7 +94,7 @@ function extractNomCuisine(array $data): array {
                 <?php 
                 $restoFAV = getFavoris($_SESSION['mail']);
                 foreach ($restoFAV as $resto) {
-                    $resto->renderFull();
+                    $resto->renderSmall();
                     sleep(0.1);
                 }
                 ?>
