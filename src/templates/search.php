@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
 }
 
-$restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"],[new Note("test",3,"test","2020-12-12", "Emmanuel", "Macron"),new Note("test",3,"test","2020-12-12", "Jean", "Castex")]);
+$restocarte = getrestoAll();
 ?>
 
 
@@ -194,21 +194,9 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                         <?php 
                         var_dump($_SESSION);
                         
-                        for ($i = 1; $i <= 10; $i++) {
-                            $restocarte->renderFull();
-                            // echo 
-                            // '<a href="" class="fiche-resto">
-                            //     <article >
-                            //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                            //         <div>
-                            //             <span>
-                            //                 <h3>Beast Burger</h3>
-                            //                 <h3>4.5☆</h3>
-                            //             </span>
-                            //             <p>Mr. Beaaaaaaaast!</p>
-                            //         </div>
-                            //     </article>
-                            // </a>';
+                        foreach ($restocarte as $element ) {
+                            $element->renderSmall();
+
                         }
                         ?>
                     </div>
