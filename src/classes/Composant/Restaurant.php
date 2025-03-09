@@ -268,8 +268,21 @@ class Restaurant{
         return null;
     }
 
+    public function getNoteParAuteur($mail){
+        foreach($this->notes as $note){
+            if($note->getMailAuteur() == $mail){
+                return $note->getNote();
+            }
+        }
+        return 0;
+    }
+
     public function addCommentaire($note){
-        $this->notes[] = $note;
+        $note_send = $note->getNote();
+        $commentaire_send = $note->getCommentaire();
+        $email_send = $note->getMailAuteur();
+        $osmId_send = $this->osmId;
+        ajouteNote($email_send, $osmId_send, $note_send, $commentaire_send);
     }
 
     
@@ -525,11 +538,40 @@ class Restaurant{
                         # Ici ya le form pour les commentaires et la note
                         echo '<form method="POST" action="pageRestaurant.php?id='.$this->getOsmId().'">';
                             echo '<select name="rating">';
-                                echo '<option value="1">⭐✦✦✦✦</option>';
-                                echo '<option value="2">⭐⭐✦✦✦</option>';
-                                echo '<option value="3">⭐⭐⭐✦✦</option>';
-                                echo '<option value="4">⭐⭐⭐⭐✦</option>';
-                                echo '<option value="5">⭐⭐⭐⭐⭐</option>';
+                            $rater = match ($this->getNoteParAuteur($_SESSION["mail"])) {
+                                1 => '<option value="1" selected>⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                2 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2" selected>⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                3 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3" selected>⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                4 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4" selected>⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                5 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5" selected>⭐⭐⭐⭐⭐</option>',
+                                default => 
+                                    '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                            };
+                            echo $rater;
                             echo '</select>';
                             echo '<input type="text" name="commentaire" placeholder="Commentaire">';
                             echo '<button type="submit">Envoyer</button>';

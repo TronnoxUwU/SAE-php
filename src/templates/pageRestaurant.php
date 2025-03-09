@@ -30,6 +30,10 @@ try {
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Vérification de la présence des données
+        if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] == false) {
+            header("Location: login.php");
+            exit();
+        }
         if (isset($_POST["rating"]) && isset($_POST["commentaire"])) {
             $rating = intval($_POST["rating"]);
             $commentaire = trim($_POST["commentaire"]);
@@ -37,12 +41,9 @@ try {
             try {
                 $comment = $restaurant->getCommentaireParAuteur($_SESSION['mail']);
                 if ($comment) {
-                    echo $_SESSION['mail'];
-                    $comment->setCommentaire($commentaire);
-                    $comment->setNote($rating);
-                    $comment->setDate(date('Y-m-d'));
+                    // modifNote($$_SESSION['mail'], $restaurant->getOsmId(), $rating, $commentaire);
                 } else {
-                    $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $id);
+                    $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $_SESSION['nom']['nompersonne'], $_SESSION['nom']['prenompersonne']);
                     $restaurant->addCommentaire($comment);
                 }
                 
