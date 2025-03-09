@@ -29,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
+    
+
     $nourriture = $_SESSION['nourriture'] ?? "";
     $tendance = $_SESSION['tendance'] ?? "false";
     $livraison = $_SESSION['livraison'] ?? "false";
@@ -36,7 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
 
     if (!empty($_POST['nourriture'])) {
-
         $nouvelleNourriture = trim($_POST['nourriture']);
         $nourritures = explode(",", $nourriture);
         if (($key = array_search($nouvelleNourriture, $nourritures)) !== false) {
@@ -72,14 +73,17 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
         $_SESSION["aemporter"] = $aemporter;
     }
 
-    
+
+
+
     
 
+    
 }
 
 
 
-$restocarte = list_trier($_SESSION["nourriture"], $_SESSION["tendance"],$_SESSION["livraison"],$_SESSION["aemporter"]);
+$restocarte = list_trier($_SESSION["tendance"],$_SESSION["livraison"],$_SESSION["rating"],$_SESSION["aemporter"],$_POST['resto'],$_POST['position']);
 ?>
 
 
@@ -187,6 +191,7 @@ $restocarte = list_trier($_SESSION["nourriture"], $_SESSION["tendance"],$_SESSIO
                 </section>
 
                 <section>
+                    <p><?= $_POST["position"] ?></p>
                     <p>Nourriture: <?= $_SESSION["nourriture"] ?? "NOP" ?></p>
                     <p>Tendance : <?= $_SESSION["tendance"] ?? "false" ?></p>
                     <p>livraison : <?= $_SESSION["livraison"] ?? "false" ?></p>
@@ -199,18 +204,16 @@ $restocarte = list_trier($_SESSION["nourriture"], $_SESSION["tendance"],$_SESSIO
                     <h2>D'après votre recherche :</h2>
                     <div class="Affichage-fiches-horizontal">
                         <?php 
-                        var_dump($_SESSION);
-                        
+
                         if ($restocarte == []){
                             echo("<p> information non trouver </p>");
                             echo("<p> voici tout les restaurant </p>");
-                            echo('<section>' .getrestauAll()->renderSmall().'</section>');
-
-                        } else{
-                            foreach ($restocarte as $element ) {
-                                $element->renderSmall();
-                            }
+                            $restocarte = getrestauAll();
                         }
+                        foreach ($restocarte as $element ) {
+                            $element->renderSmall();
+                        }
+                        
                         ?>
                     </div>
                 </section>
