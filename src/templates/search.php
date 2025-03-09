@@ -7,6 +7,7 @@ include 'navbar.php';
 include_once '../static/script/getKey.php';
 require_once '../classes/Composant/Restaurant.php';
 require_once '../classes/Composant/Note.php';
+require_once '../static/script/fonction_trier.php';
 require_once '../static/script/modele.php';
 
 $API = get_CSV_Key("MAPS");
@@ -30,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
     $nourriture = $_SESSION['nourriture'] ?? "";
     $tendance = $_SESSION['tendance'] ?? "false";
-    $Ouvert = $_SESSION['Ouvert'] ?? "false";
-    $PMR = $_SESSION['PMR'] ?? "false";
+    $livraison = $_SESSION['livraison'] ?? "false";
+    $aemporter = $_SESSION['aemporter'] ?? "false";
 
 
     if (!empty($_POST['nourriture'])) {
@@ -53,18 +54,22 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
     }
 
     if (isset($_POST['tendance'])) {
+
+
         $tendance = ($tendance === "false") ? "true" : "false";
         $_SESSION["tendance"] = $tendance;
     }
 
-    if (isset($_POST['Ouvert'])) {
-        $Ouvert = ($Ouvert === "false") ? "true" : "false";
-        $_SESSION["Ouvert"] = $Ouvert;
+
+
+    if (isset($_POST['livraison'])) {
+        $livraison = ($livraison === "false") ? "true" : "false";
+        $_SESSION["livraison"] = $livraison;
     }
 
-    if (isset($_POST['PMR'])) {
-        $PMR = ($PMR === "false") ? "true" : "false";
-        $_SESSION["PMR"] = $PMR;
+    if (isset($_POST['aemporter'])) {
+        $aemporter = ($aemporter === "false") ? "true" : "false";
+        $_SESSION["aemporter"] = $aemporter;
     }
 
     
@@ -72,7 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
 }
 
-$restocarte = getrestoAll();
+
+
+$restocarte = list_trier($_SESSION["nourriture"], $_SESSION["tendance"],$_SESSION["livraison"],$_SESSION["aemporter"]);
 ?>
 
 
@@ -159,7 +166,7 @@ $restocarte = getrestoAll();
                 <section class ="trier">
                     <section class = "v1">
                         <input class="styled"  type="submit"  name="tendance" value="tendance" />
-                        <input class="styled"  type="submit"  name="Ouvert" value="Ouvert" />
+                        <input class="styled"  type="submit"  name="livraison" value="livraison" />
 
                         <select id="rating" name="rating" >
 
@@ -170,7 +177,7 @@ $restocarte = getrestoAll();
                             <option value="4">⭐⭐⭐⭐✦</option>
                             <option value="5">⭐⭐⭐⭐⭐</option>
                         </select>
-                        <input class="styled"  type="submit" name="PMR" value="PMR" />
+                        <input class="styled"  type="submit" name="aemporter" value="aemporter" />
                         
                     </section>
 
@@ -182,8 +189,8 @@ $restocarte = getrestoAll();
                 <section>
                     <p>Nourriture: <?= $_SESSION["nourriture"] ?? "NOP" ?></p>
                     <p>Tendance : <?= $_SESSION["tendance"] ?? "false" ?></p>
-                    <p>Ouvert : <?= $_SESSION["Ouvert"] ?? "false" ?></p>
-                    <p>PMR : <?= $_SESSION["PMR"] ?? "false" ?></p>
+                    <p>livraison : <?= $_SESSION["livraison"] ?? "false" ?></p>
+                    <p>aemporter : <?= $_SESSION["aemporter"] ?? "false" ?></p>
                 </section>
         </form>
 
@@ -194,9 +201,15 @@ $restocarte = getrestoAll();
                         <?php 
                         var_dump($_SESSION);
                         
-                        foreach ($restocarte as $element ) {
-                            $element->renderSmall();
+                        if ($restocarte == []){
+                            echo("<p> information non trouver </p>");
+                            echo("<p> voici tout les restaurant </p>");
+                            echo('<section>' .getrestauAll()->renderSmall().'</section>');
 
+                        } else{
+                            foreach ($restocarte as $element ) {
+                                $element->renderSmall();
+                            }
                         }
                         ?>
                     </div>
