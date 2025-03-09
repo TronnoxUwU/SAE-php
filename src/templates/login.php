@@ -27,20 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['loggedin'] = true;
             $_SESSION['mail'] = $username;
 
-            $utilisateur = getUtilisateur($username);
+            $utilisateur = getUtilisateur($username)[0];
             // var_dump($utilisateur);
             // var_dump($utilisateur[0]);
 
             if ($utilisateur) {
-                $_SESSION['nom'] = $utilisateur[0];
-                $_SESSION['prenom'] = $utilisateur[1];
+                $_SESSION['nom'] = $utilisateur["nompersonne"];
+                $_SESSION['prenom'] = $utilisateur["prenompersonne"];
             }
             else {
                 $_SESSION['nom'] = "Nom";
                 $_SESSION['prenom'] = "Prenom";
             }
             
-
+            // var_dump($utilisateur);
             header("Location: home.php");
 
             // if (isAdmin($username, $password)) {
