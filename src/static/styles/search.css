@@ -1,12 +1,3 @@
-
-h2 {
-    color: black;
-    /* text-align: center; */
-    font-size: 2.69em;
-    /* margin-bottom: 10px; */
-    padding: 40px 0 0 20px;
-}
-
 p {
     line-height: 1.6;
     margin: 0 0 15px;
@@ -188,7 +179,7 @@ button:hover {
     display: flex;
     flex-direction: row;
     background-color: white;
-    min-height: 100vh;
+    min-height: 32vh;
 }
 
 .Separation-affichage-vertical iframe {
@@ -198,12 +189,12 @@ button:hover {
     margin: 2em;
 }
 .Affichage-restaurants-vertical {
-    /* background-color: white; */
     flex-basis: 65%;
     flex-grow: 1;
     overflow-y: hidden;
-    max-height: 50em;
+    max-height: 40em;
     margin-bottom: 80px;
+    margin-left: 20px sqdazefzrzgerzgerzrzg
 }
 
 .Affichage-fiches-horizontal {
@@ -219,7 +210,7 @@ button:hover {
     background-color: white;
     margin: 2em;
     margin-right: 2em;
-    /* margin-right: 10%; */
+    margin-right: 10%;
 
     border-radius: 10px;
     box-shadow: 10px 5px 5px black;
@@ -229,3 +220,94 @@ button:hover {
 .Affichage-fiches-horizontal article img {
     max-width: 10em;
 }
+
+.trier {
+    margin: auto;
+    width: 95%; /* Min et max width identiques, donc simplifié */
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    flex-wrap: wrap;
+}
+
+.v1, .scrollmenu {
+    width: 100%;
+    display: flex; /* Permet d'appliquer le centrage */
+    justify-content: left; /* Centre horizontalement */
+    margin: 10px 0; /* Évite la double marge */
+}
+
+.v1>input ,.scrollmenu>input{
+  width: auto;
+  min-width: 100px; /* Pour définir une largeur minimale */
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 60px;
+  background-color: DDDDDD;
+  border: 2px solid black;
+  border-width: medium;
+  cursor: pointer;
+}
+
+.v1>input:hover ,.scrollmenu>input:hover {
+    background-color: #59FF9E;
+}
+
+.v1>input , select {
+  width: auto;
+  min-width: 25%; /* Pour définir une largeur minimale */
+  text-align: center;
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 60px;
+  border: 2px solid black;
+  background-color: white;
+  border-width: medium;
+  cursor: pointer;
+}
+
+section.scrollmenu {
+  overflow-y: scroll;
+  max-height: 40em;
+  padding-bottom: 1em;
+  overflow: auto;
+  white-space: nowrap;
+  gap: 1em;
+    
+  max-width: 100vw;
+}
+
+section.scrollmenu  {
+  border-radius: 20px;
+}
+
+section.scrollmenu imput:hover {
+  background-color: #777;
+    
+}
+
+
+.contenu-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+
+.Separation-affichage-vertical {
+    display: flex;
+    gap: 10px;
+    margin-left: 3%;
+}
+
+
+
+.optionValider {
+background-color: #59FF9E;
+}
+
+.optionNonValider {
+background-color: white;
+}
+

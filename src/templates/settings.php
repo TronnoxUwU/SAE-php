@@ -2,7 +2,6 @@
 
 <?php
 
-use function PHPSTORM_META\type;
 
 session_start();
 
@@ -90,17 +89,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label for="email">eMail *</label>
-                <input type="email" id="username" name="email" readonly value="<?php echo htmlspecialchars($user["email"]); ?>" required>
+                <input type="email" id="username" name="email" readonly value="<?php echo htmlspecialchars($_SESSION["mail"]); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="name">Nom</label>
-                <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user["name"]); ?>" required>
+                <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($_SESSION["nom"]); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="prenom">Prénom</label>
-                <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($user["prenom"]); ?>" required>
+                <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($_SESSION["prenom"]); ?>" required>
             </div>
 
             <div class="form-group">

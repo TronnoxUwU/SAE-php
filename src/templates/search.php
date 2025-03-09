@@ -1,11 +1,24 @@
 <?php
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Fichier : pages/home.php
 include 'navbar.php';
 include_once '../static/script/getKey.php';
 require_once '../classes/Composant/Restaurant.php';
 require_once '../classes/Composant/Note.php';
+require_once '../static/script/fonction_trier.php';
+require_once '../static/script/modele.php';
 
 $API = get_CSV_Key("MAPS");
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset'])) {
+    init_trier();
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_POST['position'])) {
     $resto = $_POST['resto'];
@@ -14,10 +27,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resto']) && isset($_P
     if (isset($_POST['date']) && isset($_POST['time']))
         {$date = $_POST['date']; $time = $_POST['time'];}
     else
-        {$date = date('Y-m-d'); $time = "18:00";};
+        {$date = date('Y-m-d'); $time = "18:00";}
 }
 
-$restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.902964","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"],[new Note("test",3,"test","2020-12-12", "Emmanuel", "Macron"),new Note("test",3,"test","2020-12-12", "Jean", "Castex")]);
+
+
+
+
+if ($_SERVER["REQUEST_METHOD"] === 'POST') {
+
+    $nourriture = $_SESSION['nourriture'] ?? "";
+    $tendance = $_SESSION['tendance'] ?? "false";
+    $livraison = $_SESSION['livraison'] ?? "false";
+    $aemporter = $_SESSION['aemporter'] ?? "false";
+
+
+    if (!empty($_POST['nourriture'])) {
+        $nouvelleNourriture = trim($_POST['nourriture']);
+        $nourritures = explode(",", $nourriture);
+        if (($key = array_search($nouvelleNourriture, $nourritures)) !== false) {
+            unset($nourritures[$key]);
+        } else {
+            $nourritures[] = $nouvelleNourriture;
+        }
+        $nourriture = implode(",", $nourritures);
+        $_SESSION["nourriture"] = $nourriture;
+    }
+
+
+    if (!empty($_POST['rating'])) {
+        $_SESSION["rating"] = $_POST['rating'];
+    }
+
+    if (isset($_POST['tendance'])) {
+
+
+        $tendance = ($tendance === "false") ? "true" : "false";
+        $_SESSION["tendance"] = $tendance;
+    }
+
+
+
+    if (isset($_POST['livraison'])) {
+        $livraison = ($livraison === "false") ? "true" : "false";
+        $_SESSION["livraison"] = $livraison;
+    }
+
+    if (isset($_POST['aemporter'])) {
+        $aemporter = ($aemporter === "false") ? "true" : "false";
+        $_SESSION["aemporter"] = $aemporter;
+    }
+
+
+
+
+    
+
+    
+}
+
+
+
+//$restocarte = list_trier($_SESSION["tendance"],$_SESSION["livraison"],$_SESSION["rating"],$_SESSION["aemporter"],$_POST['resto'],$_POST['position']);
+$restocarte = getparnom($_POST['resto']);
 ?>
 
 
@@ -54,7 +126,7 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                             <!-- <img src="../static/images/search.png" alt="search" class="search-pos-image"> -->
                             <button type="submit">Recherche</button>
                             <div class="petite-barre"></div>
-                            <input type="text" id="resto" name="resto" placeholder="Cherchez un nom de restaurant ou de cuisine" <?php if (isset($resto)) {echo 'value="'.$resto.'"';}?> required>
+                            <input type="text" id="resto" name="resto" placeholder="Cherchez un nom de restaurant ou de cuisine" <?php if (isset($resto)) {echo 'value="'.$resto.'"';}?> >
                         </div>
                         <div class="Position">
                             <img src="../static/images/maps.png" alt="search" class="maps">
@@ -77,7 +149,9 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
                             <input type="time" id="time" name="time" value=<?php echo $time?>>
                         </div>
                     </div>
-                </form>
+                
+
+
             </div>
         </section>
 
@@ -96,49 +170,77 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
     <main class="contenu-principal">
         
         <!--  -->
+        
+            <section class= contenu-vertical>
+                <section class ="trier">
+                    <section class = "v1">
+                        <input class="styled"  type="submit"  name="tendance" value="tendance" />
+                        <input class="styled"  type="submit"  name="livraison" value="livraison" />
 
-        <div>
-            
-        </div>
+                        <select id="rating" name="rating" >
 
-        <div class="Separation-affichage-vertical">
-            <section class="Affichage-restaurants-vertical">
-                <h2>D'après votre recherche :</h2>
-                <div class="Affichage-fiches-horizontal">
-                    <?php 
-                    for ($i = 1; $i <= 10; $i++) {
-                        $restocarte->renderFull();
-                        // echo 
-                        // '<a href="" class="fiche-resto">
-                        //     <article >
-                        //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                        //         <div>
-                        //             <span>
-                        //                 <h3>Beast Burger</h3>
-                        //                 <h3>4.5☆</h3>
-                        //             </span>
-                        //             <p>Mr. Beaaaaaaaast!</p>
-                        //         </div>
-                        //     </article>
-                        // </a>';
-                    }
-                    ?>
-                </div>
-            </section>
+                            <option value="0">Notation ⭐ </option>
+                            <option value="1">⭐✦✦✦✦</option>
+                            <option value="2">⭐⭐✦✦✦</option>
+                            <option value="3">⭐⭐⭐✦✦</option>
+                            <option value="4">⭐⭐⭐⭐✦</option>
+                            <option value="5">⭐⭐⭐⭐⭐</option>
+                        </select>
+                        <input class="styled"  type="submit" name="aemporter" value="aemporter" />
+                        
+                    </section>
 
-            <iframe
-            width="400"
-            height="768"
-            style="border: 1px;"
-            loading="lazy"
-            allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade" 
-            src="https://www.google.com/maps/embed/v1/place?key=<?php echo $API; ?>
-             &q=<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
-                        else echo "Orléans" ?>">
-            </iframe>
-            <!-- Penser à remettre et retirer la clé d'API (dispo sur discord)  -->
-        </div>
+                    <section class = "scrollmenu">
+                        <?php getimputeNomCuisine() ?>
+                    </section>
+                </section>
+
+                <!-- <section>
+                    <p><?= $_POST["position"] ?></p>
+                    <p>Nourriture: <?= $_SESSION["nourriture"] ?? "NOP" ?></p>
+                    <p>Tendance : <?= $_SESSION["tendance"] ?? "false" ?></p>
+                    <p>livraison : <?= $_SESSION["livraison"] ?? "false" ?></p>
+                    <p>aemporter : <?= $_SESSION["aemporter"] ?? "false" ?></p>
+                </section> -->
+        </form>
+
+            <div class="Separation-affichage-vertical">
+                <section class="Affichage-restaurants-vertical">
+                <form method="post">
+                    <button type="submit" name="reset">reset</button>
+                </form>
+
+                    <h2>D'après votre recherche :</h2>
+                    <div class="Affichage-fiches-horizontal">
+                        <?php 
+
+                        if ($restocarte == []){
+                            echo("<p> information non trouver </p>");
+                            echo("<p> voici tout les restaurant </p>");
+                            $restocarte = getrestauAll();
+                        }
+                        foreach ($restocarte as $element ) {
+                            $element->renderSmall();
+                        }
+                        
+                        ?>
+                    </div>
+                </section>
+
+                <iframe
+                width="400"
+                height="768"
+                style="border: 1px;"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade" 
+                src="https://www.google.com/maps/embed/v1/place?key=<?php echo $API; ?>
+                &q=<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['position'])) {echo $_POST['position'];}
+                            else echo "Orléans" ?>">
+                </iframe>
+                <!-- Penser à remettre et retirer la clé d'API (dispo sur discord)  -->
+            </div>
+        </section>
         
     </main>
 
@@ -149,3 +251,4 @@ $restocarte = new Restaurant(1,"test","","Centre-Val-De-Loire","Loiret","Orléan
     <script src="../static/script/popup-search.js"></script>
 </body>
 </html>
+

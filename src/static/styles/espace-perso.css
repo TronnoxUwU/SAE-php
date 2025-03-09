@@ -41,6 +41,7 @@ h2 {
     justify-content: start;
     overflow-x: scroll;
     padding: 2em 0 1em 0;
+    max-width: 92vw;
 }
 
 

@@ -1,8 +1,9 @@
 <?php
 
+
+require_once '../static/script/fonction_trier.php';
 require_once __DIR__."/../../classes/Composant/Restaurant.php";
 require_once __DIR__."/../../classes/Composant/Note.php";
-
 
 $host = 'aws-0-eu-west-3.pooler.supabase.com';
 $dbname = 'postgres';
@@ -13,17 +14,7 @@ $port = '5432'; // Par défaut, 5432
 // Création de la connexion avec PDO
 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password";
 $connexion = new PDO($dsn);
-// $dsn = "mysql:dbname="."DBrichard".";host="."servinfo-maria";
-// $connexion = new PDO($dsn, "richard", "richard");
 
-// $dsn = "mysql:dbname="."sae_mlp".";host="."127.0.0.1";
-// try{
-//     $connexion = new PDO($dsn, "root", "clermont");
-// }
-// catch(PDOException $e){
-//     printf("Error connecting to database: %s", $e->getMessage());
-//     exit();
-// }
 
 function getMeilleurRestaurant($codeRegion, $codeDepartement, $codeCommune){
     global $connexion;
@@ -126,6 +117,7 @@ function getRestaurantPopulaire($codeRegion, $codeDepartement, $codeCommune){
     }
     return $sortie;
 }
+
 
 
 
@@ -402,3 +394,154 @@ function fetchCuisine(){
 
     return $result;
 }
+
+
+
+
+function getrestauAll(){
+    global $connexion;
+    $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  GROUP BY r.OsmID;");
+    return traitement($requete);
+}
+
+
+
+
+function getrestByName($name="",$ville=""){
+    global $connexion;
+
+    if($name=="" && $ville==""){
+        $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  GROUP BY r.OsmID;");
+    } else{
+        $requete = $connexion->prepare('SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion where nomrestaurant LIKE '.$name.'% and nomcommune = '.$ville.'  GROUP BY r.OsmID;');
+    }
+    return traitement($requete);
+}
+
+
+
+
+function getNomCuisine(){
+    global $connexion;
+    $ListeNomCuisine = [];
+    $requete = $connexion->prepare("select nomcuisine from CUISINE ");
+    $requete->execute();
+    $resultat = $requete->fetchAll();
+
+    foreach($resultat as $row){
+        array_push($ListeNomCuisine, $row );
+    }
+    return $ListeNomCuisine;
+}
+
+
+function getimputeNomCuisine(){
+    try {
+    global $connexion;
+
+        $requete = $connexion->prepare("select nomcuisine from CUISINE ");
+        $requete->execute();
+        $resultat = $requete->fetchAll();
+
+        foreach($resultat as $row){
+            echo '<input class="styled" type="submit" id='.$row['nomcuisine'].' name="nourriture" value="'.$row['nomcuisine'].'"'.$row['nomcuisine'].' />';
+        }
+    } catch (PDOException $e) {
+        echo 'Exception reçue : ',  $e->getMessage(), "\n";
+        for($i=0;$i<5;$i++){
+            echo '<input class="styled" type="button" id="X" name="X" value="food" X />';
+        }
+    }
+
+}
+
+function getPOSTNomCuisine(){
+    try {
+        global $connexion;
+        $ListeNomCuisineActif = [];
+        $requete = $connexion->prepare("select nomcuisine from CUISINE ");
+        $requete->execute();
+        $resultat = $requete->fetchAll();
+
+        print_r($_POST);
+        foreach($_POST as $key => $value){
+            
+            if (in_array($value,$resultat)) {
+                array_push($ListeNomCuisineActif, $value );
+                echo($value);
+            }
+            
+
+            
+        }
+        return $ListeNomCuisineActif;
+    } catch (PDOException $e) {
+        echo 'Exception reçue : ',  $e->getMessage(), "\n";
+         return $ListeNomCuisineActif;
+    }
+}
+
+
+function getFavoris($email) {
+    global $connexion;
+
+    $sortie = [];
+
+    $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy 
+                                    FROM RESTAURANT r 
+                                    LEFT JOIN NOTER n ON r.OsmID = n.OsmID 
+                                    LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune 
+                                    LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement 
+                                    LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion 
+                                    LEFT JOIN FAVORI f ON f.OsmID = r.OsmID 
+                                    WHERE f.EMailPersonne = ? 
+                                    GROUP BY r.OsmID 
+                                    ORDER BY moy, r.OsmID;");
+    $requete->execute([$email]);
+    $resultat = $requete->fetchAll();
+
+    foreach ($resultat as $row) {
+        if (count($sortie) < 10) {
+
+            $localisation = lesNomsRegions($row["coderegion"], $row["codedepartement"], $row["codecommune"]);
+
+            $cuisine = [];
+            $requete2 = $connexion->prepare("SELECT * FROM RESTAURANT NATURAL JOIN PREPARER WHERE OsmID = ?");
+            $requete2->execute([$row["osmid"]]);
+            $resultat2 = $requete2->fetchAll();
+
+            foreach ($resultat2 as $row2) {
+                $cuisine[] = $row2["nomcuisine"];
+            }
+
+            $restaurant = new Restaurant(
+                $row["osmid"],
+                $row["nomrestaurant"],
+                ($row["description"] == null) ? "" : $row["description"],
+                $localisation[0],
+                $localisation[1],
+                $localisation[2],
+                $row["longitude"],
+                $row["latitude"],
+                ($row["siteweb"] == null) ? "" : $row["siteweb"],
+                ($row["facebook"] == null) ? "" : $row["facebook"],
+                ($row["telrestaurant"] == null) ? "" : $row["telrestaurant"],
+                floatval($row["moy"]),
+                ($row["capacite"] == null) ? 0 : $row["capacite"],
+                ($row["fumeur"] == null) ? 0 : $row["fumeur"],
+                ($row["drive"] == null) ? 0 : $row["drive"],
+                ($row["aemporter"] == null) ? 0 : $row["aemporter"],
+                ($row["livraison"] == null) ? 0 : $row["livraison"],
+                ($row["vegetarien"] == null) ? 0 : $row["vegetarien"],
+                ($row["horrairesouverture"] == null) ? "" : $row["horrairesouverture"],
+                $cuisine,
+                fetchNoteRestaurant($row["osmid"])
+            );
+
+            $sortie[] = $restaurant;
+        }
+    }
+    return $sortie;
+}
+
+
