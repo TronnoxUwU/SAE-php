@@ -30,6 +30,10 @@ try {
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Vérification de la présence des données
+        if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] == false) {
+            header("Location: login.php");
+            exit();
+        }
         if (isset($_POST["rating"]) && isset($_POST["commentaire"])) {
             $rating = intval($_POST["rating"]);
             $commentaire = trim($_POST["commentaire"]);
@@ -42,7 +46,7 @@ try {
                     $comment->setNote($rating);
                     $comment->setDate(date('Y-m-d'));
                 } else {
-                    $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $id);
+                    $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $_SESSION['nom'], $_SESSION['prenom']);
                     $restaurant->addCommentaire($comment);
                 }
                 
