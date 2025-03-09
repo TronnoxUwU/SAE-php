@@ -29,5 +29,6 @@ final class RestaurantTest extends TestCase
                                       []);
 
         $this->assertTrue($restaurants->getCapacite()>100);
+
     }
 }

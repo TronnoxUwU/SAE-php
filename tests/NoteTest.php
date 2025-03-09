@@ -6,7 +6,9 @@ require_once 'src/classes/Composant/Note.php';
 
 final class NoteTest extends TestCase
 {
+
     public function testCreationBienFaite(): void
+
     {
         $not = new Note('aaaa',4,'','','aa','a');
 
@@ -14,6 +16,7 @@ final class NoteTest extends TestCase
 
         $this->assertSame($email, $not->getNomAuteur());
     }
+
 
     public function testGetBienFait(): void
     {
@@ -23,4 +26,5 @@ final class NoteTest extends TestCase
 
         $this->assertSame($email, $not->getDate());
     }
+
 }

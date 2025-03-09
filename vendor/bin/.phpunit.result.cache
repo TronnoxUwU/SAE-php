@@ -1,1 +1,3 @@
+
 {"version":1,"defects":{"NoteTest::testCanBeCreatedFromValidEmail":8,"RestaurantTest::testRestaurant":8},"times":{"NoteTest::testCanBeCreatedFromValidEmail":0.009,"RestaurantTest::testCanBeCreatedFromValidEmail":0,"NoteTest::testCreationBienFaite":0.009,"NoteTest::testGetBienFait":0,"RestaurantTest::testRestaurant":0.001}}
+
