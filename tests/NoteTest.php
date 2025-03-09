@@ -1,14 +1,17 @@
 <?php declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
+require_once 'src/classes/Composant/Note.php';
+
 
 final class NoteTest extends TestCase
 {
     public function testCanBeCreatedFromValidEmail(): void
     {
-        $string = 'user@example.com';
+        $not = new Note('aaaa',4,'','','aa','a');
 
-        $email = 'user@example.com';
+        $email = 'aa';
 
-        $this->assertSame($string, $email);
+        $this->assertSame($email, $not->getNomAuteur());
     }
 }
