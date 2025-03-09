@@ -7,7 +7,6 @@ Cette SAE est un site de restaurants, il implemente l'utilisation de la nouvelle
 ## VIDEO PRESENTATION
 
 [Regarder la vidéo](https://youtu.be/-umx_Hcdf18)
-"https://youtu.be/-umx_Hcdf18"
 
 ## INSTALLATION
 
