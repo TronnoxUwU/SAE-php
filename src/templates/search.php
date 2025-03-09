@@ -1,7 +1,9 @@
 <?php
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 // Fichier : pages/home.php
 include 'navbar.php';
 include_once '../static/script/getKey.php';

@@ -55,6 +55,7 @@ $restoPOP = getPopResto();
                 <?php 
                 foreach ($restoBEST as $resto) {
                     $resto->renderSmall();
+                    sleep(0.1);
                 }
                 
                 ?>
@@ -67,6 +68,7 @@ $restoPOP = getPopResto();
                 <?php 
                 foreach ($restoPOP as $resto) {
                     $resto->renderSmall();
+                    sleep(0.1);
                     // echo 
                     // '<a href="" class="fiche-resto">
                     //     <article >

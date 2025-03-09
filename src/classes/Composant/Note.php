@@ -74,21 +74,27 @@ class Note{
 }
 
 function afficheAllComment($mail){
-    $comments = getCommentaires($mail);
+    $comments = getCommentaire($mail);
     foreach ($comments as $comment){
-        for ($i = 1; $i <= 10; $i++) {
-            echo 
-            '<a href="pageRestaurant.php?id='.$comment->OsmId.'" class="fiche-commentaire">
-                <article >
-                    <div>
-                        <h3>'.$comment->note.'☆</h3>
-                    </div>
-                    <div>
-                        <h4>'.$comment->nomResto.'</h4>
-                        <p>'.$comment->commentaire.'</p>
-                    </div>
-                </article>
-            </a>';
-        }
+        $osmid = $comment['osmid'];
+        $resto = getRestoById($osmid);
+        $nomResto = $resto->getNomRestaurant();
+        $commentaire = $comment['commentaire'];
+        $note = $comment['note'];
+
+        // $nomResto = $resto->;
+        echo 
+        '<a href="pageRestaurant.php?id='.$osmid.'" class="fiche-commentaire">
+            <article >
+                <div>
+                    <h3>'.$note.'☆</h3>
+                </div>
+                <div>
+                    <h4>'.$nomResto.'</h4>
+                    <p>'.$commentaire.'</p>
+                </div>
+            </article>
+        </a>';
+        
     }
 }

@@ -1,6 +1,9 @@
 <?php
 
+
 require_once '../static/script/fonction_trier.php';
+require_once __DIR__."/../../classes/Composant/Restaurant.php";
+require_once __DIR__."/../../classes/Composant/Note.php";
 
 $host = 'aws-0-eu-west-3.pooler.supabase.com';
 $dbname = 'postgres';
@@ -214,6 +217,13 @@ function insertClient($nom, $prenom, $tel, $email, $codeRegion, $codeDepartement
     $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, codeRegion, codeDepartement, codeCommune, Handicap) Values (?,?,?,?,?,?,?,?,?,?)");
     $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $codeRegion, $codeDepartement, $codeCommune, $handicap]);
 }
+ 
+function insertClient_light($nom, $prenom, $tel, $email, $mdp, $handicap) {
+    global $connexion;
+    $hash=hash('sha256',$mdp);
+    $requete = $connexion->prepare("INSERT INTO PERSONNE (EMailPersonne, PrenomPersonne, NomPersonne, TelPersonne, MotDePasse, Role, Handicap) Values (?,?,?,?,?,?,?)");
+    $requete->execute([$email, $prenom, $nom, $tel, $hash, "Client", $handicap]);
+}
 
 
 function ajoutePrefCuisine($email, $cuisine){
@@ -388,18 +398,6 @@ function fetchCuisine(){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 function getrestauAll(){
     global $connexion;
     $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion  GROUP BY r.OsmID;");
@@ -419,11 +417,6 @@ function getrestByName($name="",$ville=""){
     }
     return traitement($requete);
 }
-
-
-
-
-
 
 
 
@@ -488,4 +481,57 @@ function getPOSTNomCuisine(){
     }
 }
 
+
+function getFavoris($email){
+    global $connexion;
+
+    $sortie = [];
+
+    $requete = $connexion->prepare("SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy FROM RESTAURANT r LEFT JOIN NOTER n ON r.OsmID = n.OsmID LEFT JOIN COMMUNE c ON r.CodeCommune = c.CodeCommune LEFT JOIN DEPARTEMENT d ON c.CodeDepartement = d.CodeDepartement LEFT JOIN REGION reg ON d.CodeRegion = reg.CodeRegion LEFT JOIN FAVORI f ON f.OsmID = r.OsmID WHERE EMailPersonne = ? GROUP BY r.OsmID ORDER BY moy, r.OsmID;");
+    $requete->execute([$email]);
+    $resultat = $requete->fetchAll();
+    
+
+    foreach($resultat as $row){
+        
+        if (count($sortie)<10) {
+
+            $localisation = lesNomsRegions($row["coderegion"], $row["codedepartement"], $row["codecommune"]);
+            
+            $cuisine = [];
+            $requete2 = $connexion->prepare("select * from RESTAURANT natural join PREPARER where OsmID = ?");
+            $requete2->execute([$row["osmid"]]);
+            $resultat2 = $requete->fetchAll();
+
+            foreach($resultat2 as $row2){
+                array_push($cuisine,$row2["nomcuisine"]);
+            }
+
+            $restaurant = new Restaurant($row["osmid"],
+                                         $row["nomrestaurant"],
+                                         ($row["description"]==null) ? "" : $row["description"],
+                                         $localisation[0] ,
+                                         $localisation[1],
+                                         $localisation[2],
+                                         $row["longitude"],
+                                         $row["latitude"],
+                                         ($row["siteweb"]==null) ? "" : $row["siteweb"],
+                                         ($row["facebook"]==null) ? "" : $row["facebook"],
+                                         ($row["telrestaurant"]==null) ? "" : $row["telrestaurant"],
+                                         floatval($row["moy"]),
+                                         ($row["capacite"]==null) ? 0 : $row["capacite"],
+                                         ($row["fumeur"]==null) ? 0 : $row["fumeur"],
+                                         ($row["drive"]==null) ? 0 : $row["drive"],
+                                         ($row["aemporter"]==null) ? 0 : $row["aemporter"],
+                                         ($row["livraison"]==null) ? 0 : $row["livraison"],
+                                         ($row["vegetarien"]==null) ? 0 : $row["vegetarien"],
+                                         ($row["horrairesouverture"]==null) ? "" : $row["horrairesouverture"],
+                                         $cuisine,
+                                         fetchNoteRestaurant($row["osmid"]));
+
+            array_push($sortie, $restaurant);
+        }
+    }
+    return $sortie;
+}
 
