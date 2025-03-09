@@ -237,6 +237,20 @@ function ajouteNote($email, $osmid, $note, $commentaire){
     $requete->execute([$email, $osmid,$note,$commentaire,date('Y-m-d H:i:s')]);
 }
 
+function modifNote($email, $osmid, $note, $commentaire){
+    global $connexion;
+    $requete = $connexion->prepare("UPDATE NOTER SET Note=?, Commentaire=? WHERE EMailPersonne=? and OsmID=?");
+    $requete->execute([$note,$commentaire,$email, $osmid]);
+}
+
+function getCommentaire($mail) {
+    global $connexion;
+    $stmt = $connexion->prepare("SELECT * FROM NOTER WHERE EMailPersonne = :mail");
+    $stmt->execute(array('mail' => $mail));
+    $result = $stmt->fetchAll();
+    return $result;
+}
+
 function fetchNoteRestaurant($osmid){
     global $connexion;
     $resultat = [];
