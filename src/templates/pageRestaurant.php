@@ -7,28 +7,59 @@ session_start();
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
 require_once '../static/script/getImage.php';
-
-
+require_once "../static/script/modele.php";
+require_once '../classes/Composant/Note.php';
 
 $ville = "Orleans";
 try {
     // Vérifier si l'utilisateur est connecté
-    
+    //$_SESSION['mail'] = "TEST";
     if (!isset($_GET['id'])) {
-        throw new Exception("Utilisateur non connecté.");
+        throw new Exception("Aucun resto trouvé.");
     }
     
     $id = $_GET['id'];
     // Récupérer les informations de l'utilisateur via la fonction du modèle
-    $restaurant = new Restaurant(1,"Cha+","","Centre-Val-De-Loire","Loiret","Orléans","1.9052942","47.90114979996115","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+    // $restaurant = new Restaurant(314079813,"Campanille","","Centre-Val-De-Loire","Loiret","Orléans","1.9405488", "47.815701299981235","https://test.com","@test","06 06 06 06 06", 3.4, 42, true, false,true, true,false, "12:00-14:00,19:00-22:00", ["Français","Italien"]);
+    $restaurant = getRestoById($id);
     $ville = $restaurant->getVille();
+
     if (!$restaurant) {
         throw new Exception("Aucun resto trouvé.");
     }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Vérification de la présence des données
+        if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] == false) {
+            header("Location: login.php");
+            exit();
+        }
+        if (isset($_POST["rating"]) && isset($_POST["commentaire"])) {
+            $rating = intval($_POST["rating"]);
+            $commentaire = trim($_POST["commentaire"]);
+            $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+            try {
+                $comment = $restaurant->getCommentaireParAuteur($_SESSION['mail']);
+                if ($comment) {
+                    // modifNote($$_SESSION['mail'], $restaurant->getOsmId(), $rating, $commentaire);
+                } else {
+                    $comment = new Note($_SESSION['mail'], $rating, $commentaire, date('Y-m-d'), $_SESSION['nom']['nompersonne'], $_SESSION['nom']['prenompersonne']);
+                    $restaurant->addCommentaire($comment);
+                }
+                
+    
+            } catch (PDOException $e) {
+                echo "Erreur : " . $e->getMessage();
+            }
+        }
+    }
+
     
 } catch (Exception $e) {
     die("Erreur : " . $e->getMessage());
 }
+
+
 
 $date=date('Y-m-d');
 $time="18:00";

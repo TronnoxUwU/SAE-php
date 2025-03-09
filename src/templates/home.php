@@ -4,6 +4,7 @@ session_start();
 
 include 'navbar.php';
 require_once '../classes/Composant/Restaurant.php';
+require_once '../classes/Composant/Note.php';
 require_once "../static/script/modele.php";
 require_once "../static/script/fonction_trier.php";
 
@@ -54,21 +55,8 @@ $restoPOP = getPopResto();
                 <?php 
                 foreach ($restoBEST as $resto) {
                     $resto->renderSmall();
-
-                    // echo 
-                    // '<a href="" class="fiche-resto">
-                    //     <article >
-                    //         <img src="../static/images/noequestrians.png" alt="Balade en forêt" class="fiche-resto-image">
-                    //         <div>
-                    //             <span>
-                    //                 <h3>Beast Burger</h3>
-                    //                 <h3>4.5☆</h3>
-                    //             </span>
-                    //             <p>Mr. Beaaaaaaaast!</p>
-                    //         </div>
-                    //     </article>
-                    // </a>';
                 }
+                
                 ?>
             </div>
         </section>

@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
     $prenom = $_POST['prenom'] ?? null;
     $email = $_POST['email'] ?? null;
     $mdp = $_POST['password'] ?? null;
-    $ville = $_POST['ville'] ?? "orleans";
+    $ville = $_POST['ville'] ?? "Orléans";
     $departement = $_POST['departement'] ?? "Loiret";
     $region = $_POST['Region'] ?? "Centre-val-de-Loire";
     $tel = $_POST['telephone'] ?? "+33";
@@ -30,19 +30,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
                 echo '<p></p>';
                 echo '<script>showPopup("Cet email est déjà utilisé.", false);</script>';
             } else {
-                // Insérer les données dans la table "users"
-                // function insertAdherent($nom, $prenom, $tel, $mail, $taille, $poids, $dateInscription, $mdp){
 
-                insertClient($nom, $prenom, $tel, $email, $cp, $ville, $mdp, $handicap);
+                // function insertAdherent($nom, $prenom, $tel, $mail, $taille, $poids, $dateInscription, $mdp){
+                if (!$handicap){$handicap=0;}
+                insertClient($nom, $prenom, $tel, $email, $mdp, $handicap);
                 
                 $id = utilisateurExistant($email, hash('sha256', $mdp));
                 $_SESSION['inscription']++;
+                $_SESSION['inscription-mail']=$email;
 
 
                 echo '<p></p>';
                 echo '<script>showPopup("Inscription réussie !", true);</script>';
-                sleep(3);
-                header("Location: inscription.php");
+                // sleep(3);
+                // header("Location: inscription.php");
                 //header("Location: login.php");
                 //exit();
             }
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
 
             //header("Location: inscription.php");
             echo '<p></p>';
-            echo '<script>showPopup("Cela na pas fonctionné, cest de la faut de tristan", false);</script>';
+            echo '<script>showPopup("Cela na pas fonctionné :(", false);</script>';
             //header("Location: login.php"); 
             exit();
         }
@@ -68,22 +69,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partie-insc'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) {
     $selectedCuisines = explode(',', $_POST['selectedCuisines']);
+    $_SESSION['inscription'] = 2;
+
     if (!empty($selectedCuisines)) {
-        echo "Cuisines sélectionnées : " . implode(', ', $selectedCuisines);
+        // echo "Cuisines sélectionnées : " . implode(', ', $selectedCuisines);
         // Insérez en base de données ici
+        foreach($selectedCuisines as $cuis){
+            ajoutePrefCuisine($_SESSION['inscription-mail'], $cuis);
+        }
 
-
-        $_SESSION['inscription']--;
         echo '<p></p>';
         echo '<script>showPopup("Inscription cuisines réussies!", true);</script>';
-        sleep(3);
-        header("Location: login.php");
     } else {
-        echo "Aucune cuisine sélectionnée.";
+        // echo "Aucune cuisine sélectionnée.";
         echo '<p></p>';
         echo '<script>showPopup("Echec ajout cuisines !", false);</script>';
-        sleep(3);
-        header("Location: login.php");
     }
 }
 
@@ -107,6 +107,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selectedCuisines'])) 
 
     <?php
     switch ($_SESSION['inscription']) {
+        case 2:
+            header("Location: ./login.php");
+            break;
         case 1:
             include "pages/inscription-pref.php";
             break;

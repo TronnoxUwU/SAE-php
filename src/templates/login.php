@@ -26,8 +26,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Set session and redirect
             $_SESSION['loggedin'] = true;
             $_SESSION['mail'] = $username;
-            $_SESSION['nom'] = "REQUESTE A FAIRE DANS LA BD";
-            $_SESSION['prenom'] = "REQUESTE A FAIRE DANS LA BD";
+
+            $utilisateur = getUtilisateur($username);
+            // var_dump($utilisateur);
+            // var_dump($utilisateur[0]);
+
+            if ($utilisateur) {
+                $_SESSION['nom'] = $utilisateur[0];
+                $_SESSION['prenom'] = $utilisateur[1];
+            }
+            else {
+                $_SESSION['nom'] = "Nom";
+                $_SESSION['prenom'] = "Prenom";
+            }
+            
 
             header("Location: home.php");
 
@@ -45,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $error = "Nom d'utilisateur ou mot de passe incorrect.";
             echo '<script language="javascript">';
-            echo 'alert("Tu es gay")';
+            echo 'alert("Erreur de connexion")';
             echo '</script>';
         }
     } catch (Exception $e) {

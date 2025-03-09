@@ -23,10 +23,11 @@ class Restaurant{
     private bool $livraison;
     private bool $vegetarien;
     private string $horairesOuverture;
-
     private array $cuisines;
+    private array $notes;
 
-    public function __construct($osmId, $nomRestaurant, $description, $region, $departement, $ville, $longitude, $latitude, $siteWeb, $facebook, $telRestaurant, $nbEtoiles, $capacite, $fumeur, $drive, $aEmporter, $livraison, $vegetarien, $horairesOuverture, $cuisines){
+
+    public function __construct($osmId, $nomRestaurant, $description, $region, $departement, $ville, $longitude, $latitude, $siteWeb, $facebook, $telRestaurant, $nbEtoiles, $capacite, $fumeur, $drive, $aEmporter, $livraison, $vegetarien, $horairesOuverture, $cuisines, $Notes){
         $this->osmId = $osmId;
         $this->nomRestaurant = $nomRestaurant;
         $this->description = $description;
@@ -47,6 +48,7 @@ class Restaurant{
         $this->vegetarien = $vegetarien;
         $this->horairesOuverture = $horairesOuverture;
         $this->cuisines = $cuisines;
+        $this->notes = $Notes;
     }
 
     public function getOsmId(){
@@ -55,6 +57,10 @@ class Restaurant{
 
     public function getNomRestaurant(){
         return $this->nomRestaurant;
+    }
+
+    public function getNotes(){
+        return $this->notes;
     }
 
     public function getDescription(){
@@ -220,6 +226,10 @@ class Restaurant{
         }
     }
 
+    public function addNote($note){
+        $this->notes[] = $note;
+    }
+
     public function localiser(){
         # A remplacer par un appelle de fonction qui renvoie la localisation du restaurant
         return $this->ville.', '.$this->departement.', '.$this->region;
@@ -227,53 +237,100 @@ class Restaurant{
 
     public function getNbCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le nombre de commentaire du restaurant
-        return 0;
+        return sizeof($this->notes);
     }
 
     public function getPremierCommentaire(){
         # A remplacer par un appelle de fonction qui renvoie le premier commentaire du restaurant
-        return 'Pas de commentaire pour le moment, ceci est un long commentaire pour tester la mise en page de la fiche restaurant';
+        echo "<p>".$this->notes[0]->getMailAuteur().' a donné une note de '.$this->notes[0]->getNote().'☆ : '.'</p>';
+        echo  "<p>".$this->notes[0]->getCommentaire()."</p>";
     }
 
-    public function getImagePrincipal(){
-        # A remplacer par un appelle de fonction qui renvoie l'image principale du restaurant
+    public function getCommentaires(){
+        # A remplacer par un appelle de fonction qui renvoie les commentaires du restaurant
+        foreach($this->notes as $note){
+            echo "<div class='commentaire'>";
+                echo "<div class=auteur>";
+                    echo "<h4>".$note->getPrenomAuteur().' '.$note->getNomAuteur().'</h4>';
+                    echo "<p>(Il y a ".$note->getDateDiff().')</p>';
+                echo "</div>";
+                echo "<p>".$note->getCommentaire()."</p>";
+            echo "</div>";
+        }
+    }
 
-        $cacheFile = '../data/cache/' . md5($this->getNomRestaurant()) . '.json';
-
-        if (file_exists($cacheFile)) {
-            $images = json_decode(file_get_contents($cacheFile), true);
-            
-            foreach ($images as $image) {
-                if (str_ends_with($image, '_main.jpg')) {
-                    return $image;
-                }
+    public function getCommentaireParAuteur($mail){
+        foreach($this->notes as $note){
+            if($note->getMailAuteur() == $mail){
+                return $note;
             }
         }
-
-        $img = $this->getImagesGoogle();
-
-        if ($img==[]){return '../static/images/noequestrians.png" alt="Balade en forêt';}
-
-        $img = $img[0];
-
-        $localImages = [];
-        $localImages[] = $this->downloadAndSaveImage($img, $this->getOsmId(), "main");
-
-        file_put_contents($cacheFile, json_encode($localImages), FILE_APPEND);
-        return $localImages[0];
-
-        return '../static/images/noequestrians.png" alt="Balade en forêt';
+        return null;
     }
 
+    public function getNoteParAuteur($mail){
+        foreach($this->notes as $note){
+            if($note->getMailAuteur() == $mail){
+                return $note->getNote();
+            }
+        }
+        return 0;
+    }
+
+    public function addCommentaire($note){
+        $note_send = $note->getNote();
+        $commentaire_send = $note->getCommentaire();
+        $email_send = $note->getMailAuteur();
+        $osmId_send = $this->osmId;
+        ajouteNote($email_send, $osmId_send, $note_send, $commentaire_send);
+    }
+
+    
+    public function getImagePrincipal() {
+        # Donne l'image de représentation
+        $cacheFile = '../data/cache/' . md5($this->getNomRestaurant()) . '.json';
+    
+
+        if (file_exists($cacheFile)) {
+            $cacheData = json_decode(file_get_contents($cacheFile), true);
+            if (!empty($cacheData['images'])) {
+                return $cacheData['images'][0];
+            }
+        }
+    
+
+        $imgList = $this->getImagesGoogle();
+        
+        return !empty($imgList) ? $imgList[0] : '../static/images/noequestrians.png';
+    }
+    
+    public function getImages() {
+        # Donne les autres images
+        $cacheFile = '../data/cache/' . md5($this->getNomRestaurant()) . '.json';
+    
+
+        if (file_exists($cacheFile)) {
+            $cacheData = json_decode(file_get_contents($cacheFile), true);
+            if (!empty($cacheData['images'])) {
+                return array_slice($cacheData['images'], 1);
+            }
+        }
+    
+        $imgList = $this->getImagesGoogle();
+    
+        return !empty($imgList) ? array_slice($imgList, 1) : array_fill(0, 8, '../static/images/noequestrians.png');
+    }
+    
+    
+    
+    
     public function downloadAndSaveImage($imageUrl, $restaurantName, $index) {
         $saveDir = '../data/cache/img/';
         $savePath = $saveDir . md5($restaurantName) . "_$index.jpg";
     
-        // Vérifie si le fichier existe déjà pour éviter de le retélécharger
         if (!file_exists($savePath)) {
             $imageData = @file_get_contents($imageUrl);
             if ($imageData) {
-                // Créer le dossier s'il n'existe pas
                 if (!is_dir($saveDir)) {
                     mkdir($saveDir, 0777, true);
                 }
@@ -283,74 +340,88 @@ class Restaurant{
     
         return $savePath;
     }
+
+    public function getCachedAddress(){
+        $cacheDir = '../data/cache/';
+        $cacheFile = $cacheDir . md5($this->getNomRestaurant()) . ".json";
+        if (file_exists($cacheFile)) {
+            $cacheData = json_decode(file_get_contents($cacheFile), true);
+            if (!empty($cacheData['google_data']['address'])) {
+                return $cacheData['google_data']['address'];
+            }
+        }
+        return $this->getVille();
+    }
+
+    public function multiDownloadAndSaveImages($imageUrls, $restaurantName) {
+        # Tentative raté de télécharger les images en multiple pour gagner du temps
+        
+    }
     
 
-    public function getImages(){
-
-        $cacheFile = '../data/cache/' . md5($this->getOsmId()) . '.json';
-
-        // if (file_exists($cacheFile)) {
-        //     return json_decode(file_get_contents($cacheFile), true);
-        // }
+    public function getImagesGoogle() {
+        $cacheFile = '../data/cache/' . md5($this->getNomRestaurant()) . '.json';
+    
+        // Vérifier si les données sont déjà en cache
         if (file_exists($cacheFile)) {
-            $images = json_decode(file_get_contents($cacheFile), true);
-            $c_images = [];
-            foreach ($images as $image) {
-                if (!str_ends_with($image, '_main.jpg')) {
-                    array_push($c_images, $image);
-                }
+            $cacheData = json_decode(file_get_contents($cacheFile), true);
+            if (!empty($cacheData['images'])) {
+                return $cacheData['images'];
             }
-            return $c_images;
         }
-
-
-        $img = $this->getImagesGoogle();
-        $img = array_slice($img, 1);
-
-        if ($img==[]){
-            return ['../static/images/noequestrians.png" alt="Balade en forêt', '../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt','../static/images/noequestrians.png" alt="Balade en forêt'];
+    
+        // Récupération des données du restaurant via l'API Google
+        $lat = $this->getLatitude();
+        $long = $this->getLongitude();
+        $name = $this->getNomRestaurant();
+        
+        $PlaceJSON = getGooglePlaceData($lat, $long, $name);
+        
+        if (!$PlaceJSON || empty($PlaceJSON['place_id'])) {
+            return []; // Aucune donnée récupérée, on arrête ici
         }
-
+    
+        $Pid = $PlaceJSON['place_id'];
+        $images = getImageByPlaceIdLight($Pid);
+    
+        $res = [];
+        if (!empty($images['horizontal']) || !empty($images['vertical'])) {
+            $res = array_merge($images['horizontal'] ?? [], $images['vertical'] ?? []);
+        } else {
+            return [];
+        }
+    
+        // telecharger en cache les images (car les liens font l'erreur 429 au chargement, mais ceci ralentit ENORMEMENT le premier chargement de la page)
         $localImages = [];
-        foreach ($img as $index => $imgUrl) {
+        
+        // $localImages = $this->multiDownloadAndSaveImages($res, $this->getNomRestaurant());
+        foreach ($res as $index => $imgUrl) {
             $localImages[] = $this->downloadAndSaveImage($imgUrl, $this->getNomRestaurant(), $index);
         }
-
-        file_put_contents($cacheFile, json_encode($localImages), FILE_APPEND);
+    
+        $cacheData = [
+            'google_data' => [
+                'place_id' => $Pid,
+                'name' => $PlaceJSON['name'],
+                'rating' => $PlaceJSON['rating'] ?? null,
+                'address' => $PlaceJSON['vicinity'] ?? '',
+                'latitude' => $PlaceJSON['geometry']['location']['lat'],
+                'longitude' => $PlaceJSON['geometry']['location']['lng']
+            ],
+            'images' => $localImages // On stocke les chemins des images locales
+        ];
+    
+        file_put_contents($cacheFile, json_encode($cacheData, JSON_PRETTY_PRINT | LOCK_EX));
+    
         return $localImages;
     }
-
-    public function getImagesGoogle(){
-        
-        $lat = $this->getLatitude();
-        // var_dump($lat);
-        $long = $this->getLongitude();
-        // var_dump($long);
-        $name = $this->getNomRestaurant();
-        // var_dump($name);
-
-        $Pid = getPlaceId($lat, $long, $name);
-        // var_dump($Pid);
-        $images = getImageByPlaceIdLight($Pid);
-
-        $res = array();
-        if (array_key_exists('horizontal', $images) && array_key_exists('vertical', $images)){
-            $res = array_merge($res, $images['horizontal']);
-            $res = array_merge($res, $images['vertical']);
-        }
-        else{
-            return array();
-        }
-        
-        // var_dump($res);
-        return $res;
-    }
+    
 
     public function renderSmall(){
-        echo '<a href="pageRestaurant.php?id="'.$this->getOsmId().'" class="fiche-resto">';
+        echo '<a href="pageRestaurant.php?id='.$this->getOsmId().'" class="fiche-resto">';
         echo '<article>';
         # A remplacer par un appelle de fonction qui renvoie l'image du restaurant
-        echo '<img src="'.$this->getImagePrincipal().'" class="fiche-resto-image">';
+        echo '<img src="'.$this->getImagePrincipal().'" class="fiche-resto-image" loading="lazy">';
         #
         echo '<div>';
         echo '<span>';
@@ -374,10 +445,10 @@ class Restaurant{
     }
 
     public function renderFull(){
-        echo '<a href="pageRestaurant.php?id="'.$this->getOsmId().'" class="grande-fiche-resto">';
+        echo '<a href="pageRestaurant.php?id='.$this->getOsmId().'" class="grande-fiche-resto">';
         echo '<article>';
         # A remplacer par un appelle de fonction qui renvoie l'image du restaurant
-        echo '<img src="'.$this->getImagePrincipal().'" class="lazy grande-fiche-resto-image">';
+        echo '<img src="'.$this->getImagePrincipal().'" class="lazy grande-fiche-resto-image" loading="lazy">';
         #
         echo '<div>';
         echo '<span>';
@@ -396,7 +467,7 @@ class Restaurant{
             echo $desc;
         }
         echo '<span>';
-        echo '<p>'.$this->localiser().'</p>';
+        echo '<p>'.$this->getCachedAddress().'</p>';
         echo '<text>'.$this->getNbCommentaire().' 🗨️</text>';
         echo '</span>';
         echo '<span>';
@@ -421,7 +492,11 @@ class Restaurant{
                     echo '<a href="'.$this->getSiteWeb().'" class="resto-link">';
                     echo '<h1>'.$this->getNomRestaurant().' 🔗</h1>';
                     echo '</a>';
-                    if ($logged){echo '<button id="fav-button">Ajouter à vos favoris ♡</button>';}
+                    if ($logged){
+                        if (!estFavoris($_SESSION['mail'], $this->getOsmId()))
+                            {echo '<button id="fav-button" class="unfav">Ajouter à vos favoris ♡</button>';}
+                        else {echo '<button id="fav-button" class="faved">Retirer de vos favoris ♥</button>';}
+                    }
                     
                 echo '</span>';
                 
@@ -435,7 +510,7 @@ class Restaurant{
                     echo '</p>';
                 }
 
-                echo '<p>📍 '.$this->localiser().'</p>';
+                echo '<p>📍 '.$this->getCachedAddress().'</p>';
                 echo '<p>📞 Tel : '.$this->getTelRestaurant().'</p>';
                 echo '<p>🕒 '.$this->getHorairesOuverture().'</p>';
                 echo '<p>👥 Capacité : '.$this->getCapacite().' personnes</p>';
@@ -445,6 +520,7 @@ class Restaurant{
                     echo '<p> sur '.$this->getNbCommentaire().' avis</p>';
                 echo '</span>';
             echo '</div>';
+
         echo '</article>';
 
         // $API = get_CSV_Key("MAPS");
@@ -453,14 +529,58 @@ class Restaurant{
             echo '<div class="resto-media">';
                 echo '<span class="photos">';
                 foreach ($this->getImages() as $img) {
-                    echo '<img src="'.$img.'" class="lazy resto-thumbnail">';
+                    echo '<img src="'.$img.'" class="lazy resto-thumbnail" loading="lazy">';
                 }
                 echo '</span>';
                 
                 echo '<span class="commentaires">';
-                    echo '<h3>Commentaires ('.$this->getNbCommentaire().') 🗨️</h3>';
-                    echo '<p>'.$this->getPremierCommentaire().'</p>';
-                echo '</span>';
+                        echo '<h3>Commentaires '.$this->getNbCommentaire().' 🗨️</h3>';
+                        # Ici ya le form pour les commentaires et la note
+                        echo '<form method="POST" action="pageRestaurant.php?id='.$this->getOsmId().'">';
+                            echo '<select name="rating">';
+                            $rater = match ($this->getNoteParAuteur($_SESSION["mail"])) {
+                                1 => '<option value="1" selected>⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                2 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2" selected>⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                3 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3" selected>⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                4 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4" selected>⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                                5 =>  '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5" selected>⭐⭐⭐⭐⭐</option>',
+                                default => 
+                                    '<option value="1">⭐✦✦✦✦</option>'.
+                                    '<option value="2">⭐⭐✦✦✦</option>'.
+                                    '<option value="3">⭐⭐⭐✦✦</option>'.
+                                    '<option value="4">⭐⭐⭐⭐✦</option>'.
+                                    '<option value="5">⭐⭐⭐⭐⭐</option>',
+                            };
+                            echo $rater;
+                            echo '</select>';
+                            echo '<input type="text" name="commentaire" placeholder="Commentaire">';
+                            echo '<button type="submit">Envoyer</button>';
+                        echo '</form>';
+                        #
+                        echo '<div class="les_commentaires">';
+                            $this->getCommentaires();
+                        echo '</div>';
+                    echo '</span>';
             echo '</div>';
 
             ?> 

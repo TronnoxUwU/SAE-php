@@ -34,18 +34,20 @@
 }
 
 .fiche-resto-image {
-    /* height: 150px; */
+    height: 12em;
+    width: 100vw;
     object-fit: cover;
     margin-bottom: 10px;
 }
 
 .fiche-resto h3 {
     font-size: 1.2em;
-    margin: 2px 0;
+    margin: 20px 0px 2px 2px;
 }
 
 .fiche-resto p {
     color: #5C5C5C;
     font-weight: bold;
     font-size: smaller;
+    margin-bottom: 20px;
 }
