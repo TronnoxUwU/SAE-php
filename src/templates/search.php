@@ -89,6 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
 
 //$restocarte = list_trier($_SESSION["tendance"],$_SESSION["livraison"],$_SESSION["rating"],$_SESSION["aemporter"],$_POST['resto'],$_POST['position']);
+$restocarte = getparnom($_POST['resto']);
 ?>
 
 
@@ -194,13 +195,13 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
                     </section>
                 </section>
 
-                <section>
+                <!-- <section>
                     <p><?= $_POST["position"] ?></p>
                     <p>Nourriture: <?= $_SESSION["nourriture"] ?? "NOP" ?></p>
                     <p>Tendance : <?= $_SESSION["tendance"] ?? "false" ?></p>
                     <p>livraison : <?= $_SESSION["livraison"] ?? "false" ?></p>
                     <p>aemporter : <?= $_SESSION["aemporter"] ?? "false" ?></p>
-                </section>
+                </section> -->
         </form>
 
             <div class="Separation-affichage-vertical">

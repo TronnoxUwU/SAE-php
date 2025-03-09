@@ -103,6 +103,21 @@ function getRestauParNouriture($name="",$ville="",$nourriture){
     return traitement($requete);
 }
 
+function getparnom($name = "") {
+    // CHAT GPT A FAIT CETTE FONCTION A 23h45 CAR SA RECHERCHE NE FONCTIONNAIT PAS (je pète un cable)
+    global $connexion;
+
+    $sql = "SELECT r.*, AVG(NULLIF(n.Note, 0)) AS moy
+            FROM RESTAURANT r
+            LEFT JOIN NOTER n ON r.OsmID = n.OsmID
+            WHERE r.nomrestaurant LIKE :name
+            GROUP BY r.OsmID;";
+            
+    $requete = $connexion->prepare($sql);
+    $requete->execute([':name' => '%' . $name . '%']);
+    
+    return traitement($requete);
+}
 
 
 
