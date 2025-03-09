@@ -4,7 +4,7 @@ réalisé par Clermont Shanka, Richard Baptiste, Chaloine Tristan et Renaudin Cl
 
 Cette SAE est un site de restaurants, il implemente l'utilisation de la nouvelle API google places (changée très récemment) afin de récupérer les images et d'améliorer la qualité générale du site
 
-## VIDEO PRESENTATION
+### VIDEO PRESENTATION
 
 [Regarder la vidéo](https://youtu.be/-umx_Hcdf18)
 
