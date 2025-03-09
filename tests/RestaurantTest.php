@@ -1,14 +1,33 @@
 <?php declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 require_once 'src/classes/Composant/Restaurant.php';
+require_once "src/static/script/modele.php";
 final class RestaurantTest extends TestCase
 {
-    public function testCanBeCreatedFromValidEmail(): void
+    public function testRestaurant(): void
     {
-        $string = 'user@example.com';
+        $restaurants = new Restaurant(0,
+                                      "test",
+                                      "",
+                                      0,
+                                      0,
+                                      0,
+                                      1,
+                                      1,
+                                      "",
+                                      "",
+                                      "",
+                                      3.5,
+                                      120,
+                                      false,
+                                      false,
+                                      true,
+                                      true,
+                                      false,
+                                      "",
+                                      [],
+                                      []);
 
-        $email = 'user@example.com';
-
-        $this->assertSame($string, $email);
+        $this->assertTrue($restaurants->getCapacite()>100);
     }
 }
